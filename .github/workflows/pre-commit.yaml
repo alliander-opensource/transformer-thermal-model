@@ -4,6 +4,9 @@
 
 name: |
   (CI) Pre-commit
+permissions:
+  contents: read
+  pull-requests: write
 
 on:
   push:
