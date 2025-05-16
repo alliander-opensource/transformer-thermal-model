@@ -1,0 +1,63 @@
+# SPDX-FileCopyrightText: Contributors to the Transformer Thermal Model project
+#
+# SPDX-License-Identifier: MPL-2.0
+
+# This pre-commit config can be installed by running
+# 'pip install pre-commit'.
+# 'pre-commit install'.
+repos:
+-   repo: https://gitlab.com/vojko.pribudic.foss/pre-commit-update
+    rev: v0.7.0
+    hooks:
+    -   id: pre-commit-update
+
+-   repo: https://github.com/fsfe/reuse-tool
+    rev: v5.0.2
+    hooks:
+    -   id: reuse
+
+-   repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version.
+    rev: v0.11.10
+    hooks:
+      # Run the linter.
+    -   id: ruff
+        args: [--fix]
+      # Run the formatter.
+    -   id: ruff-format
+
+-   repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.15.0
+    hooks:
+    -   id: mypy
+        additional_dependencies:
+        -   pytest
+        -   pytest-cov
+
+  # Check commit messages for conventional commits formatting.
+-   repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v4.2.0
+    hooks:
+    -   id: conventional-pre-commit
+        stages: [commit-msg]
+        args: []
+  # Fix common spelling mistakes
+-   repo: https://github.com/codespell-project/codespell
+    rev: v2.4.1
+    hooks:
+    -   id: codespell
+        exclude: "pyproject.toml|poetry.lock|docs/theoretical_documentation/model.md|docs/examples/"
+
+  # Validates the structure of the pyproject.toml file.
+-   repo: https://gitlab.com/smop/pre-commit-hooks
+    rev: v1.0.0
+    hooks:
+    -   id: check-poetry
+        args: ['--lock']
+
+  # Linter for markdown files.
+-   repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.44.0
+    hooks:
+    -   id: markdownlint
+        args: ["--ignore", "docs/theoretical_documentation/model.md"]

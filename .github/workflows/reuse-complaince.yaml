@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Contributors to the Transformer Thermal Model project
+#
+# SPDX-License-Identifier: MPL-2.0
+name: REUSE Compliance Check
+
+on:
+  push
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-reuse-compliance
+  cancel-in-progress: true
+
+jobs:
+  reuse-compliance-check:
+    permissions:
+      contents: read
+      pull-requests: write
+    runs-on: ubuntu-24.04
+    steps:
+    - name: checkout
+      uses: actions/checkout@v4
+    - name: REUSE Compliance Check
+      uses: fsfe/reuse-action@v5

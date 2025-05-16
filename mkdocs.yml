@@ -1,0 +1,107 @@
+# SPDX-FileCopyrightText: Contributors to the Transformer Thermal Model project
+#
+# SPDX-License-Identifier: MPL-2.0
+
+site_name: Transformer Thermal Model
+site_description: Simulate thermal behavior of power and distribution transformers.
+site_author: Contributors to the Transformer Thermal Model project
+site_url: https://github.com/Alliander/transformer-thermal-model
+
+# https://www.mkdocs.org/user-guide/configuration/#validation
+validation:
+  omitted_files: warn
+  absolute_links: warn
+  unrecognized_links: warn
+  anchors: warn
+
+theme:
+  name: material
+  favicon: img/favicon.ico
+  logo: img/logo-white.png
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - attr_list
+  - md_in_html
+  - pymdownx.blocks.caption
+  - pymdownx.arithmatex:
+      generic: true
+
+extra_javascript:
+  - javascripts/katex.js
+  - https://unpkg.com/katex@0/dist/katex.min.js
+  - https://unpkg.com/katex@0/dist/contrib/auto-render.min.js
+
+extra_css:
+  - stylesheets/extra.css
+  - https://unpkg.com/katex@0/dist/katex.min.css
+
+nav:
+  - Welcome to Transformer Thermal Model: index.md
+  - Get Started:
+    - Installation and overview: get_started/about.md
+    - Model input: get_started/model_input.md
+  - API Documentation: 
+    - Model: api_reference/model.md
+    - Transformer: api_reference/transformer.md
+    - Model input and output: api_reference/model_input_output.md
+    - Specifications: api_reference/specifications.md
+    - Hot-spot factor calibration: api_reference/hot-spot_calibration.md
+    - Aging: api_reference/aging.md
+    - Components: api_reference/components.md
+    - Cooler: api_reference/cooler.md
+    - Toolbox: api_reference/toolbox.md
+  - Examples:
+    - Quick start: examples/quickstart.ipynb
+    - A distribution transformer with a dynamic profile: examples/simple_thermal_profile_example_distribution.ipynb
+    - A power transformer with a dynamic profile: examples/power_transformer_example.ipynb
+    - Hot-spot factor calibration: examples/hot-spot_calibration.ipynb
+    - Modelling with an initial state: examples/example_initial_state.ipynb
+  - Theoretical Documentation:
+    - Overview: theoretical_documentation/overview.md
+    - Transformer definition: theoretical_documentation/transformer_definition.md
+    - Model description: theoretical_documentation/model_description.md
+    - Thermal limits: theoretical_documentation/temperature_limits.md
+    - Hot-spot factor calibration: theoretical_documentation/hotspot_calibration.md
+    - Potential model improvements: theoretical_documentation/model_improvements.md
+
+plugins:
+- llmstxt:
+    enabled: !ENV [CI, false]
+    full_output: llms-full.txt
+    markdown_description: |-
+      Transformer Thermal Model is a Python package for simulating the thermal 
+      behavior of power and distribution transformers. Since 2004, Alliander
+      has been researching and developing this model to predict the thermal
+      behavior of transformers, and uses it to solve net congestion problems.
+    sections:
+      API documentation:
+        - api_reference/*.md
+- search
+- exclude:
+    glob:
+    - theme/announce.html
+    - plugins/*
+    - __pycache__/*
+- mkdocstrings:
+    handlers:
+      python:
+        paths: [.]
+        options:
+          show_root_full_path: false
+          members_order: source
+          separate_signature: true
+          filters: ["!^_"]
+          docstring_options:
+            ignore_init_summary: true
+          show_docstring_examples: true
+          merge_init_into_class: true
+          show_signature_annotations: true
+          signature_crossrefs: true
+        import:
+          - url: https://docs.python.org/3/objects.inv
+            domains: [py, std]
+- mkdocs-jupyter:
+    include_source: true

@@ -1,0 +1,41 @@
+# SPDX-FileCopyrightText: Contributors to the Transformer Thermal Model project
+#
+# SPDX-License-Identifier: MPL-2.0
+
+name: |
+  (T) Pytest
+
+on:
+  push:
+    inputs:
+      python-version:
+        required: false
+        type: string
+        default: '3.12'
+        description: 'Python version used.'
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Install python${{ inputs.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version:  ${{ inputs.python-version }}
+      - name: Install Poetry
+        run: pipx install --python python${{ inputs.python-version }} poetry
+      - name: Install the library using poetry
+        shell: bash
+        run: poetry install --with dev
+      - name: Unit tests
+        if: ${{ hashFiles('tests/') != '' }}
+        shell: bash
+        run: poetry run pytest
+      - name: Upload coverage.xml as artifact
+        uses: actions/upload-artifact@master
+        if: ${{ hashFiles('coverage.xml') != '' }}
+        with:
+          name: coverage.xml
+          path: ./coverage.xml

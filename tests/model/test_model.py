@@ -1,0 +1,376 @@
+# SPDX-FileCopyrightText: Contributors to the Transformer Thermal Model project
+#
+# SPDX-License-Identifier: MPL-2.0
+
+import numpy as np
+import pandas as pd
+import pytest
+
+from transformer_thermal_model.cooler import CoolerType
+from transformer_thermal_model.model import Model
+from transformer_thermal_model.toolbox.temp_sim_profile_tools import create_temp_sim_profile_from_df
+from transformer_thermal_model.transformer import PowerTransformer
+
+
+@pytest.fixture
+def transformer(default_user_trafo_specs) -> PowerTransformer:
+    """Create a transformer object with 0 losses."""
+    zero_loss_transformer_specs = default_user_trafo_specs.model_copy(
+        update={
+            "hot_spot_fac": 1.3,
+            "no_load_loss": 0,
+            "amb_temp_surcharge": 0,
+        }
+    )
+    transformer = PowerTransformer(user_specs=zero_loss_transformer_specs, cooling_type=CoolerType.ONAN)
+    return transformer
+
+
+def test_temp_rise_with_zero_load(transformer):
+    """Test if the temperature rise is zero when the load and losses are zero."""
+    profile = pd.DataFrame(
+        {
+            "timestamp": pd.to_datetime(["2021-01-01 00:00:00", "2021-01-01 01:00:00", "2021-01-01 02:00:00"]),
+            "load": [0, 0, 0],
+            "ambient_temperature": [5, 5, 5],
+        }
+    )
+
+    model = Model(temperature_profile=create_temp_sim_profile_from_df(profile), transformer=transformer)
+    result = model.run().convert_to_dataframe()
+
+    assert result["top_oil_temperature"].equals(pd.Series([5.0, 5.0, 5.0], index=profile["timestamp"]))
+    assert result["hot_spot_temperature"].equals(pd.Series([5.0, 5.0, 5.0], index=profile["timestamp"]))
+
+
+def test_temp_rise_with_losses_and_zero_load(onan_power_transformer):
+    """Test if the temperature rise is non zero when the load is zero but the losses are not."""
+    profile = pd.DataFrame(
+        {
+            "timestamp": pd.to_datetime(
+                [
+                    "2021-01-01 00:00:00",
+                    "2021-01-01 01:00:00",
+                    "2021-01-01 02:00:00",
+                    "2021-01-02 02:00:00",
+                    "2021-01-03 02:00:00",
+                ]
+            ),
+            "load": [0, 0, 0, 0, 0],
+            "ambient_temperature": [5, 5, 5, 5, 5],
+        }
+    )
+    model = Model(temperature_profile=create_temp_sim_profile_from_df(profile), transformer=onan_power_transformer)
+    result = model.run()
+    top_oil_temp = np.array(result.top_oil_temp_profile)
+    hot_spot_temp = np.array(result.hot_spot_temp_profile)
+    expected_temps = [
+        25.0,
+        31.22874909,
+        34.74623658,
+        39.30968576,
+        39.30969081,
+    ]
+    assert top_oil_temp == pytest.approx(expected_temps, rel=1e-6)
+    assert hot_spot_temp == pytest.approx(expected_temps, rel=1e-6)
+
+
+def test_temp_rise_to_ambient_temperature(transformer):
+    """Test if the temperature of the transformer rises to the ambient temperature when the load is zero."""
+    # A timestep of 1 year is used to make sure the temperature rises to the ambient temperature
+    profile = pd.DataFrame(
+        {
+            "timestamp": pd.to_datetime(["2021-01-01 00:00:00", "2022-01-01 00:00:00", "2023-01-01 02:00:00"]),
+            "load": [0, 0, 0],
+            "ambient_temperature": [20, 30, 50],
+        }
+    )
+
+    model = Model(temperature_profile=create_temp_sim_profile_from_df(profile), transformer=transformer)
+    result = model.run().convert_to_dataframe()
+
+    assert result["top_oil_temperature"].equals(pd.Series([20.0, 30.0, 50.0], index=profile["timestamp"]))
+    assert result["hot_spot_temperature"].equals(pd.Series([20.0, 30.0, 50.0], index=profile["timestamp"]))
+
+
+def test_temp_rise_zero_timesteps(transformer):
+    """Test if the temperature rise is zero when the timesteps are zero."""
+    profile = pd.DataFrame(
+        {
+            "timestamp": pd.to_datetime(["2021-01-01 00:00:00", "2021-01-01 00:00:00", "2021-01-01 00:00:00"]),
+            "load": [100, 100, 100],
+            "ambient_temperature": [20, 20, 20],
+        }
+    )
+
+    model = Model(temperature_profile=create_temp_sim_profile_from_df(profile), transformer=transformer)
+    result = model.run().convert_to_dataframe()
+
+    assert result["top_oil_temperature"].equals(pd.Series([20.0, 20.0, 20.0], index=profile["timestamp"]))
+    assert result["hot_spot_temperature"].equals(pd.Series([20.0, 20.0, 20.0], index=profile["timestamp"]))
+
+
+def test_good_result_with_large_time_steps(transformer):
+    """Test if the temperature rise goes to expected value when using timesteps of one month.
+
+    For large timesteps, and nominal load, the top-oil temperature should rise by the top-oil temperature rise,
+    and the hot-spot temperature should rise by the top-oil temperature rise + hot-spot factor * winding oil gradient.
+    """
+    profile = pd.DataFrame(
+        {
+            "timestamp": pd.to_datetime(["2021-01-01 00:00:00", "2021-02-01 00:00:00", "2021-03-01 00:00:00"]),
+            "load": [
+                transformer.specs.nom_load_sec_side,
+                transformer.specs.nom_load_sec_side,
+                transformer.specs.nom_load_sec_side,
+            ],
+            "ambient_temperature": [20, 20, 20],
+        }
+    )
+
+    model = Model(temperature_profile=create_temp_sim_profile_from_df(profile), transformer=transformer)
+    result = model.run().convert_to_dataframe()
+
+    assert result["top_oil_temperature"].equals(
+        pd.Series(
+            [20, 20 + transformer.specs.top_oil_temp_rise, 20 + transformer.specs.top_oil_temp_rise],
+            index=profile["timestamp"],
+        )
+    )
+
+    flat_increase_for_long_period = transformer.specs.top_oil_temp_rise + (
+        transformer.specs.hot_spot_fac * transformer.specs.winding_oil_gradient
+    )
+
+    assert result["hot_spot_temperature"].equals(
+        pd.Series(
+            [20.0, 20.0 + flat_increase_for_long_period, 20.0 + flat_increase_for_long_period],
+            index=profile["timestamp"],
+        )
+    )
+
+
+def test_no_hotspot_factor(transformer):
+    """Test if the model raises an error when the hot-spot factor is not specified."""
+    transformer.specs.hot_spot_fac = None
+    profile = pd.DataFrame(
+        {
+            "timestamp": pd.to_datetime(["2021-01-01 00:00:00", "2021-02-01 00:00:00", "2021-03-01 00:00:00"]),
+            "load": [
+                transformer.specs.nom_load_sec_side,
+                transformer.specs.nom_load_sec_side,
+                transformer.specs.nom_load_sec_side,
+            ],
+            "ambient_temperature": [20, 20, 20],
+        }
+    )
+
+    with pytest.raises(AttributeError):
+        Model(temperature_profile=create_temp_sim_profile_from_df(profile), transformer=transformer)
+
+
+def test_expected_rise_distribution(distribution_transformer):
+    """Test if the temperature rise matches the expected one."""
+    tau_time = distribution_transformer.specs.oil_const_k11 * distribution_transformer.specs.time_const_oil
+    ambient_temp = 20
+
+    # create a dataframe with timesteps equal to the tau_time
+    time_step_list = [pd.to_datetime("2021-01-01 00:00:00") + pd.Timedelta(minutes=i * tau_time) for i in range(0, 16)]
+    profile = pd.DataFrame(
+        {
+            "timestamp": time_step_list,
+            "load": [1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 0, 0, 0, 0, 0, 0, 0, 0],
+            "ambient_temperature": [ambient_temp] * len(time_step_list),
+        }
+    )
+    thermal_model = Model(
+        temperature_profile=create_temp_sim_profile_from_df(profile), transformer=distribution_transformer
+    )
+    results = thermal_model.run()
+    top_oil_temp = np.array(results.top_oil_temp_profile)
+    hot_spot_temp = np.array(results.hot_spot_temp_profile)
+
+    # The first time step should be the ambient temperature
+    assert top_oil_temp[0] == ambient_temp
+    assert hot_spot_temp[0] == ambient_temp
+
+    expected_results = np.array(
+        [
+            20.0,
+            50.75341103,
+            62.0669587,
+            66.22898029,
+            67.76010247,
+            68.32337084,
+            68.53058569,
+            68.60681578,
+            49.9420479,
+            43.07566352,
+            40.54966187,
+            39.62039779,
+            39.27854065,
+            39.15277843,
+            39.10651309,
+            39.08949303,
+        ]
+    )
+    expected_results_hotspot = np.array(
+        [
+            20.0,
+            63.97776626,
+            75.29131393,
+            79.45333552,
+            80.9844577,
+            81.54772607,
+            81.75494092,
+            81.83117101,
+            49.9420479,
+            43.07566352,
+            40.54966187,
+            39.62039779,
+            39.27854065,
+            39.15277843,
+            39.10651309,
+            39.08949303,
+        ]
+    )
+
+    assert sum(abs(top_oil_temp - expected_results)) < 1e-6
+    assert sum(abs(hot_spot_temp - expected_results_hotspot)) < 1e-6
+
+
+def test_expected_rise_onan(onan_power_transformer):
+    """Test if the temperature rise matches the expected one."""
+    tau_time = onan_power_transformer.specs.oil_const_k11 * onan_power_transformer.specs.time_const_oil
+    ambient_temp = 20
+    time_step_list = [pd.to_datetime("2021-01-01 00:00:00") + pd.Timedelta(minutes=i * tau_time) for i in range(0, 16)]
+    profile = pd.DataFrame(
+        {
+            "timestamp": time_step_list,
+            "load": [1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 0, 0, 0, 0, 0, 0, 0, 0],
+            "ambient_temperature": [ambient_temp] * len(time_step_list),
+        }
+    )
+    thermal_model = Model(
+        temperature_profile=create_temp_sim_profile_from_df(profile), transformer=onan_power_transformer
+    )
+    results = thermal_model.run()
+    top_oil_temp = np.array(results.top_oil_temp_profile)
+    hot_spot_temp = np.array(results.hot_spot_temp_profile)
+
+    # The first time step should be the ambient temperature
+    assert top_oil_temp[0] == ambient_temp + onan_power_transformer.specs.amb_temp_surcharge
+    assert hot_spot_temp[0] == ambient_temp + onan_power_transformer.specs.amb_temp_surcharge
+
+    expected_results = np.array(
+        [
+            40.0,
+            63.06505828,
+            71.55021902,
+            74.67173522,
+            75.82007685,
+            76.24252813,
+            76.39793927,
+            76.45511183,
+            62.45653592,
+            57.30674764,
+            55.4122464,
+            54.71529835,
+            54.45890548,
+            54.36458382,
+            54.32988482,
+            54.31711977,
+        ]
+    )
+
+    expected_hotspot_temp = np.array(
+        [
+            40.0,
+            78.04899136,
+            81.17912811,
+            86.21444636,
+            86.67882499,
+            87.34571398,
+            87.41376689,
+            87.50215992,
+            58.50849322,
+            58.71771653,
+            54.90798813,
+            54.89551239,
+            54.3944998,
+            54.38760141,
+            54.32165869,
+            54.32005966,
+        ]
+    )
+
+    assert sum(abs(top_oil_temp - expected_results)) < 1e-6
+    assert sum(abs(hot_spot_temp - expected_hotspot_temp)) < 1e-6
+
+
+def test_expected_rise_onaf(onaf_power_transformer):
+    """Test if the temperature rise matches the expected one."""
+    tau_time = onaf_power_transformer.specs.oil_const_k11 * onaf_power_transformer.specs.time_const_oil
+    ambient_temp = 20
+    time_step_list = [pd.to_datetime("2021-01-01 00:00:00") + pd.Timedelta(minutes=i * tau_time) for i in range(0, 16)]
+    profile = pd.DataFrame(
+        {
+            "timestamp": time_step_list,
+            "load": [1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 0, 0, 0, 0, 0, 0, 0, 0],
+            "ambient_temperature": [ambient_temp] * len(time_step_list),
+        }
+    )
+    thermal_model = Model(
+        temperature_profile=create_temp_sim_profile_from_df(profile), transformer=onaf_power_transformer
+    )
+    results = thermal_model.run()
+    top_oil_temp = np.array(results.top_oil_temp_profile)
+    hot_spot_temp = np.array(results.hot_spot_temp_profile)
+
+    # The first time step should be the ambient temperature
+    assert top_oil_temp[0] == ambient_temp + onaf_power_transformer.specs.amb_temp_surcharge
+    assert hot_spot_temp[0] == ambient_temp + onaf_power_transformer.specs.amb_temp_surcharge
+
+    expected_results = np.array(
+        [
+            40.0,
+            63.06505828,
+            71.55021902,
+            74.67173522,
+            75.82007685,
+            76.24252813,
+            76.39793927,
+            76.45511183,
+            62.45653592,
+            57.30674764,
+            55.4122464,
+            54.71529835,
+            54.45890548,
+            54.36458382,
+            54.32988482,
+            54.31711977,
+        ]
+    )
+    expected_hotspot_temp = np.array(
+        [
+            40.0,
+            78.06076232,
+            81.17070204,
+            86.21897013,
+            86.67666614,
+            87.34667984,
+            87.41335205,
+            87.50233315,
+            58.4966514,
+            58.72617113,
+            54.90345302,
+            54.8976757,
+            54.39353219,
+            54.38801693,
+            54.32148521,
+            54.32013062,
+        ]
+    )
+
+    assert sum(abs(top_oil_temp - expected_results)) < 1e-6
+    assert sum(abs(hot_spot_temp - expected_hotspot_temp)) < 1e-6

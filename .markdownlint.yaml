@@ -1,0 +1,9 @@
+# SPDX-FileCopyrightText: Contributors to the Transformer Thermal Model project
+#
+# SPDX-License-Identifier: MPL-2.0
+
+# MD013/line-length - Line length
+MD013:
+  line_length: 120
+  tables: false
+MD004: false

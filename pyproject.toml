@@ -1,0 +1,145 @@
+# SPDX-FileCopyrightText: Contributors to the Transformer Thermal Model project
+#
+# SPDX-License-Identifier: MPL-2.0
+
+[project]
+name = "transformer-thermal-model"
+version = "0.1.0"
+description = "Thermal model for transformers"
+authors = [{ name = "Contributors to the Transformer Thermal Model project" }]
+requires-python = "~=3.11"
+readme = "README.md"
+classifiers = [
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "pandas~=2.0",
+    "numpy>=2.2.5,<3",
+    "pydantic>=2.11.1,<3",
+]
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.3"
+ruff = "^0.11.9"
+mypy = "^1.15.0"
+pytest-cov = "^6.0.0"
+pre-commit = "^4.1.0"
+codespell = "^2.4.1"
+ipython = "^9.0.2"
+isort = "^6.0.0"
+
+[tool.poetry.group.docs]
+optional = true
+
+[tool.poetry.group.docs.dependencies]
+mkdocs = "^1.6.1"
+mkdocstrings-python = "^1.16.8"
+mkdocs-exclude = "^1.0.2"
+mkdocs-llmstxt = "^0.2.0"
+mkdocs-material = "^9.6.11"
+matplotlib = "^3.10.3"
+mkdocs-jupyter = "^0.25.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+profile = "black"
+
+[tool.ruff]
+output-format = "github"
+line-length = 120
+show-fixes = true
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+    "migrations",
+]
+
+[tool.ruff.lint]
+select = [
+    # pycodestyle
+    "E",
+    # Pyflake
+    "F",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
+    # pydocstyle
+    "D",
+]
+ignore = [
+    # Missing docstring in public module
+    "D100",
+    # Missing docstring in public package
+    "D104",
+    #  `one-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are incompatible. Ignoring `one-blank-line-before-class`.
+    "D203",
+    # `multi-line-summary-first-line` (D212) and `multi-line-summary-second-line` (D213) are incompatible. Ignoring `multi-line-summary-second-line`.
+    "D213",
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+# Allow longer line length in conftest where many 1-line dictinaries are specified
+"conftest.py" = ["E501"]
+
+[tool.mypy]
+packages = ["transformer_thermal_model"]
+exclude = ["migrations"]
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+
+[tool.pytest.ini_options]
+markers = ["integrationtest"]
+addopts = [
+  "--cov",
+  "--cov-branch",
+  "--cov-report=xml",
+  "--cov-report=term-missing",  # Coverage report incl missing lines in terminal
+  "--doctest-modules"  # Run doctest to test examples in docstrings
+]
+doctest_optionflags = ["NORMALIZE_WHITESPACE", "IGNORE_EXCEPTION_DETAIL", "NUMBER"]
+
+[tool.coverage.run]
+relative_files = true
+omit = [
+    "tests/*"
+]

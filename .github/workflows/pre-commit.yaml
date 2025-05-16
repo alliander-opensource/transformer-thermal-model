@@ -1,0 +1,39 @@
+# SPDX-FileCopyrightText: Contributors to the Transformer Thermal Model project
+#
+# SPDX-License-Identifier: MPL-2.0
+
+name: |
+  (CI) Pre-commit
+
+on:
+  push:
+    inputs:
+      python-version:
+        required: false
+        default: '3.12'
+        type: string
+        description: 'Python version used.'
+
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - uses: actions/setup-python@v5
+        if: ${{ hashFiles('.pre-commit-config.yaml') != '' }}
+        with:
+          python-version:  ${{ inputs.python-version }}
+      - name: Install Poetry
+        if: ${{ hashFiles('.pre-commit-config.yaml') != '' }}
+        run: pipx install --python python${{ inputs.python-version }} poetry
+      - name: Install pre-commit
+        if: ${{ hashFiles('.pre-commit-config.yaml') != '' }}
+        run: |
+          pip install pre-commit
+          pre-commit install
+      - name: Run pre-commit
+        if: ${{ hashFiles('.pre-commit-config.yaml') != '' }}
+        shell: bash
+        run: pre-commit run -a
