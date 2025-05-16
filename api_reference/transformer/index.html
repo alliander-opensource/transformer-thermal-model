@@ -1,0 +1,2015 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Simulate thermal behavior of power and distribution transformers.">
+      
+      
+        <meta name="author" content="Contributors to the Transformer Thermal Model project">
+      
+      
+        <link rel="canonical" href="https://github.com/Alliander/transformer-thermal-model/api_reference/transformer/">
+      
+      
+        <link rel="prev" href="../model/">
+      
+      
+        <link rel="next" href="../model_input_output/">
+      
+      
+      <link rel="icon" href="../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
+    
+    
+      
+        <title>Transformer - Transformer Thermal Model</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="https://unpkg.com/katex@0/dist/katex.min.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#transformer" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Transformer Thermal Model" class="md-header__button md-logo" aria-label="Transformer Thermal Model" data-md-component="logo">
+      
+  <img src="../../img/logo-white.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Transformer Thermal Model
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Transformer
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Transformer Thermal Model" class="md-nav__button md-logo" aria-label="Transformer Thermal Model" data-md-component="logo">
+      
+  <img src="../../img/logo-white.png" alt="logo">
+
+    </a>
+    Transformer Thermal Model
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Welcome to Transformer Thermal Model
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Get Started
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Get Started
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../get_started/about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Installation and overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../get_started/model_input/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Model input
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    API Documentation
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            API Documentation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Model
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Transformer
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Transformer
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#transformer_thermal_model.transformer.Transformer" class="md-nav__link">
+    <span class="md-ellipsis">
+      Transformer
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Transformer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#transformer_thermal_model.transformer.Transformer.defaults" class="md-nav__link">
+    <span class="md-ellipsis">
+      defaults
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#transformer_thermal_model.transformer.PowerTransformer" class="md-nav__link">
+    <span class="md-ellipsis">
+      PowerTransformer
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PowerTransformer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#transformer_thermal_model.transformer.PowerTransformer.defaults" class="md-nav__link">
+    <span class="md-ellipsis">
+      defaults
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transformer_thermal_model.transformer.PowerTransformer.tap_changer_capacity_ratio" class="md-nav__link">
+    <span class="md-ellipsis">
+      tap_changer_capacity_ratio
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transformer_thermal_model.transformer.PowerTransformer.primary_bushing_capacity_ratio" class="md-nav__link">
+    <span class="md-ellipsis">
+      primary_bushing_capacity_ratio
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transformer_thermal_model.transformer.PowerTransformer.secondary_bushing_capacity_ratio" class="md-nav__link">
+    <span class="md-ellipsis">
+      secondary_bushing_capacity_ratio
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transformer_thermal_model.transformer.PowerTransformer.int_cur_trans_capacity_ratio" class="md-nav__link">
+    <span class="md-ellipsis">
+      int_cur_trans_capacity_ratio
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transformer_thermal_model.transformer.PowerTransformer.component_capacities" class="md-nav__link">
+    <span class="md-ellipsis">
+      component_capacities
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#transformer_thermal_model.transformer.DistributionTransformer" class="md-nav__link">
+    <span class="md-ellipsis">
+      DistributionTransformer
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DistributionTransformer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#transformer_thermal_model.transformer.DistributionTransformer.defaults" class="md-nav__link">
+    <span class="md-ellipsis">
+      defaults
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../model_input_output/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Model input and output
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../specifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Specifications
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hot-spot_calibration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Hot-spot factor calibration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../aging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Aging
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../components/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Components
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cooler/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Cooler
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../toolbox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Toolbox
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Examples
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Examples
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Quick start
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/simple_thermal_profile_example_distribution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Thermal modelling based on a dynamic profile and a distribution transformer
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/power_transformer_example/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Thermal modelling based on a dynamic profile and a power transformer
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/hot-spot_calibration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Hot-spot factor calibration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/example_initial_state/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Modelling with an initial state
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Theoretical Documentation
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Theoretical Documentation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theoretical_documentation/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theoretical_documentation/transformer_definition/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Transformer definition
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theoretical_documentation/model_description/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Model description
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theoretical_documentation/temperature_limits/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Thermal limits
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theoretical_documentation/hotspot_calibration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Hot-spot factor calibration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theoretical_documentation/model_improvements/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Potential model improvements
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#transformer_thermal_model.transformer.Transformer" class="md-nav__link">
+    <span class="md-ellipsis">
+      Transformer
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Transformer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#transformer_thermal_model.transformer.Transformer.defaults" class="md-nav__link">
+    <span class="md-ellipsis">
+      defaults
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#transformer_thermal_model.transformer.PowerTransformer" class="md-nav__link">
+    <span class="md-ellipsis">
+      PowerTransformer
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PowerTransformer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#transformer_thermal_model.transformer.PowerTransformer.defaults" class="md-nav__link">
+    <span class="md-ellipsis">
+      defaults
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transformer_thermal_model.transformer.PowerTransformer.tap_changer_capacity_ratio" class="md-nav__link">
+    <span class="md-ellipsis">
+      tap_changer_capacity_ratio
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transformer_thermal_model.transformer.PowerTransformer.primary_bushing_capacity_ratio" class="md-nav__link">
+    <span class="md-ellipsis">
+      primary_bushing_capacity_ratio
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transformer_thermal_model.transformer.PowerTransformer.secondary_bushing_capacity_ratio" class="md-nav__link">
+    <span class="md-ellipsis">
+      secondary_bushing_capacity_ratio
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transformer_thermal_model.transformer.PowerTransformer.int_cur_trans_capacity_ratio" class="md-nav__link">
+    <span class="md-ellipsis">
+      int_cur_trans_capacity_ratio
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transformer_thermal_model.transformer.PowerTransformer.component_capacities" class="md-nav__link">
+    <span class="md-ellipsis">
+      component_capacities
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#transformer_thermal_model.transformer.DistributionTransformer" class="md-nav__link">
+    <span class="md-ellipsis">
+      DistributionTransformer
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DistributionTransformer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#transformer_thermal_model.transformer.DistributionTransformer.defaults" class="md-nav__link">
+    <span class="md-ellipsis">
+      defaults
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<!--
+SPDX-FileCopyrightText: Contributors to the Transformer Thermal Model project
+
+SPDX-License-Identifier: MPL-2.0
+-->
+<h1 id="transformer">Transformer</h1>
+<p>The Transformer is the main object that needs to be defined to work with
+our thermal model.</p>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="transformer_thermal_model.transformer.Transformer" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">Transformer</span>
+
+
+</h2>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">Transformer</span><span class="p">(</span>
+    <span class="n">user_specs</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="UserTransformerSpecifications (transformer_thermal_model.schemas.UserTransformerSpecifications)" href="../specifications/#transformer_thermal_model.schemas.specifications.transformer.UserTransformerSpecifications">UserTransformerSpecifications</a></span><span class="p">,</span>
+    <span class="n">cooling_type</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="transformer_thermal_model.cooler.CoolerType" href="../cooler/#transformer_thermal_model.cooler.cooler_type.CoolerType">CoolerType</a></span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-external" title="abc.ABC" href="https://docs.python.org/3/library/abc.html#abc.ABC">ABC</a></code></p>
+
+
+        <p>Abstract class to define the transformer object.</p>
+<p>Depending on the type of transformer (either PowerTransformer or DistributionTransformer), the transformer attains
+certain default attributes. These attributes can be overwritten by using the TR_Specs dictionary.</p>
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code><span title="transformer_thermal_model.transformer.Transformer.cooling_type">cooling_type</span></code></td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="transformer_thermal_model.cooler.CoolerType" href="../cooler/#transformer_thermal_model.cooler.cooler_type.CoolerType">CoolerType</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The cooling type. Can be CoolerType.ONAN or CoolerType.ONAF.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+        <p>(TransformerSpecifications): The transformer specifications that you need to
+    provide to build the transformer. Any optional specifications not provided
+    will be taken from the default specifications.</p>
+
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>user_specs</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="UserTransformerSpecifications (transformer_thermal_model.schemas.UserTransformerSpecifications)" href="../specifications/#transformer_thermal_model.schemas.specifications.transformer.UserTransformerSpecifications">UserTransformerSpecifications</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The transformer specifications that you need to
+provide to build the transformer. Any optional specifications not provided will be taken from the
+default specifications.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>cooling_type</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="transformer_thermal_model.cooler.CoolerType" href="../cooler/#transformer_thermal_model.cooler.cooler_type.CoolerType">CoolerType</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The cooling type. Can be ONAN, ONAF.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+
+
+
+
+
+                  <details class="quote">
+                    <summary>Source code in <code>transformer_thermal_model/transformer/base.py</code></summary>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">user_specs</span><span class="p">:</span> <span class="n">UserTransformerSpecifications</span><span class="p">,</span>
+    <span class="n">cooling_type</span><span class="p">:</span> <span class="n">CoolerType</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the Transformer object.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        user_specs (UserTransformerSpecifications): The transformer specifications that you need to</span>
+<span class="sd">            provide to build the transformer. Any optional specifications not provided will be taken from the</span>
+<span class="sd">            default specifications.</span>
+<span class="sd">        cooling_type (CoolerType): The cooling type. Can be ONAN, ONAF.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">cooling_type</span><span class="p">:</span> <span class="n">CoolerType</span> <span class="o">=</span> <span class="n">cooling_type</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">specs</span> <span class="o">=</span> <span class="n">TransformerSpecifications</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">defaults</span><span class="p">,</span> <span class="n">user_specs</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+                  </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="transformer_thermal_model.transformer.Transformer.defaults" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">defaults</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">defaults</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="DefaultTransformerSpecifications (transformer_thermal_model.schemas.DefaultTransformerSpecifications)" href="../specifications/#transformer_thermal_model.schemas.specifications.transformer.DefaultTransformerSpecifications">DefaultTransformerSpecifications</a></span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>The default transformer specifications.</p>
+
+    </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="transformer_thermal_model.transformer.PowerTransformer" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">PowerTransformer</span>
+
+
+</h2>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">PowerTransformer</span><span class="p">(</span>
+    <span class="n">user_specs</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="UserTransformerSpecifications (transformer_thermal_model.schemas.UserTransformerSpecifications)" href="../specifications/#transformer_thermal_model.schemas.specifications.transformer.UserTransformerSpecifications">UserTransformerSpecifications</a></span><span class="p">,</span>
+    <span class="n">cooling_type</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="transformer_thermal_model.cooler.CoolerType" href="../cooler/#transformer_thermal_model.cooler.cooler_type.CoolerType">CoolerType</a></span><span class="p">,</span>
+    <span class="n">internal_component_specs</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="TransformerComponentSpecifications (transformer_thermal_model.schemas.TransformerComponentSpecifications)" href="../specifications/#transformer_thermal_model.schemas.specifications.transformer_component.TransformerComponentSpecifications">TransformerComponentSpecifications</a></span>
+    <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="Transformer (transformer_thermal_model.transformer.base.Transformer)" href="#transformer_thermal_model.transformer.Transformer">Transformer</a></code></p>
+
+
+        <p>A power transformer.</p>
+<p>This class represents a power transformer. This class inherits from the Transformer class.</p>
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code><span title="transformer_thermal_model.transformer.PowerTransformer.internal_component_specs">internal_component_specs</span></code></td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="TransformerComponentSpecifications (transformer_thermal_model.schemas.TransformerComponentSpecifications)" href="../specifications/#transformer_thermal_model.schemas.specifications.transformer_component.TransformerComponentSpecifications">TransformerComponentSpecifications</a> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The internal component specifications
+which are used to calculate the relative component capacities. Defaults to None.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>user_specs</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="UserTransformerSpecifications (transformer_thermal_model.schemas.UserTransformerSpecifications)" href="../specifications/#transformer_thermal_model.schemas.specifications.transformer.UserTransformerSpecifications">UserTransformerSpecifications</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The transformer specifications that you need to
+provide to build the transformer. Any optional specifications not provided will be taken from the
+default specifications.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>cooling_type</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="transformer_thermal_model.cooler.CoolerType" href="../cooler/#transformer_thermal_model.cooler.cooler_type.CoolerType">CoolerType</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The cooling type. Can be ONAN or ONAF.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>internal_component_specs</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="TransformerComponentSpecifications (transformer_thermal_model.schemas.TransformerComponentSpecifications)" href="../specifications/#transformer_thermal_model.schemas.specifications.transformer_component.TransformerComponentSpecifications">TransformerComponentSpecifications</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The internal component
+specifications, which are used to calculate the limiting component. Defaults to None.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+
+
+
+
+
+                  <details class="quote">
+                    <summary>Source code in <code>transformer_thermal_model/transformer/power.py</code></summary>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">user_specs</span><span class="p">:</span> <span class="n">UserTransformerSpecifications</span><span class="p">,</span>
+    <span class="n">cooling_type</span><span class="p">:</span> <span class="n">CoolerType</span><span class="p">,</span>
+    <span class="n">internal_component_specs</span><span class="p">:</span> <span class="n">TransformerComponentSpecifications</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the transformer object.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        user_specs (UserTransformerSpecifications): The transformer specifications that you need to</span>
+<span class="sd">            provide to build the transformer. Any optional specifications not provided will be taken from the</span>
+<span class="sd">            default specifications.</span>
+<span class="sd">        cooling_type (CoolerType): The cooling type. Can be ONAN or ONAF.</span>
+<span class="sd">        internal_component_specs (TransformerComponentSpecifications, optional): The internal component</span>
+<span class="sd">            specifications, which are used to calculate the limiting component. Defaults to None.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Creating a power transformer object.&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;User transformer specifications: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">user_specs</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Cooling type: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">cooling_type</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">internal_component_specs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Internal component specifications: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">internal_component_specs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">internal_component_specs</span> <span class="o">=</span> <span class="n">internal_component_specs</span>
+
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="n">user_specs</span><span class="o">=</span><span class="n">user_specs</span><span class="p">,</span>
+        <span class="n">cooling_type</span><span class="o">=</span><span class="n">cooling_type</span><span class="p">,</span>
+    <span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+                  </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="transformer_thermal_model.transformer.PowerTransformer.defaults" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">defaults</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">defaults</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="DefaultTransformerSpecifications (transformer_thermal_model.schemas.DefaultTransformerSpecifications)" href="../specifications/#transformer_thermal_model.schemas.specifications.transformer.DefaultTransformerSpecifications">DefaultTransformerSpecifications</a></span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>The ClassVar for default TransformerSpecifications.</p>
+<p>If PowerTransformer is not initialised, uses the ONAF specifications.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="transformer_thermal_model.transformer.PowerTransformer.tap_changer_capacity_ratio" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">tap_changer_capacity_ratio</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">tap_changer_capacity_ratio</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">|</span> <span class="kc">None</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>The ratio between the tap changer capacity and the nominal load of the transformer.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="transformer_thermal_model.transformer.PowerTransformer.primary_bushing_capacity_ratio" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">primary_bushing_capacity_ratio</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">primary_bushing_capacity_ratio</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">|</span> <span class="kc">None</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>The ratio between the primary bushing capacity and the nominal load of the transformer.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="transformer_thermal_model.transformer.PowerTransformer.secondary_bushing_capacity_ratio" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">secondary_bushing_capacity_ratio</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">secondary_bushing_capacity_ratio</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">|</span> <span class="kc">None</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>The ratio between the secondary bushing capacity and the nominal load of the transformer.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="transformer_thermal_model.transformer.PowerTransformer.int_cur_trans_capacity_ratio" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">int_cur_trans_capacity_ratio</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">int_cur_trans_capacity_ratio</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span> <span class="o">|</span> <span class="kc">None</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>The ratio between the internal current transformer capacity and the nominal load of the transformer.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="transformer_thermal_model.transformer.PowerTransformer.component_capacities" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">component_capacities</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">component_capacities</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/reference/expressions.html#dict">dict</a></span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Puts the limits of all transformer components in a single dictionary.</p>
+
+    </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="transformer_thermal_model.transformer.DistributionTransformer" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">DistributionTransformer</span>
+
+
+</h2>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">DistributionTransformer</span><span class="p">(</span>
+    <span class="n">user_specs</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="UserTransformerSpecifications (transformer_thermal_model.schemas.UserTransformerSpecifications)" href="../specifications/#transformer_thermal_model.schemas.specifications.transformer.UserTransformerSpecifications">UserTransformerSpecifications</a></span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="Transformer (transformer_thermal_model.transformer.base.Transformer)" href="#transformer_thermal_model.transformer.Transformer">Transformer</a></code></p>
+
+
+        <p>A distribution transformer.</p>
+<p>The DistributionTransformer class represents a distribution transformer.
+This class inherits from the Transformer class. This transformer can only
+be used with ONAN (Oil Natural Air Natural) cooling type.</p>
+
+
+<details class="example" open>
+  <summary>Initialising a distribution transformer.</summary>
+  <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">transformer_thermal_model.schemas</span><span class="w"> </span><span class="kn">import</span> <span class="n">UserTransformerSpecifications</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">transformer_thermal_model.transformer</span><span class="w"> </span><span class="kn">import</span> <span class="n">DistributionTransformer</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">transformer_specifications</span> <span class="o">=</span> <span class="n">UserTransformerSpecifications</span><span class="p">(</span>
+<span class="o">...</span>     <span class="n">load_loss</span><span class="o">=</span><span class="mi">5200</span><span class="p">,</span>  <span class="c1"># Transformer load loss [W]</span>
+<span class="o">...</span>     <span class="n">nom_load_sec_side</span><span class="o">=</span><span class="mi">900</span><span class="p">,</span>  <span class="c1"># Transformer nominal current secondary side [A]</span>
+<span class="o">...</span>     <span class="n">no_load_loss</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span>  <span class="c1"># Transformer no-load loss [W]</span>
+<span class="o">...</span>     <span class="n">amb_temp_surcharge</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>  <span class="c1"># Ambient temperature surcharge [K]</span>
+<span class="o">...</span> <span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="c1"># note that no cooling type can be specified here, as this is a distribution transformer</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">my_transformer</span> <span class="o">=</span> <span class="n">DistributionTransformer</span><span class="p">(</span><span class="n">user_specs</span><span class="o">=</span><span class="n">transformer_specifications</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="c1"># the default specifications that will be used when not provided</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">my_transformer</span><span class="o">.</span><span class="n">defaults</span><span class="p">)</span>
+<span class="n">time_const_oil</span><span class="o">=</span><span class="mf">180.0</span> <span class="n">time_const_windings</span><span class="o">=</span><span class="mf">4.0</span> <span class="n">top_oil_temp_rise</span><span class="o">=</span><span class="mf">60.0</span>
+<span class="n">winding_oil_gradient</span><span class="o">=</span><span class="mf">23.0</span> <span class="n">hot_spot_fac</span><span class="o">=</span><span class="mf">1.2</span> <span class="n">oil_const_k11</span><span class="o">=</span><span class="mf">1.0</span>
+<span class="n">winding_const_k21</span><span class="o">=</span><span class="mi">1</span> <span class="n">winding_const_k22</span><span class="o">=</span><span class="mi">2</span> <span class="n">oil_exp_x</span><span class="o">=</span><span class="mf">0.8</span> <span class="n">winding_exp_y</span><span class="o">=</span><span class="mf">1.6</span>
+<span class="n">end_temp_reduction</span><span class="o">=</span><span class="mf">0.0</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="c1"># the combination of the user specifications and the default specifications</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">my_transformer</span><span class="o">.</span><span class="n">specs</span><span class="p">)</span>
+<span class="n">load_loss</span><span class="o">=</span><span class="mf">5200.0</span> <span class="n">nom_load_sec_side</span><span class="o">=</span><span class="mf">900.0</span> <span class="n">no_load_loss</span><span class="o">=</span><span class="mf">800.0</span>
+<span class="n">amb_temp_surcharge</span><span class="o">=</span><span class="mf">10.0</span> <span class="n">time_const_oil</span><span class="o">=</span><span class="mf">180.0</span> <span class="n">time_const_windings</span><span class="o">=</span><span class="mf">4.0</span>
+<span class="n">top_oil_temp_rise</span><span class="o">=</span><span class="mf">60.0</span> <span class="n">winding_oil_gradient</span><span class="o">=</span><span class="mf">23.0</span> <span class="n">hot_spot_fac</span><span class="o">=</span><span class="mf">1.2</span>
+<span class="n">oil_const_k11</span><span class="o">=</span><span class="mf">1.0</span> <span class="n">winding_const_k21</span><span class="o">=</span><span class="mi">1</span> <span class="n">winding_const_k22</span><span class="o">=</span><span class="mi">2</span> <span class="n">oil_exp_x</span><span class="o">=</span><span class="mf">0.8</span>
+<span class="n">winding_exp_y</span><span class="o">=</span><span class="mf">1.6</span> <span class="n">end_temp_reduction</span><span class="o">=</span><span class="mf">0.0</span>
+</code></pre></div>
+</details>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>user_specs</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="UserTransformerSpecifications (transformer_thermal_model.schemas.UserTransformerSpecifications)" href="../specifications/#transformer_thermal_model.schemas.specifications.transformer.UserTransformerSpecifications">UserTransformerSpecifications</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The transformer specifications that you need to
+provide to build the transformer. Any optional specifications not provided will be taken from the
+default specifications.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+
+
+
+
+
+                  <details class="quote">
+                    <summary>Source code in <code>transformer_thermal_model/transformer/distribution.py</code></summary>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">user_specs</span><span class="p">:</span> <span class="n">UserTransformerSpecifications</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the transformer object.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        user_specs (UserTransformerSpecifications): The transformer specifications that you need to</span>
+<span class="sd">            provide to build the transformer. Any optional specifications not provided will be taken from the</span>
+<span class="sd">            default specifications.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Creating a distribution transformer object.&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;User transformer specifications: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">user_specs</span><span class="p">)</span>
+
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="n">user_specs</span><span class="o">=</span><span class="n">user_specs</span><span class="p">,</span>
+        <span class="n">cooling_type</span><span class="o">=</span><span class="n">CoolerType</span><span class="o">.</span><span class="n">ONAN</span><span class="p">,</span>
+    <span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+                  </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="transformer_thermal_model.transformer.DistributionTransformer.defaults" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">defaults</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">defaults</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="DefaultTransformerSpecifications (transformer_thermal_model.schemas.DefaultTransformerSpecifications)" href="../specifications/#transformer_thermal_model.schemas.specifications.transformer.DefaultTransformerSpecifications">DefaultTransformerSpecifications</a></span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return the default transformer specifications.</p>
+
+    </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      
+        <script src="../../javascripts/katex.js"></script>
+      
+        <script src="https://unpkg.com/katex@0/dist/katex.min.js"></script>
+      
+        <script src="https://unpkg.com/katex@0/dist/contrib/auto-render.min.js"></script>
+      
+    
+  </body>
+</html>

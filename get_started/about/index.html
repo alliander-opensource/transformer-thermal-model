@@ -1,0 +1,1618 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Simulate thermal behavior of power and distribution transformers.">
+      
+      
+        <meta name="author" content="Contributors to the Transformer Thermal Model project">
+      
+      
+        <link rel="canonical" href="https://github.com/Alliander/transformer-thermal-model/get_started/about/">
+      
+      
+        <link rel="prev" href="../..">
+      
+      
+        <link rel="next" href="../model_input/">
+      
+      
+      <link rel="icon" href="../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
+    
+    
+      
+        <title>Installation and overview - Transformer Thermal Model</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="https://unpkg.com/katex@0/dist/katex.min.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#transformer-thermal-model" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Transformer Thermal Model" class="md-header__button md-logo" aria-label="Transformer Thermal Model" data-md-component="logo">
+      
+  <img src="../../img/logo-white.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Transformer Thermal Model
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Installation and overview
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Transformer Thermal Model" class="md-nav__button md-logo" aria-label="Transformer Thermal Model" data-md-component="logo">
+      
+  <img src="../../img/logo-white.png" alt="logo">
+
+    </a>
+    Transformer Thermal Model
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Welcome to Transformer Thermal Model
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Get Started
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Get Started
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Installation and overview
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Installation and overview
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Installation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#install-from-pypi" class="md-nav__link">
+    <span class="md-ellipsis">
+      Install from PyPI
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#structure-of-the-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Structure of the code
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-create-a-transformer" class="md-nav__link">
+    <span class="md-ellipsis">
+      How to create a transformer
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How to create a transformer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#transformer-specifications" class="md-nav__link">
+    <span class="md-ellipsis">
+      Transformer specifications
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Transformer specifications">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cooler" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cooler
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hot-spot-factor-calibration-for-power-transformers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Hot-spot factor calibration for power transformers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#component-capacities-of-a-power-transformer" class="md-nav__link">
+    <span class="md-ellipsis">
+      Component capacities of a power transformer
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#thermal-modelling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Thermal modelling
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#license" class="md-nav__link">
+    <span class="md-ellipsis">
+      License
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#licenses-third-party-libraries" class="md-nav__link">
+    <span class="md-ellipsis">
+      Licenses third-party libraries
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#contributing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Contributing
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#contact" class="md-nav__link">
+    <span class="md-ellipsis">
+      Contact
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../model_input/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Model input
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    API Documentation
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            API Documentation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Model
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/transformer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Transformer
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/model_input_output/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Model input and output
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/specifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Specifications
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/hot-spot_calibration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Hot-spot factor calibration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/aging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Aging
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/components/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Components
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/cooler/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Cooler
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/toolbox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Toolbox
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Examples
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Examples
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Quick start
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/simple_thermal_profile_example_distribution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Thermal modelling based on a dynamic profile and a distribution transformer
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/power_transformer_example/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Thermal modelling based on a dynamic profile and a power transformer
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/hot-spot_calibration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Hot-spot factor calibration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/example_initial_state/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Modelling with an initial state
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Theoretical Documentation
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Theoretical Documentation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theoretical_documentation/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theoretical_documentation/transformer_definition/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Transformer definition
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theoretical_documentation/model_description/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Model description
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theoretical_documentation/temperature_limits/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Thermal limits
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theoretical_documentation/hotspot_calibration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Hot-spot factor calibration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theoretical_documentation/model_improvements/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Potential model improvements
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Installation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#install-from-pypi" class="md-nav__link">
+    <span class="md-ellipsis">
+      Install from PyPI
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#structure-of-the-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Structure of the code
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-create-a-transformer" class="md-nav__link">
+    <span class="md-ellipsis">
+      How to create a transformer
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How to create a transformer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#transformer-specifications" class="md-nav__link">
+    <span class="md-ellipsis">
+      Transformer specifications
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Transformer specifications">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cooler" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cooler
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hot-spot-factor-calibration-for-power-transformers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Hot-spot factor calibration for power transformers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#component-capacities-of-a-power-transformer" class="md-nav__link">
+    <span class="md-ellipsis">
+      Component capacities of a power transformer
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#thermal-modelling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Thermal modelling
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#license" class="md-nav__link">
+    <span class="md-ellipsis">
+      License
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#licenses-third-party-libraries" class="md-nav__link">
+    <span class="md-ellipsis">
+      Licenses third-party libraries
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#contributing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Contributing
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#contact" class="md-nav__link">
+    <span class="md-ellipsis">
+      Contact
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<!--
+SPDX-FileCopyrightText: Contributors to the Transformer Thermal Model project
+
+SPDX-License-Identifier: MPL-2.0
+-->
+<h1 id="transformer-thermal-model">Transformer thermal model</h1>
+<p><code>transformer-thermal-model</code> is a library for modelling the transformer top-oil and
+hot-spot temperature based on the transformer specifications, a load profile and an ambient temperature profile.
+The model is an implementation according to the standard IEC 60076-7, also known as de Loading Guide.</p>
+<h2 id="installation">Installation</h2>
+<h3 id="install-from-pypi">Install from PyPI</h3>
+<p>You can directly install the package from PyPI.</p>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>transformer-thermal-model
+</code></pre></div>
+<h2 id="structure-of-the-code">Structure of the code</h2>
+<p>This package contains the following modules to work with:</p>
+<ul>
+<li><code>transformer_thermal_model.model</code>: the core of the package to calculate a temperature profile of a transformer using
+the thermal model;</li>
+<li><code>transformer_thermal_model.transformer</code>: a module containing multiple
+  transformer classes to be used to define a transformer;</li>
+<li><code>transformer_thermal_model.cooler</code>: a module containing the enumerators to define the cooler type of the transformer;</li>
+<li><code>transformer_thermal_model.schemas</code>: in schemas one can find a.o. the definition of the model interfaces and how the
+transformer specificitations should be specified;</li>
+<li><code>transformer_thermal_model.hot_spot_calibration</code>: a module that is used to
+determine the transformer hot-spot factor to be used in the thermal model.</li>
+</ul>
+<p>The following modules contain elements that are not required for thermal modelling but are used to get more insight in
+aging and load capacity:</p>
+<ul>
+<li><code>transformer_thermal_model.aging</code>: a module to calculate the aging of a transformer according to IEC 60076-7
+paragraph 6.3;</li>
+<li><code>transformer_thermal_model.components</code>: a module containing enumerators to define components of a power transformer if
+one wants to calculate the relative load capacity of each component in the transformer.</li>
+</ul>
+<h2 id="how-to-create-a-transformer">How to create a transformer</h2>
+<p>Before performing a calculation, a transformer object must be created with all
+necessary details about the transformer.  Default values will be used for any
+attribute not specified by the user.</p>
+<p><code>transformer_thermal_model.transformer</code>: This module has multiple <code>Transformer</code>
+children, which will be elements used for the temperature calculation inside <code>Model</code>.</p>
+<ul>
+<li><code>PowerTransformer</code>: A power transformer class, child of the <code>Transformer</code>
+  class.</li>
+<li><code>DistributionTransformer</code>: A distribution transformer class, also child of
+  the <code>Transformer</code> class.</li>
+<li><code>TransformerType</code> (<code>Enum</code>): For easily checking all available types. Does not
+   have any use in our code, but might be useful for your use-case.</li>
+</ul>
+<h3 id="transformer-specifications">Transformer specifications</h3>
+<p>A <code>Transformer</code> needs a couple of specifications (<code>user_specs</code>) and a
+cooling type (in <code>cooling_type</code>). The specifications are defined in
+<code>transformer_thermal_model.schemas.UserTransformerSpecifications</code>, and are
+a composition of some mandatory specifications and some optionals. When the
+optionals are left unchanged, the default values per class will be used.
+These can be found by <code>defaults</code>, e.g. <code>PowerTransformer.defaults</code> will show
+you the default specifications.</p>
+<p>An example on how to initialise a <code>PowerTransformer</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">transformer_thermal_model.cooler</span><span class="w"> </span><span class="kn">import</span> <span class="n">CoolerType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">transformer_thermal_model.transformer</span><span class="w"> </span><span class="kn">import</span> <span class="n">PowerTransformer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">transformer_thermal_model.schemas</span><span class="w"> </span><span class="kn">import</span> <span class="n">UserTransformerSpecifications</span>
+
+<span class="n">tr_specs</span> <span class="o">=</span> <span class="n">UserTransformerSpecifications</span><span class="p">(</span>
+   <span class="n">load_loss</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>  <span class="c1"># Transformer load loss [W]</span>
+   <span class="n">nom_load_sec_side</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span>  <span class="c1"># Transformer nominal current secondary side [A]</span>
+   <span class="n">no_load_loss</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>  <span class="c1"># Transformer no-load loss [W]</span>
+   <span class="n">amb_temp_surcharge</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>  <span class="c1"># Ambient temperature surcharge [K]</span>
+<span class="p">)</span>
+<span class="n">transformer</span> <span class="o">=</span> <span class="n">PowerTransformer</span><span class="p">(</span><span class="n">user_specs</span><span class="o">=</span><span class="n">tr_specs</span><span class="p">,</span> <span class="n">cooling_type</span><span class="o">=</span><span class="n">CoolerType</span><span class="o">.</span><span class="n">ONAF</span><span class="p">)</span>
+</code></pre></div>
+<p>It is recommended to adjust the following parameters when modelling a specific
+transformer as these influence the thermal modelling and are
+transformer-specifically defined (<em>the ones with a '*' are mandatory</em>):</p>
+<ul>
+<li><code>load_loss</code>*: load loss of the transformer.</li>
+<li><code>no_load_loss</code>*: no load loss of the transformer.</li>
+<li><code>nom_load_sec_side</code>*: nominal current of the secondary side of
+  the transformer.</li>
+<li><code>amb_temp_surcharge</code>*:</li>
+<li><code>PowerTransformer</code>: temperature surcharge on ambient temperature due to
+    installation conditions.</li>
+<li><code>DistributionTransformer</code>: Building or placement thermal classification.</li>
+<li><code>top_oil_temp_rise</code>: top-oil temperature increase under
+  nominal conditions.</li>
+<li><code>winding_oil_gradient</code>: temperature difference between the average
+winding and average oil temperature under nominal conditions</li>
+<li><code>hot_spot_fac</code>: factor determining the temperature difference
+between top-oil and hot-spot. Only specify when known, otherwise see <a href="#hot-spot-factor-calibration-for-power-transformers">hot-spot
+factor calibration</a>.</li>
+</ul>
+<h4 id="cooler">Cooler</h4>
+<p><code>transformer_thermal_model.cooler</code>: Similarly, you must provide the type of
+cooling of your transformer. This is only for a <code>PowerTransformer</code>, since a
+<code>DistributionTransformer</code> is always ONAN.
+To adjust the cooler type for a <code>PowerTransformer</code>, you can do the following:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">transformer_thermal_model.transformer</span><span class="w"> </span><span class="kn">import</span> <span class="n">PowerTransformer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">transformer_thermal_model.cooler</span><span class="w"> </span><span class="kn">import</span> <span class="n">CoolerType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">transformer_thermal_model.schemas</span><span class="w"> </span><span class="kn">import</span> <span class="n">UserTransformerSpecifications</span>
+
+<span class="n">tr_specs</span> <span class="o">=</span> <span class="n">UserTransformerSpecifications</span><span class="p">(</span>
+                <span class="n">load_loss</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span>
+                <span class="n">nom_load_sec_side</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+                <span class="n">no_load_loss</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+                <span class="n">amb_temp_surcharge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="p">)</span>
+
+<span class="c1"># You can create a power transformer with ONAF cooling.</span>
+<span class="n">onaf_trafo</span> <span class="o">=</span> <span class="n">PowerTransformer</span><span class="p">(</span><span class="n">user_specs</span> <span class="o">=</span> <span class="n">tr_specs</span><span class="p">,</span> <span class="n">cooling_type</span> <span class="o">=</span> <span class="n">CoolerType</span><span class="o">.</span><span class="n">ONAF</span><span class="p">)</span>
+<span class="c1"># Or you can create a power transformer with ONAN cooling</span>
+<span class="n">onan_trafo</span> <span class="o">=</span> <span class="n">PowerTransformer</span><span class="p">(</span><span class="n">user_specs</span> <span class="o">=</span> <span class="n">tr_specs</span><span class="p">,</span> <span class="n">cooling_type</span> <span class="o">=</span> <span class="n">CoolerType</span><span class="o">.</span><span class="n">ONAN</span><span class="p">)</span>
+</code></pre></div>
+<h4 id="hot-spot-factor-calibration-for-power-transformers">Hot-spot factor calibration for power transformers</h4>
+<p>When the hot-spot factor of a transformer is known, it can be given as a
+specification as <code>hot_spot_fact</code> in a <code>UserTransformerSpecifications</code>
+object.</p>
+<p>It often occurs, however, that a transformer hot-spot factor is not
+known. If this is the case, a hot-spot factor calibration can be performed to determine
+the hot-spot factor of a given <code>PowerTransformer</code> object. Note that for
+<code>DistributionTransformer</code> objects, hot-spot calibrations <em><strong>should not be performed</strong></em> and the
+default value can be used. For both the <code>PowerTransformer</code> and the <code>DistributionTransformer</code> the <code>hot_spot_fac</code>
+in the specification is set to the default value of no hot-spot factor is provided via the <code>UserTransformerSpecifications</code>.</p>
+<p>The following example shows how to calibrate a <code>PowerTransformer</code> object.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">transformer_thermal_model.cooler</span><span class="w"> </span><span class="kn">import</span> <span class="n">CoolerType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">transformer_thermal_model.schemas</span><span class="w"> </span><span class="kn">import</span> <span class="n">UserTransformerSpecifications</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">transformer_thermal_model.transformer</span><span class="w"> </span><span class="kn">import</span> <span class="n">PowerTransformer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">transformer_thermal_model.hot_spot_calibration</span><span class="w"> </span><span class="kn">import</span> <span class="n">calibrate_hotspot_factor</span>
+
+<span class="n">tr_specs</span> <span class="o">=</span> <span class="n">UserTransformerSpecifications</span><span class="p">(</span>
+   <span class="n">load_loss</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>  <span class="c1"># Transformer load loss [W]</span>
+   <span class="n">nom_load_sec_side</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span>  <span class="c1"># Transformer nominal current secondary side [A]</span>
+   <span class="n">no_load_loss</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>  <span class="c1"># Transformer no-load loss [W]</span>
+   <span class="n">amb_temp_surcharge</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>  <span class="c1"># Ambient temperature surcharge [K]</span>
+<span class="p">)</span>
+<span class="n">uncalibrated_transformer</span> <span class="o">=</span> <span class="n">PowerTransformer</span><span class="p">(</span><span class="n">user_specs</span><span class="o">=</span><span class="n">tr_specs</span><span class="p">,</span> <span class="n">cooling_type</span><span class="o">=</span><span class="n">CoolerType</span><span class="o">.</span><span class="n">ONAF</span><span class="p">)</span>
+<span class="n">calibrated_trafo</span> <span class="o">=</span> <span class="n">calibrate_hotspot_factor</span><span class="p">(</span>
+   <span class="n">uncalibrated_transformer</span><span class="o">=</span><span class="n">uncalibrated_transformer</span><span class="p">,</span>
+   <span class="n">ambient_temp</span><span class="o">=</span><span class="mf">20.0</span><span class="p">,</span>
+   <span class="n">hot_spot_limit</span><span class="o">=</span><span class="mi">98</span><span class="p">,</span> <span class="c1"># in most cases a hot-spot temperature limit of 98 can be used</span>
+   <span class="n">hot_spot_factor_min</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span>
+   <span class="n">hot_spot_factor_max</span><span class="o">=</span><span class="mf">1.3</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>The new hot-spot factor is available via <code>calibrated_trafo.specs.hot_spot_fac</code>, and from now on used in the thermal model.</p>
+<div class="highlight"><pre><span></span><code>&gt;&gt;&gt; print(calibrated_trafo.specs.hot_spot_fac)
+1.1
+</code></pre></div>
+<h4 id="component-capacities-of-a-power-transformer">Component capacities of a power transformer</h4>
+<p>For load capacity calculations it can be required to take into account the capacity of the different components of a
+power transformers.
+Therefore a functionality is available to calculate the relative capacity of the tap changers, the bushings (primary and
+secondary) and the internal current transformer. The capacity is defined as the ratio of the component capacity and the
+nominal load of the transformer.</p>
+<p>The capacities are properties of the <code>PowerTransformer</code> and require the <code>TransformerComponentSpecifications</code> to be given
+during initiating a PowerTransformer object.</p>
+<p>In the following example for all components the required information is provided.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">transformer_thermal_model.components</span><span class="w"> </span><span class="kn">import</span> <span class="n">BushingConfig</span><span class="p">,</span> <span class="n">TransformerSide</span><span class="p">,</span> <span class="n">VectorConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">transformer_thermal_model.cooler</span><span class="w"> </span><span class="kn">import</span> <span class="n">CoolerType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">transformer_thermal_model.schemas</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">TransformerComponentSpecifications</span><span class="p">,</span>
+    <span class="n">UserTransformerSpecifications</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">transformer_thermal_model.transformer</span><span class="w"> </span><span class="kn">import</span> <span class="n">PowerTransformer</span>
+
+<span class="n">comp_specs</span> <span class="o">=</span> <span class="n">TransformerComponentSpecifications</span><span class="p">(</span>
+        <span class="n">tap_chang_capacity</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span>  <span class="c1"># Tap changer nominal current [A]</span>
+        <span class="n">nom_load_prim_side</span><span class="o">=</span><span class="mi">550</span><span class="p">,</span>  <span class="c1"># Transformer nominal current primary side [A]</span>
+        <span class="n">tap_chang_conf</span><span class="o">=</span><span class="n">VectorConfig</span><span class="o">.</span><span class="n">TRIANGLE_OUTSIDE</span><span class="p">,</span>  <span class="c1"># Tap Changer configuration</span>
+        <span class="n">tap_chang_side</span><span class="o">=</span><span class="n">TransformerSide</span><span class="o">.</span><span class="n">SECONDARY</span><span class="p">,</span>  <span class="c1"># Tap changer side</span>
+        <span class="n">prim_bush_capacity</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span>  <span class="c1"># Primary bushing nominal current [A]</span>
+        <span class="n">prim_bush_conf</span><span class="o">=</span><span class="n">BushingConfig</span><span class="o">.</span><span class="n">SINGLE_BUSHING</span><span class="p">,</span>  <span class="c1"># Primary bushing configuration</span>
+        <span class="n">sec_bush_capacity</span><span class="o">=</span><span class="mi">1800</span><span class="p">,</span>  <span class="c1"># Secondary bushing nominal current [A]</span>
+        <span class="n">sec_bush_conf</span><span class="o">=</span><span class="n">BushingConfig</span><span class="o">.</span><span class="n">SINGLE_BUSHING</span><span class="p">,</span>  <span class="c1"># Secondary bushing configuration</span>
+        <span class="n">cur_trans_capacity</span><span class="o">=</span><span class="mi">1300</span><span class="p">,</span>  <span class="c1"># Current transformer nominal current [A]</span>
+        <span class="n">cur_trans_conf</span><span class="o">=</span><span class="n">VectorConfig</span><span class="o">.</span><span class="n">STAR</span><span class="p">,</span>  <span class="c1"># Current transformer configuration</span>
+        <span class="n">cur_trans_side</span><span class="o">=</span><span class="n">TransformerSide</span><span class="o">.</span><span class="n">PRIMARY</span><span class="p">,</span>  <span class="c1"># Current transformer side</span>
+    <span class="p">)</span>
+<span class="n">user_specs</span> <span class="o">=</span> <span class="n">UserTransformerSpecifications</span><span class="p">(</span>
+        <span class="n">load_loss</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>  <span class="c1"># Transformer load loss [W]</span>
+        <span class="n">nom_load_sec_side</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span>  <span class="c1"># Transformer nominal current secondary side [A]</span>
+        <span class="n">no_load_loss</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>  <span class="c1"># Transformer no-load loss [W]</span>
+        <span class="n">amb_temp_surcharge</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="n">power_transformer</span> <span class="o">=</span> <span class="n">PowerTransformer</span><span class="p">(</span>
+        <span class="n">user_specs</span><span class="o">=</span><span class="n">user_specs</span><span class="p">,</span> <span class="n">cooling_type</span><span class="o">=</span><span class="n">CoolerType</span><span class="o">.</span><span class="n">ONAF</span><span class="p">,</span> <span class="n">internal_component_specs</span><span class="o">=</span><span class="n">comp_specs</span>
+    <span class="p">)</span>
+</code></pre></div>
+<p>The resulting component capacities are available in <code>power_transformer.component_capacities</code>:</p>
+<div class="highlight"><pre><span></span><code>&gt;&gt;&gt; print(power_transformer.component_capacities)
+{&#39;tap_changer&#39;: 0.4, &#39;primary_bushings&#39;: 1.0909090909090908, &#39;secondary_bushings&#39;: 1.2, &#39;current_transformer&#39;: 2.3636363636363638}
+</code></pre></div>
+<p>Note that it is also possible to
+only define a subset of the components if not all components are present. Then only the component capacities of the
+provided components are available:</p>
+<div class="highlight"><pre><span></span><code><span class="n">comp_specs</span> <span class="o">=</span> <span class="n">TransformerComponentSpecifications</span><span class="p">(</span>
+    <span class="n">tap_chang_capacity</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span>  <span class="c1"># Tap changer nominal current [A]</span>
+    <span class="n">nom_load_prim_side</span><span class="o">=</span><span class="mi">550</span><span class="p">,</span>  <span class="c1"># Transformer nominal current primary side [A]</span>
+    <span class="n">tap_chang_conf</span><span class="o">=</span><span class="n">VectorConfig</span><span class="o">.</span><span class="n">TRIANGLE_OUTSIDE</span><span class="p">,</span>  <span class="c1"># Tap Changer configuration</span>
+    <span class="n">tap_chang_side</span><span class="o">=</span><span class="n">TransformerSide</span><span class="o">.</span><span class="n">SECONDARY</span><span class="p">,</span>  <span class="c1"># Tap changer side</span>
+<span class="p">)</span>
+<span class="n">power_transformer</span> <span class="o">=</span> <span class="n">PowerTransformer</span><span class="p">(</span>
+        <span class="n">user_specs</span><span class="o">=</span><span class="n">user_specs</span><span class="p">,</span> <span class="n">cooling_type</span><span class="o">=</span><span class="n">CoolerType</span><span class="o">.</span><span class="n">ONAF</span><span class="p">,</span> <span class="n">internal_component_specs</span><span class="o">=</span><span class="n">comp_specs</span>
+    <span class="p">)</span>
+</code></pre></div>
+<p>This will generate the following result:</p>
+<div class="highlight"><pre><span></span><code>&gt;&gt;&gt; print(power_transformer.component_capacities)
+{&#39;tap_changer&#39;: 0.4, &#39;primary_bushings&#39;: None, &#39;secondary_bushings&#39;: None, &#39;current_transformer&#39;: None}
+</code></pre></div>
+<h3 id="thermal-modelling">Thermal modelling</h3>
+<p>When a <code>Transformer</code> object is completely defined, the temperatures can be calculated using
+<code>transformer_thermal_model.model</code>: the core of the package. The <code>Model</code> is
+built as follows:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">transformer_thermal_model.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">Model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">transformer_thermal_model.cooler</span><span class="w"> </span><span class="kn">import</span> <span class="n">CoolerType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">transformer_thermal_model.schemas</span><span class="w"> </span><span class="kn">import</span> <span class="n">UserTransformerSpecifications</span><span class="p">,</span> <span class="n">InputProfile</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">transformer_thermal_model.transformer</span><span class="w"> </span><span class="kn">import</span> <span class="n">PowerTransformer</span>
+
+<span class="c1"># In this example the model is used to calculate the transformer temperature based on a load and ambient</span>
+<span class="c1"># profile with a period of one week. Any duration can be chosen preferably with timestamps with an interval of</span>
+<span class="c1"># 15 minute or lower. Larger timesteps will result in incorrect results but it *is* possible to calculate with them.</span>
+<span class="n">one_week</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="mi">24</span><span class="o">*</span><span class="mi">7</span>
+<span class="n">datetime_index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="s2">&quot;2020-01-01&quot;</span><span class="p">,</span> <span class="n">periods</span><span class="o">=</span><span class="n">one_week</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s2">&quot;15min&quot;</span><span class="p">)</span>
+
+<span class="c1"># For the load (in A) and ambient temperature (in C) arbitrary constants profiles are chosen.</span>
+<span class="c1"># It is also possible to use a realistic profile.</span>
+<span class="n">nominal_load</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">load_points</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([</span><span class="n">nominal_load</span><span class="p">]</span> <span class="o">*</span> <span class="n">one_week</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">datetime_index</span><span class="p">)</span>
+<span class="n">ambient_temp</span> <span class="o">=</span> <span class="mi">21</span>
+<span class="n">temperature_points</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([</span><span class="n">ambient_temp</span><span class="p">]</span> <span class="o">*</span> <span class="n">one_week</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">datetime_index</span><span class="p">)</span>
+
+<span class="c1"># Create an input object with the profiles</span>
+<span class="n">profile_input</span> <span class="o">=</span> <span class="n">InputProfile</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+   <span class="n">datetime_index</span> <span class="o">=</span> <span class="n">datetime_index</span><span class="p">,</span>
+   <span class="n">load_profile</span> <span class="o">=</span> <span class="n">load_points</span><span class="p">,</span>
+   <span class="n">ambient_temperature_profile</span> <span class="o">=</span> <span class="n">temperature_points</span>
+<span class="p">)</span>
+
+<span class="c1"># Initialise a power transformer with cooling type ONAF and, besides the mandatory user specifications, default values.</span>
+<span class="n">tr_specs</span> <span class="o">=</span> <span class="n">UserTransformerSpecifications</span><span class="p">(</span>
+   <span class="n">load_loss</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>  <span class="c1"># Transformer load loss [W]</span>
+   <span class="n">nom_load_sec_side</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span>  <span class="c1"># Transformer nominal current secondary side [A]</span>
+   <span class="n">no_load_loss</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>  <span class="c1"># Transformer no-load loss [W]</span>
+   <span class="n">amb_temp_surcharge</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>  <span class="c1"># Ambient temperature surcharge [K]</span>
+<span class="p">)</span>
+<span class="n">transformer</span> <span class="o">=</span> <span class="n">PowerTransformer</span><span class="p">(</span><span class="n">user_specs</span><span class="o">=</span><span class="n">tr_specs</span><span class="p">,</span> <span class="n">cooling_type</span><span class="o">=</span><span class="n">CoolerType</span><span class="o">.</span><span class="n">ONAF</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span>
+   <span class="n">temperature_profile</span> <span class="o">=</span> <span class="n">profile_input</span><span class="p">,</span>
+   <span class="n">transformer</span> <span class="o">=</span> <span class="n">transformer</span>
+<span class="p">)</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+<span class="c1"># Get the results as pd.Series, with the same datetime_index as your input.</span>
+<span class="n">top_oil_temp_profile</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">top_oil_temp_profile</span>
+<span class="n">hot_spot_temp_profile</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">hot_spot_temp_profile</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>&gt;&gt;&gt; top_oil_temp_profile.head(3)
+2020-01-01 00:00:00    41.000000
+2020-01-01 00:15:00    43.639919
+2020-01-01 00:30:00    45.801302
+
+&gt;&gt;&gt; hot_spot_temp_profile.head(3)
+2020-01-01 00:00:00    41.000000
+2020-01-01 00:15:00    44.381177
+2020-01-01 00:30:00    46.443459
+</code></pre></div>
+<p>You can use the <code>Model</code> to run a calculation with either a <code>PowerTransformer</code> or
+a <code>DistributionTransformer</code>. The model will return <code>results</code> with the
+<code>top_oil_temperature</code> and <code>hot_spot_temperature</code> as <code>pd.Series</code>. More
+specifically, the output will be in the form of <code>OutputProfile</code>, as
+defined in <code>transformer_thermal_model.schemas</code>. The reason for using pd.Series
+as output, is that the model uses the <code>index</code> of the series that you have provided to run the
+calculation, which also creates the benefit for you that you can
+relate the result to your provided input for eventual
+cross-validation or analysis.</p>
+<h2 id="license">License</h2>
+<p>This project is licensed under the Mozilla Public License, version 2.0 - see
+<a href="https://github.com/Alliander/transformer-thermal-model/blob/main/LICENSE">LICENSE</a> for details.</p>
+<h2 id="licenses-third-party-libraries">Licenses third-party libraries</h2>
+<p>This project includes third-party libraries,
+which are licensed under their own respective Open-Source licenses.
+SPDX-License-Identifier headers are used to show which license is applicable.</p>
+<p>The concerning license files can be found in the
+<a href="https://github.com/Alliander/transformer-thermal-model/blob/main/LICENSES">LICENSES</a> directory.</p>
+<h2 id="contributing">Contributing</h2>
+<p>Please read <a href="https://github.com/Alliander/transformer-thermal-model/blob/main/CODE_OF_CONDUCT.md">CODE_OF_CONDUCT</a>,
+<a href="https://github.com/Alliander/transformer-thermal-model/blob/main/CONTRIBUTING.md">CONTRIBUTING</a> and
+<a href="https://github.com/Alliander/transformer-thermal-model/blob/main/GOVERNANCE.md">PROJECT GOVERNANCE</a> for details on the process
+for submitting pull requests to us.</p>
+<h2 id="contact">Contact</h2>
+<p>Please read <a href="https://github.com/Alliander/transformer-thermal-model/blob/main/SUPPORT.md">SUPPORT</a> for how to connect
+and get into contact with the Transformer Thermal Model project.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      
+        <script src="../../javascripts/katex.js"></script>
+      
+        <script src="https://unpkg.com/katex@0/dist/katex.min.js"></script>
+      
+        <script src="https://unpkg.com/katex@0/dist/contrib/auto-render.min.js"></script>
+      
+    
+  </body>
+</html>
