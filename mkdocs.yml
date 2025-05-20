@@ -5,7 +5,7 @@
 site_name: Transformer Thermal Model
 site_description: Simulate thermal behavior of power and distribution transformers.
 site_author: Contributors to the Transformer Thermal Model project
-site_url: https://github.com/Alliander/transformer-thermal-model
+site_url: https://github.com/alliander-opensource/transformer-thermal-model
 
 # https://www.mkdocs.org/user-guide/configuration/#validation
 validation:

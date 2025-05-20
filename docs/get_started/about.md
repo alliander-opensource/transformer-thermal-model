@@ -327,7 +327,7 @@ cross-validation or analysis.
 ## License
 
 This project is licensed under the Mozilla Public License, version 2.0 - see
-[LICENSE](https://github.com/Alliander/transformer-thermal-model/blob/main/LICENSE) for details.
+[LICENSE](https://github.com/alliander-opensource/transformer-thermal-model/blob/main/LICENSE) for details.
 
 ## Licenses third-party libraries
 
@@ -336,16 +336,18 @@ which are licensed under their own respective Open-Source licenses.
 SPDX-License-Identifier headers are used to show which license is applicable.
 
 The concerning license files can be found in the
-[LICENSES](https://github.com/Alliander/transformer-thermal-model/blob/main/LICENSES) directory.
+[LICENSES](https://github.com/alliander-opensource/transformer-thermal-model/blob/main/LICENSES) directory.
 
 ## Contributing
 
-Please read [CODE_OF_CONDUCT](https://github.com/Alliander/transformer-thermal-model/blob/main/CODE_OF_CONDUCT.md),
-[CONTRIBUTING](https://github.com/Alliander/transformer-thermal-model/blob/main/CONTRIBUTING.md) and
-[PROJECT GOVERNANCE](https://github.com/Alliander/transformer-thermal-model/blob/main/GOVERNANCE.md) for details on the process
-for submitting pull requests to us.
+Please read
+[CODE_OF_CONDUCT](https://github.com/alliander-opensource/transformer-thermal-model/blob/main/CODE_OF_CONDUCT.md),
+[CONTRIBUTING](https://github.com/alliander-opensource/transformer-thermal-model/blob/main/CONTRIBUTING.md)
+and
+[PROJECT GOVERNANCE](https://github.com/alliander-opensource/transformer-thermal-model/blob/main/GOVERNANCE.md)
+for details on the process for submitting pull requests to us.
 
 ## Contact
 
-Please read [SUPPORT](https://github.com/Alliander/transformer-thermal-model/blob/main/SUPPORT.md) for how to connect
-and get into contact with the Transformer Thermal Model project.
+Please read [SUPPORT](https://github.com/alliander-opensource/transformer-thermal-model/blob/main/SUPPORT.md) for how to
+connect and get into contact with the Transformer Thermal Model project.
