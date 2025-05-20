@@ -351,4 +351,4 @@ for submitting pull requests to us.
 ## Contact
 
 Please read [SUPPORT](https://github.com/alliander-opensource/transformer-thermal-model/blob/main/SUPPORT.md) for how to
-connect get into contact with the Transformer Thermal Model project.
+get in touch with the Transformer Thermal Model project.
