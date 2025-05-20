@@ -232,11 +232,11 @@ make it much easier to do signoffs:
   https://github.com/scottrigby/dco-gh-ui ) for adding the signoff automatically
   to commits made with the GitHub browser UI
 * Additionally, it is possible to use shell scripting to automatically apply the
-  sign-off. For an example for bash to be put into a .bashrc file, see
-  [here](https://wiki.lfenergy.org/display/HOME/Contribution+and+Compliance+Guidelines+for+LF+Energy+Foundation+hosted+projects).
+  sign-off. For more info, check out
+  [an example for bash to be put into a .bashrc file](https://wiki.lfenergy.org/display/HOME/Contribution+and+Compliance+Guidelines+for+LF+Energy+Foundation+hosted+projects).
 * Alternatively, you can add `prepare-commit-msg hook` in .git/hooks directory.
-  For an example, see
-  [here](https://github.com/Samsung/ONE-vscode/wiki/ONE-vscode-Developer's-Certificate-of-Origin).
+  [Check out this example](https://github.com/Samsung/ONE-vscode/wiki/ONE-vscode-Developer's-Certificate-of-Origin)
+  for more info.
 
 ## Code reviews
 
