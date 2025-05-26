@@ -15,6 +15,11 @@ SPDX-License-Identifier: MPL-2.0
 hot-spot temperature based on the transformer specifications, a load profile and an ambient temperature profile.
 The model is an implementation according to the standard IEC 60076-7, also known as de Loading Guide.
 
+Check out our [documentation page](https://alliander-opensource.github.io/transformer-thermal-model/),
+the [technical documentation](https://alliander-opensource.github.io/transformer-thermal-model/theoretical_documentation/overview/),
+the [quick start](https://alliander-opensource.github.io/transformer-thermal-model/examples/quickstart/)
+or one of the many other examples!
+
 ## Installation
 
 ### Install from PyPI
