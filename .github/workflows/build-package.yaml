@@ -3,6 +3,8 @@
 # SPDX-License-Identifier: MPL-2.0
 
 name: build-package
+permissions:
+  contents: read
 on:
   workflow_dispatch
 
