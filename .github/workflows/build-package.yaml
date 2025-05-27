@@ -2,12 +2,12 @@
 #
 # SPDX-License-Identifier: MPL-2.0
 
-name: buikd-package
+name: build-package
 on:
   push
 
 jobs:
-  release:
+  build-package:
     runs-on: ubuntu-latest
 
     steps:
@@ -29,7 +29,7 @@ jobs:
 
       # Step 5: Build the package
       - name: Build package
-        run: poetry build
+        run: poetry build --sdist
 
       # Step 6: Upload the package as an artifact
       - name: Upload package artifact
