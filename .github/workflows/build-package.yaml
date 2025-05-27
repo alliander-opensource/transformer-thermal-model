@@ -1,5 +1,4 @@
-name: Release Workflow
-
+name: buikd-package
 on:
   push
 
@@ -14,7 +13,7 @@ jobs:
 
       # Step 2: Set up Python
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: 3.13
 
@@ -30,7 +29,7 @@ jobs:
 
       # Step 6: Upload the package as an artifact
       - name: Upload package artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         with:
           name: transformer-thermal-model-package
           path: dist/
