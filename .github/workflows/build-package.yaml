@@ -12,34 +12,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the repository
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      # Step 2: Set up Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: 3.13
 
-      # Step 3: Install Poetry
       - name: Install Poetry
         run: |
           python -m pip install --upgrade pip
           pip install poetry
 
-      # Step 5: Build the package
       - name: Build package
         run: poetry build
 
-      # Step 6: Upload the package as an artifact
       - name: Upload package artifact
         uses: actions/upload-artifact@v4
         with:
           name: transformer-thermal-model-package
           path: dist/
       
-      # Step 7: publish the package to PyPI
       - name: Publish package to PyPI
         run: |
           echo "Publishing package to PyPI..."
