@@ -1,8 +1,7 @@
 # SPDX-FileCopyrightText: Contributors to the Transformer Thermal Model project
 #
 # SPDX-License-Identifier: MPL-2.0
-
-name: build-package
+name: (CI) Build Package
 permissions:
   contents: read
 on:
