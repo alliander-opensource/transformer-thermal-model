@@ -37,7 +37,7 @@ jobs:
         shell: bash
         run: poetry run pytest
       - name: Upload coverage.xml as artifact
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@4
         if: ${{ hashFiles('coverage.xml') != '' }}
         with:
           name: coverage.xml

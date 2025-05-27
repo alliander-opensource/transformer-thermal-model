@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: Contributors to the Transformer Thermal Model project
+#
+# SPDX-License-Identifier: MPL-2.0
+
 name: buikd-package
 on:
   push
@@ -29,7 +33,7 @@ jobs:
 
       # Step 6: Upload the package as an artifact
       - name: Upload package artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v4
         with:
           name: transformer-thermal-model-package
           path: dist/
