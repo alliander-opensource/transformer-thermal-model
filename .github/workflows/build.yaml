@@ -5,12 +5,11 @@ name: (CI) Build Package
 permissions:
   contents: read
 on:
-  workflow_dispatch
+  push
 
 jobs:
   build-package:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
