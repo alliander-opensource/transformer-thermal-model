@@ -35,7 +35,7 @@ jobs:
   publish-to-testpypi:
     name: Publish to TestPyPI
     needs:
-    - build
+    - build-package
     runs-on: ubuntu-latest
 
     environment:
