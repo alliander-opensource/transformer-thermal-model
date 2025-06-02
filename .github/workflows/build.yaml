@@ -32,8 +32,4 @@ jobs:
         with:
           name: transformer-thermal-model-package
           path: dist/
-      
-      - name: Publish package to PyPI
-        run: |
-          echo "Publishing package to PyPI..."
   
