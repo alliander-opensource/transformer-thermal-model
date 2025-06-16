@@ -1,0 +1,7 @@
+# SPDX-FileCopyrightText: Contributors to the Transformer Thermal Model project
+#
+# SPDX-License-Identifier: MPL-2.0
+
+@alliander-opensource/dali
+
+.github/CODEOWNERS @GroenteLepel @Harm1995 @Jonasvdbo
