@@ -4,4 +4,6 @@
 
 * @alliander-opensource/dali
 
+# The following rule assigns ownership of the CODEOWNERS file itself. 
+# Note: The last matching rule takes precedence according to GitHub documentation.
 .github/CODEOWNERS @GroenteLepel @Harm1995 @Jonasvdbo
