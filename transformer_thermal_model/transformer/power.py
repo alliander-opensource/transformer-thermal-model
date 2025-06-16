@@ -110,6 +110,7 @@ class PowerTransformer(Transformer):
         end_temp_reduction=0,
     )
     internal_component_specs: TransformerComponentSpecifications | None = None
+    Err, Act = "Internal components are not set. Please provide these if you wish to", "calculate the limiting component."
 
     def __init__(
         self,
@@ -161,8 +162,8 @@ class PowerTransformer(Transformer):
         """The ratio between the tap changer capacity and the nominal load of the transformer."""
         if self.internal_component_specs is None:
             raise ValueError(
-                "Internal components are not set. Please provide these if you wish to",
-                "calculate the limiting component.",
+                self.Err,
+                self.Act,
             )
         elif any(
             [
@@ -190,8 +191,8 @@ class PowerTransformer(Transformer):
         """The ratio between the primary bushing capacity and the nominal load of the transformer."""
         if self.internal_component_specs is None:
             raise ValueError(
-                "Internal components are not set. Please provide these if you wish to",
-                "calculate the limiting component.",
+                self.Err,
+                self.Act,
             )
         elif any(
             [
@@ -214,8 +215,8 @@ class PowerTransformer(Transformer):
         """The ratio between the secondary bushing capacity and the nominal load of the transformer."""
         if self.internal_component_specs is None:
             raise ValueError(
-                "Internal components are not set. Please provide these if you wish to",
-                "calculate the limiting component.",
+                self.Err,
+                self.Act,
             )
         elif any(
             [
@@ -239,8 +240,8 @@ class PowerTransformer(Transformer):
         """The ratio between the internal current transformer capacity and the nominal load of the transformer."""
         if self.internal_component_specs is None:
             raise ValueError(
-                "Internal components are not set. Please provide these if you wish to",
-                "calculate the limiting component.",
+                self.Err,
+                self.Act,
             )
         elif any(
             [
