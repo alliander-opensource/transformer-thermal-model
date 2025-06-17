@@ -43,6 +43,11 @@ jobs:
           name: coverage.xml
           path: ./coverage.xml
       - name: SonarQube Scan
+        # dependabot cannot access these secrets (see 
+        # https://github.com/dependabot/dependabot-core/issues/3253#issuecomment-852541544
+        # for more info. We need this SonarQube scan for the coverage report,
+        # so we still want it here for our own pushes.
+        if: github.actor != 'dependabot[bot]'
         uses: SonarSource/sonarqube-scan-action@v5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
