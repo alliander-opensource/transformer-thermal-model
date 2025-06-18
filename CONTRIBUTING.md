@@ -191,11 +191,11 @@ MPL-2.0 header:
 
 This project uses the [Gitflow
 Workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow)
-and branching model. The `master` branch always contains the latest release,
+and branching model. The `main` branch always contains the latest release,
 after a release is made new feature branches are branched of `develop`. When a
 feature is finished it is merged back into `develop`. At the end of a sprint
-`develop` is merged back into `master` or (optional) into a `release` branch
-first before it is merged into `master`.
+`develop` is merged back into `main` or (optional) into a `release` branch
+first before it is merged into `main`.
 
 ![Gitflow](img/gitflow.svg)
 
