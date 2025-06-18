@@ -189,15 +189,12 @@ MPL-2.0 header:
 
 ## Git branching
 
-This project uses the [Gitflow
-Workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow)
-and branching model. The `main` branch always contains the latest release,
-after a release is made new feature branches are branched of `develop`. When a
-feature is finished it is merged back into `develop`. At the end of a sprint
-`develop` is merged back into `main` or (optional) into a `release` branch
-first before it is merged into `main`.
-
-![Gitflow](img/gitflow.svg)
+This project uses the
+[Trunk Based workflow](https://www.atlassian.com/continuous-delivery/continuous-integration/trunk-based-development)
+and branching model. The `main` branch always contains the most recent code, and
+we decide when it is fit for a new release. When a feature is finished it is
+merged back into `main`. We rely on automated testing and checks to make sure
+the quality of the code on the `main` branch stays consistent.
 
 ## Signing the Developer Certificate of Origin (DCO)
 
