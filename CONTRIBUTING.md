@@ -41,6 +41,8 @@ the following for details on how to contribute:
 2. Make sure you are on the correctly supported Python version (check
    `pyproject.toml`).
 3. Install dependencies using `poetry install --with dev`.
+    - for contributions to the documentation page, make sure you install
+      the correct dependencies using `poetry install --with docs`, too.
 4. Activate the poetry shell: `poetry shell`.
 5. Set up pre-commit hooks: `pre-commit install`. Every time you commit, this
    will run hooks to ensure your code is properly formatted.
