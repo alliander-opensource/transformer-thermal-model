@@ -11,13 +11,16 @@ just a few small guidelines you need to follow.
 
 ## Ways of contributing
 
+![Schematic view of the 5 levels of contributing, with stars showing increasing amounts of sparkles around them](/.github/assets/levels_of_contribution.png)
+
 Contribution does not necessarily mean committing code to the repository.
 We recognize different levels of contributions as shown below in increasing order of dedication:
 
-1. Test and use the project. Give feedback on the user experience or suggest new features.
-2. Report bugs or security vulnerability
-3. Fix bugs.
-4. Improve the project with developing new features.
+1. Test and use the project.
+2. Give feedback on the user experience or suggest new features. Report bugs or security vulnerabilities.
+3. Improve the code quality by checking out our SonarCloud results.
+4. Improve the project by developing new features.
+5. Improve our calculation core by optimizing the code.
 
 ## Filing bugs, security vulnerability or feature requests
 
