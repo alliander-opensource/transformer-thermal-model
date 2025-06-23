@@ -75,7 +75,11 @@ the contact information below.
 
 Make sure to regularly run `pytest` during your work and after your changes.
 Also, to prevent annoyances when committing, you can regularly run `ruff check
---fix` and `mypy .` to stay ahead on your typos and typing errors. Finally,
+--fix` and `mypy .` to stay ahead on your typos and typing errors.
+
+#### How we write commit messages
+
+Finally,
 after developing, you will commit. Make sure to adhere the [Angular commit
 convention](https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#-commit-message-guidelines),
 i.e.
@@ -210,6 +214,8 @@ use `/`. Some examples:
 - `feat/allow-user-to-specify-the-tap-changer-capacity`
 - `fix/prevent-nan-results-when-dates-missing-in-input`
 - `feat!/group-all-seperate-specs-into-one-attribute-in-transformer`
+
+For more details on this naming convention, check out [our section on how to write commits](#how-we-write-commit-messages).
 
 ## Signing the Developer Certificate of Origin (DCO)
 
