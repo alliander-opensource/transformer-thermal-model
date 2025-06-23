@@ -11,13 +11,16 @@ just a few small guidelines you need to follow.
 
 ## Ways of contributing
 
+![Schematic view of the 5 levels of contributing, with stars showing increasing amounts of sparkles around them](/.github/assets/levels_of_contribution.png)
+
 Contribution does not necessarily mean committing code to the repository.
 We recognize different levels of contributions as shown below in increasing order of dedication:
 
-1. Test and use the project. Give feedback on the user experience or suggest new features.
-2. Report bugs or security vulnerability
-3. Fix bugs.
-4. Improve the project with developing new features.
+1. Test and use the project.
+2. Give feedback on the user experience or suggest new features. Report bugs or security vulnerabilities.
+3. Improve the code quality by checking out our SonarCloud results.
+4. Improve the project by developing new features.
+5. Improve our calculation core by optimizing the code.
 
 ## Filing bugs, security vulnerability or feature requests
 
@@ -41,6 +44,8 @@ the following for details on how to contribute:
 2. Make sure you are on the correctly supported Python version (check
    `pyproject.toml`).
 3. Install dependencies using `poetry install --with dev`.
+    - for contributions to the documentation page, make sure you install
+      the correct dependencies using `poetry install --with docs`, too.
 4. Activate the poetry shell: `poetry shell`.
 5. Set up pre-commit hooks: `pre-commit install`. Every time you commit, this
    will run hooks to ensure your code is properly formatted.
@@ -70,7 +75,11 @@ the contact information below.
 
 Make sure to regularly run `pytest` during your work and after your changes.
 Also, to prevent annoyances when committing, you can regularly run `ruff check
---fix` and `mypy .` to stay ahead on your typos and typing errors. Finally,
+--fix` and `mypy .` to stay ahead on your typos and typing errors.
+
+#### How we write commit messages
+
+Finally,
 after developing, you will commit. Make sure to adhere the [Angular commit
 convention](https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#-commit-message-guidelines),
 i.e.
@@ -189,15 +198,24 @@ MPL-2.0 header:
 
 ## Git branching
 
-This project uses the [Gitflow
-Workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow)
-and branching model. The `master` branch always contains the latest release,
-after a release is made new feature branches are branched of `develop`. When a
-feature is finished it is merged back into `develop`. At the end of a sprint
-`develop` is merged back into `master` or (optional) into a `release` branch
-first before it is merged into `master`.
+This project uses the
+[Trunk Based workflow](https://www.atlassian.com/continuous-delivery/continuous-integration/trunk-based-development)
+and branching model. The `main` branch always contains the most recent code, and
+we decide when it is fit for a new release. When a feature is finished it is
+merged back into `main`. We rely on automated testing and checks to make sure
+the quality of the code on the `main` branch stays consistent.
 
-![Gitflow](img/gitflow.svg)
+We have a naming convention of our branches to easily identify the type
+of work taking place on that branch. We follow the same naming convention
+as our commits, the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
+, but instead of the `:` to separate the prefix from the title, we
+use `/`. Some examples:
+
+- `feat/allow-user-to-specify-the-tap-changer-capacity`
+- `fix/prevent-nan-results-when-dates-missing-in-input`
+- `feat!/group-all-seperate-specs-into-one-attribute-in-transformer`
+
+For more details on this naming convention, check out [our section on how to write commits](#how-we-write-commit-messages).
 
 ## Signing the Developer Certificate of Origin (DCO)
 
