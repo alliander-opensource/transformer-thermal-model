@@ -201,6 +201,16 @@ we decide when it is fit for a new release. When a feature is finished it is
 merged back into `main`. We rely on automated testing and checks to make sure
 the quality of the code on the `main` branch stays consistent.
 
+We have a naming convention of our branches to easily identify the type
+of work taking place on that branch. We follow the same naming convention
+as our commits, the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
+, but instead of the `:` to separate the prefix from the title, we
+use `/`. Some examples:
+
+- `feat/allow-user-to-specify-the-tap-changer-capacity`
+- `fix/prevent-nan-results-when-dates-missing-in-input`
+- `feat!/group-all-seperate-specs-into-one-attribute-in-transformer`
+
 ## Signing the Developer Certificate of Origin (DCO)
 
 This project utilize a Developer Certificate of Origin (DCO) to ensure that each
