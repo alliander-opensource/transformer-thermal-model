@@ -59,7 +59,7 @@ class Transformer(ABC):
         pass
 
     @abstractmethod
-    def _calculate_internal_temp(self, ambient_temperature: pd.Series) -> pd.Series:
+    def _calculate_internal_temp(self, ambient_temperature: np.ndarray) -> np.ndarray:
         pass
 
     def _end_temperature_top_oil(self, load: np.ndarray) -> np.ndarray:
