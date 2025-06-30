@@ -5,7 +5,6 @@
 from abc import ABC, abstractmethod
 
 import numpy as np
-import pandas as pd
 
 from transformer_thermal_model.cooler import CoolerType
 from transformer_thermal_model.schemas import (

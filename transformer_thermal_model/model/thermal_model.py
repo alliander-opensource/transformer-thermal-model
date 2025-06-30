@@ -148,9 +148,7 @@ class Model:
 
     def _calculate_f2_oil(self, dt: np.ndarray) -> np.ndarray:
         """Calculate the time delay constant f2 for the hot-spot temperature due to the oil."""
-        oil_delay = np.exp(
-            -dt * self.transformer.specs.winding_const_k22 / self.transformer.specs.time_const_oil
-            )
+        oil_delay = np.exp(-dt * self.transformer.specs.winding_const_k22 / self.transformer.specs.time_const_oil)
         return oil_delay
 
     def _calculate_static_hot_spot_increase(self, load: np.ndarray) -> np.ndarray:
@@ -198,20 +196,20 @@ class Model:
 
         # Initialize first values
         top_oil_temp = t_internal[0] if self.init_top_oil_temp is None else self.init_top_oil_temp
-        hot_spot_increase_windings = 0
-        hot_spot_increase_oil = 0
+        hot_spot_increase_windings = 0.0
+        hot_spot_increase_oil = 0.0
         top_oil_temp_profile[0] = top_oil_temp
         hot_spot_temp_profile[0] = top_oil_temp
 
         # Iteratively calculate profiles
         for i in range(1, len(load)):
             top_oil_temp = self._update_top_oil_temp(top_oil_temp, t_internal[i], top_k[i], f1[i])
-            hot_spot_increase_windings = self._update_hot_spot_increase(hot_spot_increase_windings, 
-                                                                        static_hot_spot_incr_windings[i], 
-                                                                        f2_windings[i])
-            hot_spot_increase_oil = self._update_hot_spot_increase(hot_spot_increase_oil, 
-                                                                   static_hot_spot_incr_oil[i], 
-                                                                   f2_oil[i])
+            hot_spot_increase_windings = self._update_hot_spot_increase(
+                hot_spot_increase_windings, static_hot_spot_incr_windings[i], f2_windings[i]
+            )
+            hot_spot_increase_oil = self._update_hot_spot_increase(
+                hot_spot_increase_oil, static_hot_spot_incr_oil[i], f2_oil[i]
+            )
             hot_spot_temp_profile[i] = top_oil_temp + hot_spot_increase_windings - hot_spot_increase_oil
             top_oil_temp_profile[i] = top_oil_temp
 
