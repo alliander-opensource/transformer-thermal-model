@@ -108,7 +108,7 @@ stateDiagram-v2
     TransformerConfig --> ThermalModel: skip if factor known
     HotSpotCalib --> ThermalModel: Initialize model
     ThermalModel --> TempCalculation: Calculate temperatures
-    TempCalculation --> AgingAnalysis: Analyze aging
+    TempCalculation --> AgingAnalysis: Analyze aging (using the modeled hot spot profile)
     TempCalculation --> Results: Generate outputs
     AgingAnalysis --> Results: Add aging data
     Results --> [*]
