@@ -1,0 +1,126 @@
+%% SPDX-FileCopyrightText: Contributors to the Transformer Thermal Model project
+%%
+%% SPDX-License-Identifier: MPL-2.0
+
+stateDiagram-v2
+    direction TB
+
+
+    %% Define states with descriptions
+    DataCollection: Data Collection
+    Validation: Input Validation
+    TransformerConfig: Transformer Configuration
+    HotSpotCalib: Hot Spot Calibration
+    ThermalModel: Thermal Model Engine
+    TempCalculation: Temperature Calculation
+    AgingAnalysis: Aging Analysis
+    Results: Output Results
+
+    %% Legend for state descriptions
+    state Legend{
+        direction LR
+        LegendInputState: Input State
+        LegendProcessState: Process State
+        LegendOutputState: Output State
+        LegendOptionalState: Optional State
+    }
+    
+    %% Composite state for input data sources
+    state DataCollection {
+        state InputData{
+            DateTimeIndex: Date and Time Index
+            LoadProfile: Load Profile Data
+            AmbientTemp: Ambient Temperature Data
+
+            InputProfile: InputProfile
+
+            DateTimeIndex --> InputProfile
+            LoadProfile --> InputProfile
+            AmbientTemp --> InputProfile
+        }
+        state CoolerConfiguration {
+            CoolerTypePT: CoolerType
+            CoolerTypePT: ONAN or ONAF
+            CoolerTypeDT: CoolerType
+            CoolerTypeDT: ONAN (fixed)
+
+            [*] --> CoolerTypePT: PowerTransformer
+            [*] --> CoolerTypeDT: DistributionTransformer
+        }
+        
+        state TransformerSpecs {
+            MandatorySpecs: Mandatory Specifications
+            OptionalSpecs: Optional Specifications
+            TransformerSpecifications: UserTransformerSpecifications
+            
+            MandatorySpecs:  - load_loss (W)
+            MandatorySpecs:  - nom_load_sec_side (A)
+            MandatorySpecs:  - no_load_loss (W)
+            MandatorySpecs:  - amb_temp_surcharge (K)
+
+            OptionalSpecs:  - top_oil_temp_rise (K)
+            OptionalSpecs:  - winding_oil_gradient (K)
+            OptionalSpecs:  - hot_spot_fac (-)
+            OptionalSpecs:  - time_const_oil, time_const_windings
+            OptionalSpecs:  - ... (other optional specs)
+
+            MandatorySpecs --> TransformerSpecifications
+            OptionalSpecs --> TransformerSpecifications
+
+        }
+
+        [*] --> InputData      
+        [*] --> TransformerSpecs
+        [*] --> CoolerConfiguration
+    }
+    
+    %% Composite state for results
+    state Results {
+        TopOilTemp: Top Oil Temperature
+        HotSpotTemp: Hot Spot Temperature
+        AgingResults: Aging Assessment
+        
+        OutputProfile: OutputProfile
+
+        TopOilTemp --> OutputProfile
+        HotSpotTemp --> OutputProfile
+        AgingResults --> OutputProfile
+    }
+    
+    %% Main flow
+    DataCollection
+    DataCollection --> Validation: Validate inputs
+    Validation --> ThermalModel: create Model() with InputProfile and Transformer
+    Validation --> TransformerConfig: Create Transformer() with specs and cooler type
+    TransformerConfig --> HotSpotCalib: Calibrate hot spot factor if needed (only for PowerTransformers)
+    TransformerConfig --> ThermalModel: skip if factor known
+    HotSpotCalib --> ThermalModel: Initialize model
+    ThermalModel --> TempCalculation: Calculate temperatures
+    TempCalculation --> AgingAnalysis: Analyze aging
+    TempCalculation --> Results: Generate outputs
+    AgingAnalysis --> Results: Add aging data
+    Results --> [*]
+
+    
+    %% Notes for clarity
+    note right of Validation
+        Uses Pydantic schemas to validate
+        load profiles, ambient temperature,
+        and transformer specifications
+    end note
+    
+    note left of TempCalculation
+        Implements IEC 60076-7 standard
+        for thermal modeling calculations
+    end note
+    
+    %% Styling
+    classDef inputState fill:#0277bd,color:#ffffff,stroke:#01579b,stroke-width:2px
+    classDef processState fill:#6a1b9a,color:#ffffff,stroke:#4a148c,stroke-width:2px
+    classDef outputState fill:#2e7d32,color:#ffffff,stroke:#1b5e20,stroke-width:2px
+    classDef optionalState fill:#ef6c00,color:#ffffff,stroke:#e65100,stroke-width:2px
+    
+    class LegendInputState,DataCollection,Validation,InputProfile,TransformerSpecifications,CoolerTypePT,CoolerTypeDT inputState
+    class LegendProcessState,TransformerConfig,ThermalModel,TempCalculation,AgingAnalysis processState
+    class LegendOutputState,Results,OutputProfile outputState
+    class LegendOptionalState,HotSpotCalib,AgingAnalysis optionalState
