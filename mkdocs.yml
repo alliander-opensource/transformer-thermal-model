@@ -22,7 +22,11 @@ theme:
 markdown_extensions:
   - admonition
   - pymdownx.details
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:mermaid2.fence_mermaid_custom
   - attr_list
   - md_in_html
   - pymdownx.blocks.caption
@@ -44,6 +48,7 @@ nav:
     - Installation and overview: get_started/about.md
     - Model input: get_started/model_input.md
   - API Documentation: 
+    - Architecture: api_reference/architecture.md
     - Model: api_reference/model.md
     - Transformer: api_reference/transformer.md
     - Model input and output: api_reference/model_input_output.md
@@ -80,6 +85,7 @@ plugins:
       API documentation:
         - api_reference/*.md
 - search
+- mermaid2
 - exclude:
     glob:
     - theme/announce.html
