@@ -26,8 +26,8 @@ stateDiagram-v2
         direction LR
         LegendInputState: Input State
         LegendProcessState: Process State
-        LegendOutputState: Output State
         LegendOptionalState: Optional State
+        LegendOutputState: Output State
     }
     
     %% Composite state for input data sources
@@ -128,10 +128,10 @@ stateDiagram-v2
     end note
     
     %% Styling
-    classDef inputState fill:#F0F4E3,stroke:#99B352
-    classDef processState fill:#ECDEDE,stroke:#8F3825
-    classDef outputState fill:#E8DFEB,stroke:#6B3078
-    classDef optionalState fill:#F2E7DF,stroke:#AD672F
+    classDef inputState fill:#d9e7e0,stroke:#267950,stroke-width:3px
+    classDef processState fill:#fbe9d9,stroke:#ea8426
+    classDef optionalState fill:#f3dddd,stroke:#bb3b40,font-style:italic,stroke-dasharray: 5 5
+    classDef outputState fill:#ecddec,stroke:#954091,stroke-width:3px
     
     class LegendInputState,Validation,InputProfile,TransformerSpecifications,CoolerTypePT,CoolerTypeDT inputState
     class LegendProcessState,TransformerConfig,ThermalModel,TempCalculation processState
