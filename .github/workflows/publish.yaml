@@ -49,3 +49,87 @@ jobs:
         path: dist/
     - name: Publish distribution 📦 to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
+
+  publish-to-github:
+    name: Publish to GitHub Releases
+    needs:
+    - build-package
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Download all the dists
+      uses: actions/download-artifact@v4
+      with:
+        name: transformer-thermal-model-package
+        path: dist/
+        
+    - name: Get package version
+      id: get_version
+      run: |
+        # Extract version from pyproject.toml
+        VERSION=$(grep '^version = ' pyproject.toml | sed 's/version = "\(.*\)"/\1/')
+        echo "version=v$VERSION" >> $GITHUB_OUTPUT
+        echo "Package version: v$VERSION"
+        
+    - name: Generate changelog
+      id: generate_changelog
+      run: |
+        # Get the previous release tag
+        PREVIOUS_TAG=$(gh release list --limit 1 --json tagName --jq '.[0].tagName' || echo "")
+        
+        if [ -z "$PREVIOUS_TAG" ]; then
+          echo "changelog=First release of the transformer-thermal-model package." >> $GITHUB_OUTPUT
+        else
+          echo "Generating changelog from $PREVIOUS_TAG to HEAD"
+          
+          # Get merged PRs since last release
+          CHANGELOG=$(gh pr list \
+            --state merged \
+            --base main \
+            --search "merged:>$(gh release view $PREVIOUS_TAG --json publishedAt --jq .publishedAt)" \
+            --json number,title,author \
+            --jq '.[] | "- #\(.number): \(.title) (@\(.author.login))"' \
+            | head -20)
+          
+          if [ -z "$CHANGELOG" ]; then
+            echo "changelog=No notable changes since the previous release." >> $GITHUB_OUTPUT
+          else
+            echo "changelog<<EOF" >> $GITHUB_OUTPUT
+            echo "### Changes" >> $GITHUB_OUTPUT
+            echo "$CHANGELOG" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          fi
+        fi
+      env:
+        GH_TOKEN: ${{ github.token }}
+        
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ steps.get_version.outputs.version }}
+        name: Release ${{ steps.get_version.outputs.version }}
+        files: |
+          dist/*.tar.gz
+          dist/*.whl
+        body: |
+          ## Release ${{ steps.get_version.outputs.version }}
+          
+          ### Installation
+          ```bash
+          pip install transformer-thermal-model==${{ steps.get_version.outputs.version }}
+          ```
+          
+          ### Package Files
+          - Source distribution (`.tar.gz`)
+          - Wheel distribution (`.whl`)
+          
+          ---
+          
+          ${{ steps.generate_changelog.outputs.changelog }}
+        draft: false
+        prerelease: false
+        generate_release_notes: true
