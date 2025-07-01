@@ -81,7 +81,7 @@ def ioc_load_profile():
         start = breakpoints[i]
         end = breakpoints[i + 1]
         n_steps = (end - start) // timestep
-        for step in range(1,n_steps+1):
+        for step in range(1, n_steps + 1):
             timestamps.append(start_time + pd.Timedelta(minutes=start + step * timestep))
             loads.append(load_factors[i])
 
