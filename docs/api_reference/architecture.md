@@ -93,10 +93,11 @@ stateDiagram-v2
         AgingResults: Aging Assessment
         
         OutputProfile: OutputProfile
+        AgingOutput: pd.Series
 
         TopOilTemp --> OutputProfile
         HotSpotTemp --> OutputProfile
-        AgingResults --> OutputProfile
+        AgingResults --> AgingOutput
     }
     
     %% Main flow
@@ -134,6 +135,6 @@ stateDiagram-v2
     
     class LegendInputState,Validation,InputProfile,TransformerSpecifications,CoolerTypePT,CoolerTypeDT inputState
     class LegendProcessState,TransformerConfig,ThermalModel,TempCalculation processState
-    class LegendOutputState,OutputProfile outputState
+    class LegendOutputState,OutputProfile,AgingOutput outputState
     class LegendOptionalState,HotSpotCalib,AgingAnalysis optionalState
 ```
