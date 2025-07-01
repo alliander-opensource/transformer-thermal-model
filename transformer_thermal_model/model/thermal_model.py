@@ -190,7 +190,7 @@ class Model:
         top_oil_temp_profile = np.zeros_like(load, dtype=np.float64)
         hot_spot_temp_profile = np.zeros_like(load, dtype=np.float64)
 
-        # split the static hot-spot increase into two parts for windings and oil
+        # Split the static hot-spot increase into two parts for windings and oil
         static_hot_spot_incr_windings = static_hot_spot_incr * self.transformer.specs.winding_const_k21
         static_hot_spot_incr_oil = static_hot_spot_incr * (self.transformer.specs.winding_const_k21 - 1)
 
@@ -204,9 +204,12 @@ class Model:
         # Iteratively calculate profiles
         for i in range(1, len(load)):
             top_oil_temp = self._update_top_oil_temp(top_oil_temp, t_internal[i], top_k[i], f1[i])
+            # Calculate the hotspot temperature based on formula 17 from IEC 2060076-7_2018.
+            # The hot-spot increase of the windings is based on from 15 from IEC 2060076-7_2018.
             hot_spot_increase_windings = self._update_hot_spot_increase(
                 hot_spot_increase_windings, static_hot_spot_incr_windings[i], f2_windings[i]
             )
+            # The hot-spot increase of the oil is based on from 16 from IEC 2060076-7_2018
             hot_spot_increase_oil = self._update_hot_spot_increase(
                 hot_spot_increase_oil, static_hot_spot_incr_oil[i], f2_oil[i]
             )
