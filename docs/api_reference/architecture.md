@@ -45,6 +45,10 @@ stateDiagram-v2
             LoadProfile --> InputProfile
             AmbientTemp --> InputProfile
         }
+        InitialTemperatures: Initial temperatures (optional)
+        InitialTemperatures:  - Initial top oil temperature
+        InitialTemperatures:  - Initial hot spot temperature
+
         state CoolerConfiguration {
             direction LR
             CoolerTypePT: CoolerType ONAN or ONAF
@@ -79,6 +83,7 @@ stateDiagram-v2
         [*] --> InputData      
         [*] --> TransformerSpecs
         [*] --> CoolerConfiguration
+        [*] --> InitialTemperatures
     }
     
     %% Composite state for results
