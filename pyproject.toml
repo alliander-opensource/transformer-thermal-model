@@ -42,6 +42,7 @@ mkdocstrings-python = "^1.16.12"
 mkdocs-exclude = "^1.0.2"
 mkdocs-llmstxt = "^0.2.0"
 mkdocs-material = "^9.6.11"
+matplotlib = "^3.10.3"
 mkdocs-jupyter = "^0.25.1"
 
 [build-system]
