@@ -128,7 +128,7 @@ stateDiagram-v2
     classDef optionalState fill:#F2E7DF,stroke:#AD672F
     
     class LegendInputState,Validation,InputProfile,TransformerSpecifications,CoolerTypePT,CoolerTypeDT inputState
-    class LegendProcessState,TransformerConfig,ThermalModel,TempCalculation,AgingAnalysis processState
+    class LegendProcessState,TransformerConfig,ThermalModel,TempCalculation processState
     class LegendOutputState,OutputProfile outputState
     class LegendOptionalState,HotSpotCalib,AgingAnalysis optionalState
 ```
