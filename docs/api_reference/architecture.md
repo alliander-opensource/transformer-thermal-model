@@ -102,7 +102,7 @@ stateDiagram-v2
     %% Main flow
     DataCollection
     DataCollection --> Validation: Validate inputs
-    Validation --> ThermalModel: create Model() with InputProfile and Transformer
+    Validation --> ThermalModel: create Model() with InputProfile, Transformer and optional initial temperatures
     Validation --> TransformerConfig: Create Transformer() with specs and cooler type
     TransformerConfig --> HotSpotCalib: Calibrate hot spot factor if needed (only for PowerTransformers)
     TransformerConfig --> ThermalModel: skip if factor known
