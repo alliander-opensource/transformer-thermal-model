@@ -1,7 +1,12 @@
-%% SPDX-FileCopyrightText: Contributors to the Transformer Thermal Model project
-%%
-%% SPDX-License-Identifier: MPL-2.0
+<!--
+SPDX-FileCopyrightText: Contributors to the Transformer Thermal Model project
 
+SPDX-License-Identifier: MPL-2.0
+-->
+
+# The architecture of Transformer Thermal Model
+
+```mermaid
 stateDiagram-v2
     direction TB
 
@@ -27,7 +32,9 @@ stateDiagram-v2
     
     %% Composite state for input data sources
     state DataCollection {
+        direction LR
         state InputData{
+            direction LR
             DateTimeIndex: Date and Time Index
             LoadProfile: Load Profile Data
             AmbientTemp: Ambient Temperature Data
@@ -39,16 +46,16 @@ stateDiagram-v2
             AmbientTemp --> InputProfile
         }
         state CoolerConfiguration {
-            CoolerTypePT: CoolerType
-            CoolerTypePT: ONAN or ONAF
-            CoolerTypeDT: CoolerType
-            CoolerTypeDT: ONAN (fixed)
+            direction LR
+            CoolerTypePT: CoolerType ONAN or ONAF
+            CoolerTypeDT: CoolerType not needed
 
             [*] --> CoolerTypePT: PowerTransformer
             [*] --> CoolerTypeDT: DistributionTransformer
         }
         
         state TransformerSpecs {
+            direction LR
             MandatorySpecs: Mandatory Specifications
             OptionalSpecs: Optional Specifications
             TransformerSpecifications: UserTransformerSpecifications
@@ -115,12 +122,13 @@ stateDiagram-v2
     end note
     
     %% Styling
-    classDef inputState fill:#0277bd,color:#ffffff,stroke:#01579b,stroke-width:2px
-    classDef processState fill:#6a1b9a,color:#ffffff,stroke:#4a148c,stroke-width:2px
-    classDef outputState fill:#2e7d32,color:#ffffff,stroke:#1b5e20,stroke-width:2px
-    classDef optionalState fill:#ef6c00,color:#ffffff,stroke:#e65100,stroke-width:2px
+    classDef inputState fill:#F0F4E3,stroke:#99B352
+    classDef processState fill:#ECDEDE,stroke:#8F3825
+    classDef outputState fill:#E8DFEB,stroke:#6B3078
+    classDef optionalState fill:#F2E7DF,stroke:#AD672F
     
-    class LegendInputState,DataCollection,Validation,InputProfile,TransformerSpecifications,CoolerTypePT,CoolerTypeDT inputState
+    class LegendInputState,Validation,InputProfile,TransformerSpecifications,CoolerTypePT,CoolerTypeDT inputState
     class LegendProcessState,TransformerConfig,ThermalModel,TempCalculation,AgingAnalysis processState
-    class LegendOutputState,Results,OutputProfile outputState
+    class LegendOutputState,OutputProfile outputState
     class LegendOptionalState,HotSpotCalib,AgingAnalysis optionalState
+```
