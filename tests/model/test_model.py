@@ -377,8 +377,8 @@ def test_expected_rise_onaf(onaf_power_transformer):
     assert sum(abs(hot_spot_temp - expected_hotspot_temp)) < 1e-6
 
 
-def test_if_rise_matches_ioc(ioc_load_profile):
-    """Test if the temperature rise matches the expected one for an ioc transformer."""
+def test_if_rise_matches_iec(iec_load_profile):
+    """Test if the temperature rise matches the expected one for an IEC transformer."""
     transformer_specifications = UserTransformerSpecifications(
         load_loss=1000,  # Transformer load loss [W]
         nom_load_sec_side=1000,  # Transformer nominal current secondary side [A]
@@ -392,8 +392,8 @@ def test_if_rise_matches_ioc(ioc_load_profile):
         user_specs=transformer_specifications,
         cooling_type=CoolerType.ONAF,
     )
-    ioc_load_profile.load_profile = ioc_load_profile.load_profile * transformer_specifications.nom_load_sec_side
-    thermal_model = Model(temperature_profile=ioc_load_profile, transformer=transformer, init_top_oil_temp=25.6 + 12.7)
+    iec_load_profile.load_profile = iec_load_profile.load_profile * transformer_specifications.nom_load_sec_side
+    thermal_model = Model(temperature_profile=iec_load_profile, transformer=transformer, init_top_oil_temp=25.6 + 12.7)
     results = thermal_model.run()
     hot_spot_temp_profile = results.hot_spot_temp_profile
     top_oil_temp_profile = results.top_oil_temp_profile

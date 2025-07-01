@@ -64,8 +64,8 @@ def distribution_transformer() -> DistributionTransformer:
 
 
 @pytest.fixture(scope="function")
-def ioc_load_profile():
-    """Create a load profile based on the IOCs data."""
+def iec_load_profile():
+    """Create a load profile based on the IECs data."""
     # Define the breakpoints (minutes) and corresponding load factors
     breakpoints = [0, 190, 365, 500, 705, 730, 745]
     load_factors = [1.0, 0.6, 1.5, 0.3, 2.1, 0.0]
