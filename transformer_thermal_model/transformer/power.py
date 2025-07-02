@@ -271,5 +271,6 @@ class PowerTransformer(Transformer):
         }
         return component_capacities
 
-    def _calculate_internal_temp(self, ambient_temperature: pd.Series) -> pd.Series:
+    def _calculate_internal_temp(self, ambient_temperature: np.ndarray) -> np.ndarray:
+        """Calculate the internal temperature of the transformer."""
         return ambient_temperature + self.specs.amb_temp_surcharge
