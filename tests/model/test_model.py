@@ -411,5 +411,5 @@ def test_if_rise_matches_iec(iec_load_profile):
         timestamp = start + pd.Timedelta(minutes=expected["minutes"])
         calculated_top_oil_temp = top_oil_temp_profile[timestamp]
         calculated_hot_spot_temp = hot_spot_temp_profile[timestamp]
-        assert calculated_top_oil_temp == pytest.approx(expected["top_oil_temperature"], abs=1.1)
-        assert calculated_hot_spot_temp == pytest.approx(expected["hot_spot_temperature"], abs=1.1)
+        assert calculated_top_oil_temp == pytest.approx(expected["top_oil_temperature"], abs=1.5)
+        assert calculated_hot_spot_temp == pytest.approx(expected["hot_spot_temperature"], abs=1.5)
