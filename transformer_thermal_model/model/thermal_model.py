@@ -59,7 +59,6 @@ class Model:
         init_top_oil_temp (float | None): The initial top-oil temperature. Defaults to None. If this is provided,
             will start the calculation with this temperature. If not provided, will start the calculation
             with the first value of the ambient temperature profile.
-        init_hot_spot_temp (float | None): The initial hot-spot temperature. Defaults to None. If this is provided,
             will start the calculation with this temperature. If not provided, will start the calculation
             with the first value of the ambient temperature profile.
         hot_spot_temp_profile (pd.Series): The modeled hot-spot temperature profile.
@@ -69,7 +68,6 @@ class Model:
     transformer: Transformer
     data: InputProfile
     init_top_oil_temp: float | None
-    init_hot_spot_temp: float | None
     hot_spot_temp_profile: pd.Series
     top_oil_temp_profile: pd.Series
 
@@ -78,7 +76,6 @@ class Model:
         temperature_profile: InputProfile,
         transformer: Transformer,
         init_top_oil_temp: float | None = None,
-        init_hot_spot_temp: float | None = None,
     ) -> None:
         """Initialize the thermal model.
 
@@ -88,7 +85,6 @@ class Model:
             init_top_oil_temp (float | None): The initial top-oil temperature. Defaults to None. If this is provided,
                 will start the calculation with this temperature. If not provided, will start the calculation
                 with the first value of the ambient temperature profile.
-            init_hot_spot_temp (float | None): The initial hot-spot temperature. Defaults to None. If this is provided,
                 will start the calculation with this temperature. If not provided, will start the calculation
                 with the first value of the ambient temperature profile.
 
@@ -106,7 +102,6 @@ class Model:
         self.transformer = transformer
         self.data = temperature_profile
         self.init_top_oil_temp = init_top_oil_temp
-        self.init_hot_spot_temp = init_hot_spot_temp
 
     def _get_time_step(self) -> np.ndarray:
         """Get the time step between the data points.
