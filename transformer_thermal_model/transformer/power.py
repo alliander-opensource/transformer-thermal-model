@@ -6,7 +6,6 @@ import logging
 from enum import StrEnum
 
 import numpy as np
-import pandas as pd
 
 from transformer_thermal_model.components import BushingConfig, TransformerSide, VectorConfig
 from transformer_thermal_model.cooler import CoolerType
