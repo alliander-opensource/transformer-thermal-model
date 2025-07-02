@@ -59,7 +59,6 @@ class Model:
         init_top_oil_temp (float | None): The initial top-oil temperature. Defaults to None. If this is provided,
             will start the calculation with this temperature. If not provided, will start the calculation
             with the first value of the ambient temperature profile.
-        init_hot_spot_temp (float | None): The initial hot-spot temperature. Defaults to None. If this is provided,
             will start the calculation with this temperature. If not provided, will start the calculation
             with the first value of the ambient temperature profile.
         hot_spot_temp_profile (pd.Series): The modeled hot-spot temperature profile.
@@ -69,7 +68,6 @@ class Model:
     transformer: Transformer
     data: InputProfile
     init_top_oil_temp: float | None
-    init_hot_spot_temp: float | None
     hot_spot_temp_profile: pd.Series
     top_oil_temp_profile: pd.Series
 
@@ -78,7 +76,6 @@ class Model:
         temperature_profile: InputProfile,
         transformer: Transformer,
         init_top_oil_temp: float | None = None,
-        init_hot_spot_temp: float | None = None,
     ) -> None:
         """Initialize the thermal model.
 
@@ -88,7 +85,6 @@ class Model:
             init_top_oil_temp (float | None): The initial top-oil temperature. Defaults to None. If this is provided,
                 will start the calculation with this temperature. If not provided, will start the calculation
                 with the first value of the ambient temperature profile.
-            init_hot_spot_temp (float | None): The initial hot-spot temperature. Defaults to None. If this is provided,
                 will start the calculation with this temperature. If not provided, will start the calculation
                 with the first value of the ambient temperature profile.
 
@@ -106,7 +102,6 @@ class Model:
         self.transformer = transformer
         self.data = temperature_profile
         self.init_top_oil_temp = init_top_oil_temp
-        self.init_hot_spot_temp = init_hot_spot_temp
 
     def _get_time_step(self) -> np.ndarray:
         """Get the time step between the data points.
@@ -139,15 +134,17 @@ class Model:
         """Calculate the time delay constant f1 for the top-oil temperature."""
         return 1 - np.exp(-dt / (self.transformer.specs.oil_const_k11 * self.transformer.specs.time_const_oil))
 
-    def _calculate_f2(self, dt: np.ndarray) -> np.ndarray:
-        """Calculate the time delay constant f2 for the hot-spot temperature."""
-        part1 = self.transformer.specs.winding_const_k21 * (
-            1 - np.exp(-dt / (self.transformer.specs.winding_const_k22 * self.transformer.specs.time_const_windings))
+    def _calculate_f2_winding(self, dt: np.ndarray) -> np.ndarray:
+        """Calculate the time delay constant f2 for the hot-spot temperature. due to the windings."""
+        winding_delay = np.exp(
+            -dt / (self.transformer.specs.winding_const_k22 * self.transformer.specs.time_const_windings)
         )
-        part2 = (self.transformer.specs.winding_const_k21 - 1) * (
-            1 - np.exp(-dt / (self.transformer.specs.time_const_oil / self.transformer.specs.winding_const_k22))
-        )
-        return part1 - part2
+        return winding_delay
+
+    def _calculate_f2_oil(self, dt: np.ndarray) -> np.ndarray:
+        """Calculate the time delay constant f2 for the hot-spot temperature due to the oil."""
+        oil_delay = np.exp(-dt * self.transformer.specs.winding_const_k22 / self.transformer.specs.time_const_oil)
+        return oil_delay
 
     def _calculate_static_hot_spot_increase(self, load: np.ndarray) -> np.ndarray:
         """Calculate the static hot-spot temperature increase using vectorized operations."""
@@ -162,7 +159,8 @@ class Model:
         load: np.ndarray,
         t_internal: np.ndarray,
         f1: np.ndarray,
-        f2: np.ndarray,
+        f2_windings: np.ndarray,
+        f2_oil: np.ndarray,
         top_k: np.ndarray,
         static_hot_spot_incr: np.ndarray,
     ) -> tuple[np.ndarray, np.ndarray]:
@@ -172,7 +170,8 @@ class Model:
             load (np.ndarray): Array of load values over time.
             t_internal (np.ndarray): Array of internal temperatures over time.
             f1 (np.ndarray): Array of time constants for the top-oil temperature calculation.
-            f2 (np.ndarray): Array of time constants for the hot-spot temperature calculation.
+            f2_windings (np.ndarray): Array of time constants for the hot-spot temperature calculation due to windings.
+            f2_oil (np.ndarray): Array of time constants for the hot-spot temperature calculation due to oil.
             top_k (np.ndarray): Array of end temperatures for the top-oil.
             static_hot_spot_incr (np.ndarray): Array of static hot-spot temperature increases.
 
@@ -186,17 +185,30 @@ class Model:
         top_oil_temp_profile = np.zeros_like(load, dtype=np.float64)
         hot_spot_temp_profile = np.zeros_like(load, dtype=np.float64)
 
+        # Split the static hot-spot increase into two parts for windings and oil
+        static_hot_spot_incr_windings = static_hot_spot_incr * self.transformer.specs.winding_const_k21
+        static_hot_spot_incr_oil = static_hot_spot_incr * (self.transformer.specs.winding_const_k21 - 1)
+
         # Initialize first values
         top_oil_temp = t_internal[0] if self.init_top_oil_temp is None else self.init_top_oil_temp
-        hot_spot_increase = 0 if self.init_hot_spot_temp is None else self.init_hot_spot_temp - top_oil_temp
+        hot_spot_increase_windings = 0.0
+        hot_spot_increase_oil = 0.0
         top_oil_temp_profile[0] = top_oil_temp
-        hot_spot_temp_profile[0] = top_oil_temp + hot_spot_increase
+        hot_spot_temp_profile[0] = top_oil_temp
 
         # Iteratively calculate profiles
         for i in range(1, len(load)):
             top_oil_temp = self._update_top_oil_temp(top_oil_temp, t_internal[i], top_k[i], f1[i])
-            hot_spot_increase = self._update_hot_spot_increase(hot_spot_increase, static_hot_spot_incr[i], f2[i])
-            hot_spot_temp_profile[i] = top_oil_temp + hot_spot_increase
+            # Calculate the hotspot temperature based on formula 17 from IEC 2060076-7_2018.
+            # The hot-spot increase of the windings is based on from 15 from IEC 2060076-7_2018.
+            hot_spot_increase_windings = self._update_hot_spot_increase(
+                hot_spot_increase_windings, static_hot_spot_incr_windings[i], f2_windings[i]
+            )
+            # The hot-spot increase of the oil is based on from 16 from IEC 2060076-7_2018
+            hot_spot_increase_oil = self._update_hot_spot_increase(
+                hot_spot_increase_oil, static_hot_spot_incr_oil[i], f2_oil[i]
+            )
+            hot_spot_temp_profile[i] = top_oil_temp + hot_spot_increase_windings - hot_spot_increase_oil
             top_oil_temp_profile[i] = top_oil_temp
 
         return top_oil_temp_profile, hot_spot_temp_profile
@@ -207,7 +219,7 @@ class Model:
 
     def _update_hot_spot_increase(self, current_increase: float, static_incr: float, f2: float) -> float:
         """Update the hot-spot temperature increase for a single time step."""
-        return current_increase + (static_incr - current_increase) * f2
+        return static_incr + (current_increase - static_incr) * f2
 
     def run(self) -> OutputProfile:
         """Calculate the top-oil and hot-spot temperatures for the provided Transformer object.
@@ -226,12 +238,13 @@ class Model:
         t_internal = self._get_internal_temp()
 
         f1 = self._calculate_f1(dt)
-        f2 = self._calculate_f2(dt)
+        f2_windings = self._calculate_f2_winding(dt)
+        f2_oil = self._calculate_f2_oil(dt)
         top_k = self.transformer._end_temperature_top_oil(load)
         static_hot_spot_incr = self._calculate_static_hot_spot_increase(load)
 
         top_oil_temp_profile, hot_spot_temp_profile = self._calculate_temperature_profiles(
-            load, t_internal, f1, f2, top_k, static_hot_spot_incr
+            load, t_internal, f1, f2_windings, f2_oil, top_k, static_hot_spot_incr
         )
         logger.info("The calculation with the Thermal model is completed.")
         logger.info(f"Max top-oil temperature: {max(top_oil_temp_profile)}")

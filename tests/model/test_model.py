@@ -8,6 +8,7 @@ import pytest
 
 from transformer_thermal_model.cooler import CoolerType
 from transformer_thermal_model.model import Model
+from transformer_thermal_model.schemas import UserTransformerSpecifications
 from transformer_thermal_model.toolbox.temp_sim_profile_tools import create_temp_sim_profile_from_df
 from transformer_thermal_model.transformer import PowerTransformer
 
@@ -287,20 +288,20 @@ def test_expected_rise_onan(onan_power_transformer):
         [
             40.0,
             78.04899136,
-            81.17912811,
-            86.21444636,
-            86.67882499,
-            87.34571398,
-            87.41376689,
-            87.50215992,
-            58.50849322,
-            58.71771653,
-            54.90798813,
-            54.89551239,
-            54.3944998,
-            54.38760141,
-            54.32165869,
-            54.32005966,
+            84.08238209,
+            86.260151,
+            87.06108811,
+            87.35573525,
+            87.46412987,
+            87.50400603,
+            58.51513404,
+            55.81477495,
+            54.86315987,
+            54.51329954,
+            54.38459427,
+            54.33724625,
+            54.31982789,
+            54.31342003,
         ]
     )
 
@@ -355,22 +356,60 @@ def test_expected_rise_onaf(onaf_power_transformer):
         [
             40.0,
             78.06076232,
-            81.17070204,
-            86.21897013,
-            86.67666614,
-            87.34667984,
-            87.41335205,
-            87.50233315,
-            58.4966514,
-            58.72617113,
-            54.90345302,
-            54.8976757,
-            54.39353219,
-            54.38801693,
-            54.32148521,
-            54.32013062,
+            84.08249935,
+            86.26015188,
+            87.06108811,
+            87.35573525,
+            87.46412987,
+            87.50400603,
+            58.50336307,
+            55.81465769,
+            54.86315899,
+            54.51329953,
+            54.38459427,
+            54.33724625,
+            54.31982789,
+            54.31342003,
         ]
     )
 
     assert sum(abs(top_oil_temp - expected_results)) < 1e-6
     assert sum(abs(hot_spot_temp - expected_hotspot_temp)) < 1e-6
+
+
+def test_if_rise_matches_iec(iec_load_profile):
+    """Test if the temperature rise matches the expected one for an IEC transformer."""
+    transformer_specifications = UserTransformerSpecifications(
+        load_loss=1000,  # Transformer load loss [W]
+        nom_load_sec_side=1000,  # Transformer nominal current secondary side [A]
+        no_load_loss=1,  # Transformer no-load loss [W]
+        amb_temp_surcharge=0,  # Ambient temperature surcharge [K]
+        top_oil_temp_rise=38.3,
+        winding_oil_gradient=14.5,  # 45.14,
+        hot_spot_fac=1.4,
+    )
+    transformer = PowerTransformer(
+        user_specs=transformer_specifications,
+        cooling_type=CoolerType.ONAF,
+    )
+    iec_load_profile.load_profile = iec_load_profile.load_profile * transformer_specifications.nom_load_sec_side
+    thermal_model = Model(temperature_profile=iec_load_profile, transformer=transformer, init_top_oil_temp=25.6 + 12.7)
+    results = thermal_model.run()
+    hot_spot_temp_profile = results.hot_spot_temp_profile
+    top_oil_temp_profile = results.top_oil_temp_profile
+
+    expected_results = [
+        {"minutes": 190, "top_oil_temperature": 61.9, "hot_spot_temperature": 83.8},
+        {"minutes": 365, "top_oil_temperature": 44.4, "hot_spot_temperature": 54.0},
+        {"minutes": 500, "top_oil_temperature": 89.2, "hot_spot_temperature": 127},
+        {"minutes": 705, "top_oil_temperature": 35, "hot_spot_temperature": 37.54},
+        {"minutes": 730, "top_oil_temperature": 67.9, "hot_spot_temperature": 138.6},
+        {"minutes": 745, "top_oil_temperature": 60.3, "hot_spot_temperature": 75.3},
+    ]
+    start = pd.to_datetime("2021-01-01 00:00:00")
+    for _, expected in enumerate(expected_results):
+        timestamp = start + pd.Timedelta(minutes=expected["minutes"])
+        calculated_top_oil_temp = top_oil_temp_profile[timestamp]
+        calculated_hot_spot_temp = hot_spot_temp_profile[timestamp]
+        assert calculated_top_oil_temp == pytest.approx(expected["top_oil_temperature"], abs=1.5)
+        assert calculated_hot_spot_temp == pytest.approx(expected["hot_spot_temperature"], abs=1.5)

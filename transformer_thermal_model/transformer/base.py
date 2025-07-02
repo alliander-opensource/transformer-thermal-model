@@ -5,7 +5,6 @@
 from abc import ABC, abstractmethod
 
 import numpy as np
-import pandas as pd
 
 from transformer_thermal_model.cooler import CoolerType
 from transformer_thermal_model.schemas import (
@@ -59,7 +58,7 @@ class Transformer(ABC):
         pass
 
     @abstractmethod
-    def _calculate_internal_temp(self, ambient_temperature: pd.Series) -> pd.Series:
+    def _calculate_internal_temp(self, ambient_temperature: np.ndarray) -> np.ndarray:
         pass
 
     def _end_temperature_top_oil(self, load: np.ndarray) -> np.ndarray:

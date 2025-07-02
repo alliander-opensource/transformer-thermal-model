@@ -3,9 +3,8 @@
 # SPDX-License-Identifier: MPL-2.0
 
 import logging
-from typing import Literal
 
-import pandas as pd
+import numpy as np
 
 from transformer_thermal_model.cooler import CoolerType
 from transformer_thermal_model.schemas import DefaultTransformerSpecifications, UserTransformerSpecifications
@@ -52,8 +51,6 @@ class DistributionTransformer(Transformer):
         ```
     """
 
-    cooling_type: Literal[CoolerType.ONAN]
-
     def __init__(
         self,
         user_specs: UserTransformerSpecifications,
@@ -95,7 +92,7 @@ class DistributionTransformer(Transformer):
     def _pre_factor(self) -> float:
         return self.specs.top_oil_temp_rise + self.specs.amb_temp_surcharge
 
-    def _calculate_internal_temp(self, ambient_temperature: pd.Series) -> pd.Series:
+    def _calculate_internal_temp(self, ambient_temperature: np.ndarray) -> np.ndarray:
         """Calculate the internal temperature of the transformer.
 
         This function currently returns the ambient temperature directly without
@@ -105,7 +102,7 @@ class DistributionTransformer(Transformer):
         or transformer-specific heat characteristics.
 
         Args:
-            ambient_temperature (pd.Series): A pandas Series representing the
+            ambient_temperature (np.ndarray): A numpy array representing the
                 ambient temperature values.
 
         Returns:

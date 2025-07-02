@@ -2,10 +2,11 @@
 #
 # SPDX-License-Identifier: MPL-2.0
 
+import pandas as pd
 import pytest
 
 from transformer_thermal_model.cooler import CoolerType
-from transformer_thermal_model.schemas import UserTransformerSpecifications
+from transformer_thermal_model.schemas import InputProfile, UserTransformerSpecifications
 from transformer_thermal_model.transformer import DistributionTransformer, PowerTransformer
 
 
@@ -60,3 +61,39 @@ def distribution_transformer() -> DistributionTransformer:
     )
     trafo = DistributionTransformer(user_specs=user_specs)
     return trafo
+
+
+@pytest.fixture(scope="function")
+def iec_load_profile():
+    """Create a load profile based on the IECs data."""
+    # Define the breakpoints (minutes) and corresponding load factors
+    breakpoints = [0, 190, 365, 500, 705, 730, 745]
+    load_factors = [1.0, 0.6, 1.5, 0.3, 2.1, 0.0]
+
+    # Generate the time series
+    timestamps = []
+    loads = []
+
+    start_time = pd.to_datetime("2021-01-01 00:00:00")
+
+    timestep = 5
+    for i in range(len(breakpoints) - 1):
+        start = breakpoints[i]
+        end = breakpoints[i + 1]
+        n_steps = (end - start) // timestep
+        for step in range(1, n_steps + 1):
+            timestamps.append(start_time + pd.Timedelta(minutes=start + step * timestep))
+            loads.append(load_factors[i])
+
+    # Example: constant ambient temperature
+    ambient_temperature = [25.6] * len(timestamps)
+
+    profile = pd.DataFrame(
+        {
+            "datetime_index": timestamps,
+            "load_profile": loads,
+            "ambient_temperature_profile": ambient_temperature,
+        }
+    )
+    input_profile = InputProfile.from_dataframe(df=profile)
+    return input_profile
