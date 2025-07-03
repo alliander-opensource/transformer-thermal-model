@@ -47,7 +47,6 @@ stateDiagram-v2
         }
         InitialTemperatures: Initial temperatures (optional)
         InitialTemperatures:  - Initial top oil temperature
-        InitialTemperatures:  - Initial hot spot temperature
 
         state CoolerConfiguration {
             direction LR
