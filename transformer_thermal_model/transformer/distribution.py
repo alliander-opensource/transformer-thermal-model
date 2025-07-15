@@ -91,6 +91,16 @@ class DistributionTransformer(Transformer):
     @property
     def _pre_factor(self) -> float:
         return self.specs.top_oil_temp_rise + self.specs.amb_temp_surcharge
+    
+    def _end_temperature_top_oil(self, load: np.ndarray) -> np.ndarray:
+        """Calculate the end temperature of the top-oil."""
+        load_ratio = np.power(load / self.specs.nom_load_sec_side, 2)
+        total_loss_ratio = (self.specs.no_load_loss + self.specs.load_loss * load_ratio) / (
+            self.specs.no_load_loss + self.specs.load_loss
+        )
+        step_one_end_t0 = self._pre_factor * np.power(total_loss_ratio, self.specs.oil_exp_x)
+
+        return step_one_end_t0
 
     def _calculate_internal_temp(self, ambient_temperature: np.ndarray) -> np.ndarray:
         """Calculate the internal temperature of the transformer.
@@ -106,8 +116,10 @@ class DistributionTransformer(Transformer):
                 ambient temperature values.
 
         Returns:
-            pd.Series: The internal temperature, which is currently the same as
+            np.ndarray: The internal temperature, which is currently the same as
             the ambient temperature.
 
         """
         return ambient_temperature
+    
+

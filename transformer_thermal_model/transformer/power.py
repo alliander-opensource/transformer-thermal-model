@@ -259,6 +259,17 @@ class PowerTransformer(Transformer):
 
             return ct_load / nominal_load
 
+
+    def _end_temperature_top_oil(self, load: np.ndarray) -> np.ndarray:
+        """Calculate the end temperature of the top-oil."""
+        load_ratio = np.power(load / self.specs.nom_load_sec_side, 2)
+        total_loss_ratio = (self.specs.no_load_loss + self.specs.load_loss * load_ratio) / (
+            self.specs.no_load_loss + self.specs.load_loss
+        )
+        step_one_end_t0 = self._pre_factor * np.power(total_loss_ratio, self.specs.oil_exp_x)
+
+        return step_one_end_t0
+    
     @property
     def component_capacities(self) -> dict:
         """Puts the limits of all transformer components in a single dictionary."""
