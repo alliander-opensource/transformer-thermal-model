@@ -9,11 +9,13 @@ from .enums import (
     TransformerType,
 )
 from .power import PowerTransformer, PowerTransformerComponents
+from .threephase import ThreePhaseTransformer
 
 __all__ = [
     "DistributionTransformer",
     "PaperInsulationType",
     "PowerTransformer",
+    "ThreePhaseTransformer",
     "Transformer",
     "TransformerType",
     "PowerTransformerComponents",

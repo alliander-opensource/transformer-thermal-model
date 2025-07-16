@@ -9,6 +9,41 @@ from pydantic import BaseModel, Field
 logger = logging.getLogger(__name__)
 
 
+class ThreePhaseTransformerSpecifications(BaseModel):
+    """The transformer specifications that are specific to a three-phase transformer."""
+
+    # three-phase transformer specific specs
+    nom_load_lv: float
+    nom_load_mv: float
+    nom_load_hv: float
+    load_loss_hv_mv: float
+    load_loss_mv_lv: float
+    load_loss_hv_lv: float
+
+    winding_oil_gradient_lv: float = Field(
+        default=17, description="Winding oil gradient for low side (worst case) [K]", ge=0
+    )
+    winding_oil_gradient_mv: float = Field(
+        default=17, description="Winding oil gradient for medium side (worst case) [K]", ge=0
+    )
+    winding_oil_gradient_hv: float = Field(
+        default=17, description="Winding oil gradient for high side (worst case) [K]", ge=0
+    )
+
+    load_loss_total: float | None = None
+
+    @property
+    def total_load_loss(self) -> float:
+        """Returns the total load loss for the three-phase transformer.
+
+        If 'load_loss_total' is set, returns that value.
+        Otherwise, calculates as the sum of individual load losses.
+        """
+        if self.load_loss_total is not None:
+            return self.load_loss_total
+        return self.load_loss_hv_mv + self.load_loss_mv_lv + self.load_loss_hv_lv
+
+
 class UserTransformerSpecifications(BaseModel):
     """The transformer specifications that the user must and can provide.
 
@@ -57,6 +92,9 @@ class UserTransformerSpecifications(BaseModel):
     end_temp_reduction: float | None = Field(
         default=None, description="Lowering of the end temperature with respect to the current specification [K]"
     )
+
+    # three-phase transformer specific specs
+    three_phase: ThreePhaseTransformerSpecifications | None = None
 
 
 class DefaultTransformerSpecifications(BaseModel):
@@ -109,6 +147,9 @@ class TransformerSpecifications(BaseModel):
     oil_exp_x: float
     winding_exp_y: float
     end_temp_reduction: float
+
+    # three-phase transformer specific specs
+    three_phase: ThreePhaseTransformerSpecifications | None
 
     @classmethod
     def create(

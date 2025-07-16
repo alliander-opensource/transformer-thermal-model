@@ -24,19 +24,16 @@ class InputProfile(BaseModel):
         datetime_index: The datetime index for the profiles.
         load_profile: The load profile for the transformer.
         ambient_temperature_profile: The ambient temperature profile for the transformer.
-
-        load_profile_middle_voltage_side: Optional; The load profile for the middle voltage side of the transformer.
-        load_profile_high_voltage_side: Optional; The load profile for the high voltage side of the transformer.
-
+        load_profiles_three_winding: Optional; a 2D array containing three load profiles for three-winding transformers.
+          Shape should be (3, N) or (N, 3), where N is the number of time steps.
     """
 
     datetime_index: np.typing.NDArray[np.datetime64]
     load_profile: np.typing.NDArray[np.float64]
     ambient_temperature_profile: np.typing.NDArray[np.float64]
 
-    # Optional attributes for middle voltage side load profile
-    load_profile_middle_voltage_side: np.typing.NDArray[np.float64] | None = None
-    load_profile_high_voltage_side: np.typing.NDArray[np.float64] | None = None
+    # Optional attribute for three-winding transformer load profiles
+    load_profiles_three_winding: np.typing.NDArray[np.float64] | None = None
 
     @classmethod
     def create(
@@ -44,6 +41,7 @@ class InputProfile(BaseModel):
         datetime_index: Collection[datetime],
         load_profile: Collection[float],
         ambient_temperature_profile: Collection[float],
+        load_profiles_three_winding: Collection[Collection[float]] | None = None,
     ) -> Self:
         """Create an InputProfile from datetime index, load profile, and ambient temperature profile.
 
@@ -51,6 +49,8 @@ class InputProfile(BaseModel):
             datetime_index: The datetime index for the profiles.
             load_profile: The load profile for the transformer.
             ambient_temperature_profile: The ambient temperature profile for the transformer.
+            load_profiles_three_winding: ; a 2D collection containing three load profiles for
+                three-winding transfOptionalormers.
 
         Returns:
             An InputProfile object.
@@ -77,9 +77,7 @@ class InputProfile(BaseModel):
             '2023-01-01T01:00:00.000000', '2023-01-01T02:00:00.000000'],
             dtype='datetime64[us]'), load_profile=array([0.8, 0.9, 1. ]),
             ambient_temperature_profile=array([25. , 24.5, 24. ]),
-            load_profile_middle_voltage_side=None, load_profile_high_voltage_side=None)
-
-            ```
+            load_profiles_three_winding=None)
 
         Example: Directly creating an InputProfile object using numpy arrays.
             ```python
@@ -97,21 +95,22 @@ class InputProfile(BaseModel):
             ...         dtype=np.datetime64,
             ...     ),
             ...     load_profile=np.array([0.8, 0.9, 1.0], dtype=float),
-            ...     ambient_temperature_profile=np.array([25.0, 24.5, 24.0], dtype=float),
+            ...     ambient_temperature_profile=np.array([25.0, 24.5, 24.0], dtype=float)
             ... )
             >>> input_profile
             InputProfile(datetime_index=array(['2023-01-01T00:00:00.000000',
             '2023-01-01T01:00:00.000000', '2023-01-01T02:00:00.000000'],
             dtype='datetime64[us]'), load_profile=array([0.8, 0.9, 1. ]),
             ambient_temperature_profile=array([25. , 24.5, 24. ]),
-            load_profile_middle_voltage_side=None, load_profile_high_voltage_side=None)
-
-            ```
+            load_profiles_three_winding=None)
         """
         return cls(
             datetime_index=np.array(datetime_index, dtype=np.datetime64),
             load_profile=np.array(load_profile, dtype=float),
             ambient_temperature_profile=np.array(ambient_temperature_profile, dtype=float),
+            load_profiles_three_winding=np.array(load_profiles_three_winding, dtype=float)
+            if load_profiles_three_winding is not None
+            else None,
         )
 
     @model_validator(mode="after")
@@ -132,17 +131,35 @@ class InputProfile(BaseModel):
                 f"load profile length: {len(self.load_profile)}, ambient temperature profile length: "
                 f"{len(self.ambient_temperature_profile)}"
             )
+        if self.load_profiles_three_winding is not None:
+            if self.load_profiles_three_winding.shape[0] == 3:
+                n = self.load_profiles_three_winding.shape[1]
+            elif self.load_profiles_three_winding.shape[1] == 3:
+                n = self.load_profiles_three_winding.shape[0]
+            else:
+                raise ValueError("load_profiles_three_winding must have shape (3, N) or (N, 3)")
+            if n != len(self.datetime_index):
+                raise ValueError(
+                    f"load_profiles_three_winding must have the same number of time steps as datetime_index. "
+                    f"datetime_index length: {len(self.datetime_index)}, "
+                    f"load_profiles_three_winding shape: {self.load_profiles_three_winding.shape}"
+                )
         return self
 
     @model_validator(mode="after")
     def _check_arrays_are_one_dimensional(self) -> Self:
-        """Check if the arrays are one-dimensional."""
+        """Check if the arrays are one-dimensional (or two-dimensional for load_profiles_three_winding)."""
         if self.datetime_index.ndim != 1:
             raise ValueError("The datetime_index array must be one-dimensional.")
         if self.load_profile.ndim != 1:
             raise ValueError("The load_profile array must be one-dimensional.")
         if self.ambient_temperature_profile.ndim != 1:
             raise ValueError("The ambient_temperature_profile array must be one-dimensional.")
+        if self.load_profiles_three_winding is not None:
+            if self.load_profiles_three_winding.ndim != 2:
+                raise ValueError("load_profiles_three_winding must be a two-dimensional array.")
+            if not (self.load_profiles_three_winding.shape[0] == 3 or self.load_profiles_three_winding.shape[1] == 3):
+                raise ValueError("load_profiles_three_winding must have shape (3, N) or (N, 3)")
         return self
 
     @classmethod
@@ -154,6 +171,10 @@ class InputProfile(BaseModel):
                 - 'datetime_index': The datetime index for the profiles.
                 - 'load_profile': The load profile for the transformer.
                 - 'ambient_temperature_profile': The ambient temperature profile for the transformer.
+                - Optionally:
+                - 'load_profile_low_voltage_side': Load profile for the low voltage side.
+                - 'load_profile_middle_voltage_side': Load profile for the middle voltage side.
+                - 'load_profile_high_voltage_side': Load profile for the high voltage side.
 
         Returns:
             An InputProfile object.
@@ -163,10 +184,30 @@ class InputProfile(BaseModel):
         if missing_columns:
             raise ValueError(f"The dataframe is missing the following required columns: {', '.join(missing_columns)}")
 
+        load_profiles_three_winding = None
+        if "load_profiles_three_winding" in df.columns:
+            load_profiles_three_winding = np.stack(df["load_profiles_three_winding"].tolist())
+        elif all(
+            col in df.columns
+            for col in [
+                "load_profile_low_voltage_side",
+                "load_profile_middle_voltage_side",
+                "load_profile_high_voltage_side",
+            ]
+        ):
+            load_profiles_three_winding = np.stack(
+                [
+                    df["load_profile_low_voltage_side"].to_numpy(),
+                    df["load_profile_middle_voltage_side"].to_numpy(),
+                    df["load_profile_high_voltage_side"].to_numpy(),
+                ]
+            )
+
         return cls(
             datetime_index=df["datetime_index"].to_numpy(),
             load_profile=df["load_profile"].to_numpy(),
             ambient_temperature_profile=df["ambient_temperature_profile"].to_numpy(),
+            load_profiles_three_winding=load_profiles_three_winding,
         )
 
     def __len__(self) -> int:
