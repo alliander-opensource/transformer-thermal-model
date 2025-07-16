@@ -240,7 +240,7 @@ class Model:
         f1 = self._calculate_f1(dt)
         f2_windings = self._calculate_f2_winding(dt)
         f2_oil = self._calculate_f2_oil(dt)
-        top_k = self.transformer._end_temperature_top_oil(load)
+        top_k = self.transformer._end_temperature_top_oil(self.data)
         static_hot_spot_incr = self._calculate_static_hot_spot_increase(load)
 
         top_oil_temp_profile, hot_spot_temp_profile = self._calculate_temperature_profiles(

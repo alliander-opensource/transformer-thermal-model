@@ -13,7 +13,6 @@ from pydantic import BaseModel, ConfigDict, model_validator
 
 logger = logging.getLogger(__name__)
 
-
 class InputProfile(BaseModel):
     """Class containing the temperature and load profiles for the thermal model `Model()`.
 
@@ -32,16 +31,43 @@ class InputProfile(BaseModel):
     load_profile: np.typing.NDArray[np.float64]
     ambient_temperature_profile: np.typing.NDArray[np.float64]
 
-    # Optional attribute for three-winding transformer load profiles
-    load_profiles_three_winding: np.typing.NDArray[np.float64] | None = None
+    # Optional attributes for three-winding transformer load profiles
+    load_profile_high_voltage_side: np.typing.NDArray[np.float64] | None = None
+    load_profile_middle_voltage_side: np.typing.NDArray[np.float64] | None = None
+    load_profile_low_voltage_side: np.typing.NDArray[np.float64] | None = None
+
+    @model_validator(mode="after")
+    def _check_three_winding_profiles(self) -> Self:
+        """Check that all three winding profiles."""
+        profiles = [
+            self.load_profile_high_voltage_side,
+            self.load_profile_middle_voltage_side,
+            self.load_profile_low_voltage_side,
+        ]
+        filled = [p is not None for p in profiles]
+        if any(filled) and not all(filled):
+            raise ValueError(
+                "If any of the three-winding load profiles are provided, all three must be provided."
+            )
+        n = len(self.ambient_temperature_profile)
+        if all(filled):
+            for load in profiles:
+                if load is None or len(load) != n:
+                    raise ValueError(
+                        "Each three-winding load profile must be provided and have the same length as "
+                        f"ambient_temperature_profile ({n})."
+                    )
+        return self
 
     @classmethod
     def create(
         cls,
         datetime_index: Collection[datetime],
-        load_profile: Collection[float],
         ambient_temperature_profile: Collection[float],
-        load_profiles_three_winding: Collection[Collection[float]] | None = None,
+        load_profile: Collection[float],
+        load_profile_high_voltage_side: Collection[float] | None = None,
+        load_profile_middle_voltage_side: Collection[float] | None = None,
+        load_profile_low_voltage_side: Collection[float] | None = None,
     ) -> Self:
         """Create an InputProfile from datetime index, load profile, and ambient temperature profile.
 
@@ -49,8 +75,12 @@ class InputProfile(BaseModel):
             datetime_index: The datetime index for the profiles.
             load_profile: The load profile for the transformer.
             ambient_temperature_profile: The ambient temperature profile for the transformer.
-            load_profiles_three_winding: ; a 2D collection containing three load profiles for
-                three-winding transfOptionalormers.
+            load_profile_high_voltage_side: Optional; load profile for the high voltage side of 
+                a three-winding transformer.
+            load_profile_middle_voltage_side: Optional; load profile for the middle voltage side of
+                a three-winding transformer.
+            load_profile_low_voltage_side: Optional; load profile for the low voltage side of
+                a three-winding transformer.
 
         Returns:
             An InputProfile object.
@@ -77,7 +107,9 @@ class InputProfile(BaseModel):
             '2023-01-01T01:00:00.000000', '2023-01-01T02:00:00.000000'],
             dtype='datetime64[us]'), load_profile=array([0.8, 0.9, 1. ]),
             ambient_temperature_profile=array([25. , 24.5, 24. ]),
-            load_profiles_three_winding=None)
+            load_profile_high_voltage_side=None,
+            load_profile_middle_voltage_side=None,
+            load_profile_low_voltage_side=None)
 
         Example: Directly creating an InputProfile object using numpy arrays.
             ```python
@@ -102,16 +134,22 @@ class InputProfile(BaseModel):
             '2023-01-01T01:00:00.000000', '2023-01-01T02:00:00.000000'],
             dtype='datetime64[us]'), load_profile=array([0.8, 0.9, 1. ]),
             ambient_temperature_profile=array([25. , 24.5, 24. ]),
-            load_profiles_three_winding=None)
+            load_profile_high_voltage_side=None,
+            load_profile_middle_voltage_side=None,
+            load_profile_low_voltage_side=None)
         """
         return cls(
             datetime_index=np.array(datetime_index, dtype=np.datetime64),
             load_profile=np.array(load_profile, dtype=float),
             ambient_temperature_profile=np.array(ambient_temperature_profile, dtype=float),
-            load_profiles_three_winding=np.array(load_profiles_three_winding, dtype=float)
-            if load_profiles_three_winding is not None
-            else None,
+            load_profile_high_voltage_side=np.array(load_profile_high_voltage_side, dtype=float)
+            if load_profile_high_voltage_side is not None else None,
+            load_profile_middle_voltage_side=np.array(load_profile_middle_voltage_side, dtype=float)
+            if load_profile_middle_voltage_side is not None else None,
+            load_profile_low_voltage_side=np.array(load_profile_low_voltage_side, dtype=float)
+            if load_profile_low_voltage_side is not None else None,
         )
+
 
     @model_validator(mode="after")
     def _check_datetime_index_is_sorted(self) -> Self:
@@ -131,19 +169,7 @@ class InputProfile(BaseModel):
                 f"load profile length: {len(self.load_profile)}, ambient temperature profile length: "
                 f"{len(self.ambient_temperature_profile)}"
             )
-        if self.load_profiles_three_winding is not None:
-            if self.load_profiles_three_winding.shape[0] == 3:
-                n = self.load_profiles_three_winding.shape[1]
-            elif self.load_profiles_three_winding.shape[1] == 3:
-                n = self.load_profiles_three_winding.shape[0]
-            else:
-                raise ValueError("load_profiles_three_winding must have shape (3, N) or (N, 3)")
-            if n != len(self.datetime_index):
-                raise ValueError(
-                    f"load_profiles_three_winding must have the same number of time steps as datetime_index. "
-                    f"datetime_index length: {len(self.datetime_index)}, "
-                    f"load_profiles_three_winding shape: {self.load_profiles_three_winding.shape}"
-                )
+
         return self
 
     @model_validator(mode="after")
@@ -155,11 +181,6 @@ class InputProfile(BaseModel):
             raise ValueError("The load_profile array must be one-dimensional.")
         if self.ambient_temperature_profile.ndim != 1:
             raise ValueError("The ambient_temperature_profile array must be one-dimensional.")
-        if self.load_profiles_three_winding is not None:
-            if self.load_profiles_three_winding.ndim != 2:
-                raise ValueError("load_profiles_three_winding must be a two-dimensional array.")
-            if not (self.load_profiles_three_winding.shape[0] == 3 or self.load_profiles_three_winding.shape[1] == 3):
-                raise ValueError("load_profiles_three_winding must have shape (3, N) or (N, 3)")
         return self
 
     @classmethod
@@ -184,31 +205,18 @@ class InputProfile(BaseModel):
         if missing_columns:
             raise ValueError(f"The dataframe is missing the following required columns: {', '.join(missing_columns)}")
 
-        load_profiles_three_winding = None
-        if "load_profiles_three_winding" in df.columns:
-            load_profiles_three_winding = np.stack(df["load_profiles_three_winding"].tolist())
-        elif all(
-            col in df.columns
-            for col in [
-                "load_profile_low_voltage_side",
-                "load_profile_middle_voltage_side",
-                "load_profile_high_voltage_side",
-            ]
-        ):
-            load_profiles_three_winding = np.stack(
-                [
-                    df["load_profile_low_voltage_side"].to_numpy(),
-                    df["load_profile_middle_voltage_side"].to_numpy(),
-                    df["load_profile_high_voltage_side"].to_numpy(),
-                ]
-            )
-
         return cls(
             datetime_index=df["datetime_index"].to_numpy(),
             load_profile=df["load_profile"].to_numpy(),
             ambient_temperature_profile=df["ambient_temperature_profile"].to_numpy(),
-            load_profiles_three_winding=load_profiles_three_winding,
+            load_profile_high_voltage_side=df["load_profile_high_voltage_side"].to_numpy() 
+            if "load_profile_high_voltage_side" in df else None,
+            load_profile_middle_voltage_side=df["load_profile_middle_voltage_side"].to_numpy() 
+            if "load_profile_middle_voltage_side" in df else None,
+            load_profile_low_voltage_side=df["load_profile_low_voltage_side"].to_numpy() 
+            if "load_profile_low_voltage_side" in df else None,
         )
+    
 
     def __len__(self) -> int:
         """Return the length of the datetime index."""

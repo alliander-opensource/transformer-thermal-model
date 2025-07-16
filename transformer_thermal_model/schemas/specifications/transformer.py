@@ -149,7 +149,7 @@ class TransformerSpecifications(BaseModel):
     end_temp_reduction: float
 
     # three-phase transformer specific specs
-    three_phase: ThreePhaseTransformerSpecifications | None
+    three_phase: ThreePhaseTransformerSpecifications | None = None
 
     @classmethod
     def create(

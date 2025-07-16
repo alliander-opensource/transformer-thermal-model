@@ -8,6 +8,8 @@ import numpy as np
 
 from transformer_thermal_model.cooler import CoolerType
 from transformer_thermal_model.schemas import UserTransformerSpecifications
+from transformer_thermal_model.schemas.specifications.transformer_component import TransformerComponentSpecifications
+from transformer_thermal_model.schemas.thermal_model.input_profile import InputProfile
 
 from .power import PowerTransformer
 
@@ -22,7 +24,12 @@ class ThreePhaseTransformer(PowerTransformer):
     used with ONAN (Oil Natural Air Natural) cooling type.
     """
 
-    def __init__(self, user_specs: UserTransformerSpecifications, cooling_type: CoolerType):
+    def __init__(
+        self,
+        user_specs: UserTransformerSpecifications,
+        cooling_type: CoolerType,
+        internal_component_specs: TransformerComponentSpecifications | None = None,
+    ):
         """Initialize the transformer object.
 
         Args:
@@ -30,11 +37,15 @@ class ThreePhaseTransformer(PowerTransformer):
                 provide to build the transformer. Any optional specifications not provided will be taken from the
                 default specifications.
             cooling_type (CoolerType): The type of cooling system used for the transformer.
+            internal_component_specs (TransformerComponentSpecifications, optional): The internal component
+                specifications, which are used to calculate the limiting component. Defaults to None.
         """
         if user_specs.three_phase is None:
             raise ValueError("Three-phase transformer specifications must be provided.")
 
-        super().__init__(user_specs, cooling_type=cooling_type)
+        super().__init__(
+            user_specs=user_specs, cooling_type=cooling_type, internal_component_specs=internal_component_specs
+        )
 
     @property
     def _c1(self) -> float:
@@ -70,10 +81,13 @@ class ThreePhaseTransformer(PowerTransformer):
             + self.specs.three_phase.load_loss_mv_lv
         )
 
-    def _end_temperature_top_oil(self, load: np.ndarray) -> np.ndarray:
+    def _end_temperature_top_oil(self, input_profile: InputProfile) -> np.ndarray:
         """Calculate the end temperature of the top-oil."""
-        hs_rise = self._get_loss_hc() * (load[0] / self.specs.three_phase.nom_load_hv) ** 2
-        mc_rise = self._get_loss_mc() * (load[1] / self.specs.three_phase.nom_load_mv) ** 2
-        lc_rise = self._get_loss_lc() * (load[2] / self.specs.three_phase.nom_load_lv) ** 2
+        hv_rise = self._get_loss_hc() * (input_profile.load_profile_high_voltage_side / 
+                                         self.specs.three_phase.nom_load_hv) ** 2
+        mv_rise = self._get_loss_mc() * (input_profile.load_profile_middle_voltage_side / 
+                                         self.specs.three_phase.nom_load_mv) ** 2
+        lv_rise = self._get_loss_lc() * (input_profile.load_profile_low_voltage_side / 
+                                         self.specs.three_phase.nom_load_lv) ** 2
 
-        return (hs_rise + mc_rise + lc_rise + self.specs.no_load_loss) / self.specs.three_phase.load_loss_total
+        return (hv_rise + mv_rise + lv_rise + self.specs.no_load_loss) / self.specs.three_phase.total_load_loss

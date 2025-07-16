@@ -6,6 +6,7 @@ from abc import ABC, abstractmethod
 
 import numpy as np
 
+from transformer_thermal_model.schemas import InputProfile
 from transformer_thermal_model.cooler import CoolerType
 from transformer_thermal_model.schemas import (
     DefaultTransformerSpecifications,
@@ -62,7 +63,7 @@ class Transformer(ABC):
         pass
 
     @abstractmethod
-    def _end_temperature_top_oil(self, load: np.ndarray) -> np.ndarray:
+    def _end_temperature_top_oil(self, input_profile: InputProfile) -> np.ndarray:
         pass
 
     def _set_HS_fac(self, hot_spot_factor: float) -> None:
