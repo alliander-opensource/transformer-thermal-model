@@ -9,14 +9,13 @@ import numpy as np
 from transformer_thermal_model.cooler import CoolerType
 from transformer_thermal_model.schemas import UserTransformerSpecifications
 from transformer_thermal_model.schemas.specifications.transformer_component import TransformerComponentSpecifications
-from transformer_thermal_model.schemas.thermal_model.input_profile import InputProfile
 
-from .power import PowerTransformer
+from .base import Transformer
 
 logger = logging.getLogger(__name__)
 
 
-class ThreePhaseTransformer(PowerTransformer):
+class ThreePhaseTransformer(Transformer):
     """A three-phase transformer.
 
     The ThreePhaseTransformer class represents a three-phase transformer.
@@ -81,13 +80,10 @@ class ThreePhaseTransformer(PowerTransformer):
             + self.specs.three_phase.load_loss_mv_lv
         )
 
-    def _end_temperature_top_oil(self, input_profile: InputProfile) -> np.ndarray:
+    def _end_temperature_top_oil(self, input_profile: np.ndarray) -> np.ndarray:
         """Calculate the end temperature of the top-oil."""
-        hv_rise = self._get_loss_hc() * (input_profile.load_profile_high_voltage_side / 
-                                         self.specs.three_phase.nom_load_hv) ** 2
-        mv_rise = self._get_loss_mc() * (input_profile.load_profile_middle_voltage_side / 
-                                         self.specs.three_phase.nom_load_mv) ** 2
-        lv_rise = self._get_loss_lc() * (input_profile.load_profile_low_voltage_side / 
-                                         self.specs.three_phase.nom_load_lv) ** 2
+        hv_rise = self._get_loss_hc() * (input_profile[:, 0] / self.specs.three_phase.nom_load_hv) ** 2
+        mv_rise = self._get_loss_mc() * (input_profile[:, 1] / self.specs.three_phase.nom_load_mv) ** 2
+        lv_rise = self._get_loss_lc() * (input_profile[:, 2] / self.specs.three_phase.nom_load_lv) ** 2
 
         return (hv_rise + mv_rise + lv_rise + self.specs.no_load_loss) / self.specs.three_phase.total_load_loss

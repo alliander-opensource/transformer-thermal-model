@@ -4,7 +4,6 @@
 
 import copy
 
-import numpy as np
 import pytest
 
 from transformer_thermal_model.components import BushingConfig, TransformerSide, VectorConfig
@@ -258,16 +257,3 @@ def check_dif_onan_onaf(onan_power_transformer, onaf_power_transformer):
 def test_that_hot_spot_factor_is_set_to_default_if_none_provided(transformer):
     """Test that a transformer initiated with `hot_spot_factor=None`, the value is set to the default value."""
     assert transformer.specs.hot_spot_fac == transformer.defaults.hot_spot_fac
-
-
-def test_three_phase_transformer_initialization(three_fase_transformer):
-    """Test the initialization of the ThreePhaseTransformer class."""
-    assert three_fase_transformer.cooling_type == CoolerType.ONAN
-    assert three_fase_transformer.specs.three_phase is not None
-
-    # end_temp = three_fase_transformer._end_temperature_top_oil(load=np.array([0, 0]))
-    # assert end_temp.shape == (2,)
-
-    assert three_fase_transformer.specs.three_phase.nom_load_hv == 1000
-    assert three_fase_transformer.specs.three_phase.nom_load_mv == 750
-    assert three_fase_transformer.specs.three_phase.nom_load_lv == 500

@@ -9,13 +9,14 @@ from .specifications.transformer import (
     UserTransformerSpecifications,
 )
 from .specifications.transformer_component import TransformerComponentSpecifications
-from .thermal_model import InputProfile, OutputProfile
+from .thermal_model import BaseInputProfile, InputProfile, OutputProfile
 
 __all__ = [
     "UserTransformerSpecifications",
     "DefaultTransformerSpecifications",
     "TransformerSpecifications",
     "TransformerComponentSpecifications",
+    "BaseInputProfile",
     "InputProfile",
     "OutputProfile",
 ]

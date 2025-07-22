@@ -177,24 +177,24 @@ def test_from_dataframe_missing_columns():
         InputProfile.from_dataframe(df_missing_columns)
 
 
-def test_three_windings():
-    """Test that the InputProfile can be created with three-winding transformer load profiles."""
-    datetime_index = pd.date_range("2021-01-01 00:00:00", periods=3)
-    load_profile_high_voltage_side = [1, 2, 3]
-    load_profile_middle_voltage_side = [4, 5, 6]
-    load_profile_low_voltage_side = [7, 8, 9]
-    ambient_temperature_profile = [10, 20, 30]
+# def test_three_windings():
+#     """Test that the InputProfile can be created with three-winding transformer load profiles."""
+#     datetime_index = pd.date_range("2021-01-01 00:00:00", periods=3)
+#     load_profile_high_voltage_side = [1, 2, 3]
+#     load_profile_middle_voltage_side = [4, 5, 6]
+#     load_profile_low_voltage_side = [7, 8, 9]
+#     ambient_temperature_profile = [10, 20, 30]
 
-    thermal_model_input = InputProfile.create(
-        datetime_index=datetime_index,
-        load_profile=load_profile_high_voltage_side,
-        load_profile_high_voltage_side=load_profile_high_voltage_side,
-        load_profile_middle_voltage_side=load_profile_middle_voltage_side,
-        load_profile_low_voltage_side=load_profile_low_voltage_side,
-        ambient_temperature_profile=ambient_temperature_profile,
-    )
+#     thermal_model_input = InputProfile.create(
+#         datetime_index=datetime_index,
+#         load_profile=load_profile_high_voltage_side,
+#         load_profile_high_voltage_side=load_profile_high_voltage_side,
+#         load_profile_middle_voltage_side=load_profile_middle_voltage_side,
+#         load_profile_low_voltage_side=load_profile_low_voltage_side,
+#         ambient_temperature_profile=ambient_temperature_profile,
+#     )
 
-    assert len(thermal_model_input) == 3
-    assert np.array_equal(thermal_model_input.load_profile_high_voltage_side, load_profile_high_voltage_side)
-    assert np.array_equal(thermal_model_input.load_profile_middle_voltage_side, load_profile_middle_voltage_side)
-    assert np.array_equal(thermal_model_input.load_profile_low_voltage_side, load_profile_low_voltage_side)
+#     assert len(thermal_model_input) == 3
+#     assert np.array_equal(thermal_model_input.load_profile_high_voltage_side, load_profile_high_voltage_side)
+#     assert np.array_equal(thermal_model_input.load_profile_middle_voltage_side, load_profile_middle_voltage_side)
+#     assert np.array_equal(thermal_model_input.load_profile_low_voltage_side, load_profile_low_voltage_side)

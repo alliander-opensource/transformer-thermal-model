@@ -9,25 +9,30 @@ from pydantic import BaseModel, Field
 logger = logging.getLogger(__name__)
 
 
+class WindingSpecifications(BaseModel):
+    """The winding specifications that are common to all transformers."""
+
+    # Winding specific specs
+    nom_load: float = Field(..., description="Nominal load current from the type plate [A]")
+    load_loss: float = Field(..., description="Load loss or short-circuit loss or copper loss from the windings [W]")
+    winding_oil_gradient: float = Field(default=17, description="Winding oil gradient (worst case) [K]", ge=0)
+
+
 class ThreePhaseTransformerSpecifications(BaseModel):
     """The transformer specifications that are specific to a three-phase transformer."""
 
     # three-phase transformer specific specs
-    nom_load_lv: float
-    nom_load_mv: float
-    nom_load_hv: float
-    load_loss_hv_mv: float
-    load_loss_mv_lv: float
-    load_loss_hv_lv: float
-
-    winding_oil_gradient_lv: float = Field(
-        default=17, description="Winding oil gradient for low side (worst case) [K]", ge=0
+    lv_winding: WindingSpecifications = Field(
+        ...,
+        description="Low-voltage winding specifications, including nominal load and load loss [A, W]",
     )
-    winding_oil_gradient_mv: float = Field(
-        default=17, description="Winding oil gradient for medium side (worst case) [K]", ge=0
+    mv_winding: WindingSpecifications = Field(
+        ...,
+        description="Medium-voltage winding specifications, including nominal load and load loss [A, W]",
     )
-    winding_oil_gradient_hv: float = Field(
-        default=17, description="Winding oil gradient for high side (worst case) [K]", ge=0
+    hv_winding: WindingSpecifications = Field(
+        ...,
+        description="High-voltage winding specifications, including nominal load and load loss [A, W]",
     )
 
     load_loss_total: float | None = None
@@ -41,7 +46,7 @@ class ThreePhaseTransformerSpecifications(BaseModel):
         """
         if self.load_loss_total is not None:
             return self.load_loss_total
-        return self.load_loss_hv_mv + self.load_loss_mv_lv + self.load_loss_hv_lv
+        return self.lv_winding.load_loss + self.mv_winding.load_loss + self.hv_winding.load_loss
 
 
 class UserTransformerSpecifications(BaseModel):
@@ -92,9 +97,6 @@ class UserTransformerSpecifications(BaseModel):
     end_temp_reduction: float | None = Field(
         default=None, description="Lowering of the end temperature with respect to the current specification [K]"
     )
-
-    # three-phase transformer specific specs
-    three_phase: ThreePhaseTransformerSpecifications | None = None
 
 
 class DefaultTransformerSpecifications(BaseModel):

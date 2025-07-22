@@ -14,7 +14,6 @@ from transformer_thermal_model.schemas import (
     TransformerComponentSpecifications,
     UserTransformerSpecifications,
 )
-from transformer_thermal_model.schemas.thermal_model.input_profile import InputProfile
 
 from .base import Transformer
 
@@ -260,9 +259,9 @@ class PowerTransformer(Transformer):
 
             return ct_load / nominal_load
 
-    def _end_temperature_top_oil(self, input_profile: InputProfile) -> np.ndarray:
+    def _end_temperature_top_oil(self, input_profile: np.ndarray) -> np.ndarray:
         """Calculate the end temperature of the top-oil."""
-        load_ratio = np.power(input_profile.load_profile / self.specs.nom_load_sec_side, 2)
+        load_ratio = np.power(input_profile / self.specs.nom_load_sec_side, 2)
         total_loss_ratio = (self.specs.no_load_loss + self.specs.load_loss * load_ratio) / (
             self.specs.no_load_loss + self.specs.load_loss
         )

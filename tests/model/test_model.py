@@ -392,7 +392,9 @@ def test_if_rise_matches_iec(iec_load_profile):
         user_specs=transformer_specifications,
         cooling_type=CoolerType.ONAF,
     )
-    iec_load_profile.load_profile = iec_load_profile.load_profile * transformer_specifications.nom_load_sec_side
+    iec_load_profile.load_profile_lv_side = (
+        iec_load_profile.load_profile_lv_side * transformer_specifications.nom_load_sec_side
+    )
     thermal_model = Model(temperature_profile=iec_load_profile, transformer=transformer, init_top_oil_temp=25.6 + 12.7)
     results = thermal_model.run()
     hot_spot_temp_profile = results.hot_spot_temp_profile
@@ -413,3 +415,14 @@ def test_if_rise_matches_iec(iec_load_profile):
         calculated_hot_spot_temp = hot_spot_temp_profile[timestamp]
         assert calculated_top_oil_temp == pytest.approx(expected["top_oil_temperature"], abs=1.5)
         assert calculated_hot_spot_temp == pytest.approx(expected["hot_spot_temperature"], abs=1.5)
+
+
+# def test_three_fase_model(three_fase_transformer, three_fase_profile_input):
+#     """Test if the three-phase transformer model works as expected."""
+#     model = Model(
+#         temperature_profile=three_fase_profile_input,
+#         transformer=three_fase_transformer,
+#     )
+#     results = model.run()
+#     top_oil_temp = np.array(results.top_oil_temp_profile)
+#     hot_spot_temp = np.array(results.hot_spot_temp_profile)

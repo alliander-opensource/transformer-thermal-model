@@ -7,8 +7,10 @@ import logging
 import numpy as np
 import pandas as pd
 
-from transformer_thermal_model.schemas import InputProfile, OutputProfile
+from transformer_thermal_model.schemas import BaseInputProfile, OutputProfile
+from transformer_thermal_model.schemas.thermal_model.input_profile import ThreeWindingInputProfile
 from transformer_thermal_model.transformer import Transformer
+from transformer_thermal_model.transformer.threephase import ThreePhaseTransformer
 
 logger = logging.getLogger(__name__)
 
@@ -66,14 +68,14 @@ class Model:
     """
 
     transformer: Transformer
-    data: InputProfile
+    data: BaseInputProfile
     init_top_oil_temp: float | None
     hot_spot_temp_profile: pd.Series
     top_oil_temp_profile: pd.Series
 
     def __init__(
         self,
-        temperature_profile: InputProfile,
+        temperature_profile: BaseInputProfile,
         transformer: Transformer,
         init_top_oil_temp: float | None = None,
     ) -> None:
@@ -89,6 +91,12 @@ class Model:
                 with the first value of the ambient temperature profile.
 
         """
+        if isinstance(transformer, ThreePhaseTransformer) and not isinstance(
+            temperature_profile, ThreeWindingInputProfile
+        ):
+            raise TypeError(
+                "If transformer is a ThreePhaseTransformer, the input profile must be a ThreeWindingInputProfile."
+            )
         logger.info("Initializing the thermal model.")
         logger.info(f"First timestamp: {temperature_profile.datetime_index[0]}")
         logger.info(f"Last timestamp: {temperature_profile.datetime_index[-1]}")
@@ -99,6 +107,7 @@ class Model:
                 "The given Transformer has no hot-spot factor specified. Please specify the hot-spot "
                 "factor or calibrate it using the calibrate_hotspot_factor function."
             )
+
         self.transformer = transformer
         self.data = temperature_profile
         self.init_top_oil_temp = init_top_oil_temp
@@ -240,7 +249,7 @@ class Model:
         f1 = self._calculate_f1(dt)
         f2_windings = self._calculate_f2_winding(dt)
         f2_oil = self._calculate_f2_oil(dt)
-        top_k = self.transformer._end_temperature_top_oil(self.data)
+        top_k = self.transformer._end_temperature_top_oil(load)
         static_hot_spot_incr = self._calculate_static_hot_spot_increase(load)
 
         top_oil_temp_profile, hot_spot_temp_profile = self._calculate_temperature_profiles(

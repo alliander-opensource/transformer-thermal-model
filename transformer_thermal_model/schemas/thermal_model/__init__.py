@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MPL-2.0
 
-from .input_profile import InputProfile
+from .input_profile import BaseInputProfile, InputProfile
 from .output_profile import OutputProfile
 
-__all__ = ["InputProfile", "OutputProfile"]
+__all__ = ["BaseInputProfile", "InputProfile", "OutputProfile"]
