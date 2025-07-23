@@ -15,18 +15,31 @@ class OutputProfile(BaseModel):
     Additionally, this class has a helper function to convert the output to a single dataframe for convenience.
     """
 
-    top_oil_temp_profile: pd.Series
-    hot_spot_temp_profile: pd.Series
+    top_oil_temp_profile: pd.Series | pd.DataFrame
+    hot_spot_temp_profile: pd.Series | pd.DataFrame
 
     def convert_to_dataframe(self) -> pd.DataFrame:
-        """Process the two pandas Series and convert them to a single dataframe, linked by the timestamp."""
-        df = pd.DataFrame(
-            {
-                "timestamp": self.top_oil_temp_profile.index,
-                "top_oil_temperature": self.top_oil_temp_profile,
-                "hot_spot_temperature": self.hot_spot_temp_profile,
-            }
-        )
+        """Convert the output profiles to a pandas DataFrame.
+
+        For Series, link by timestamp index. For DataFrame, concatenate columns and use index if available.
+        """
+        if isinstance(self.top_oil_temp_profile, pd.Series):
+            df = pd.DataFrame(
+                {
+                    "timestamp": self.top_oil_temp_profile.index,
+                    "top_oil_temperature": self.top_oil_temp_profile,
+                    "hot_spot_temperature": self.hot_spot_temp_profile,
+                }
+            )
+        else:
+            # Assume DataFrame for three-phase case
+            df = pd.DataFrame(
+                {
+                    "timestamp": self.top_oil_temp_profile.index if hasattr(self.top_oil_temp_profile, "index") else None,
+                    "top_oil_temperature": self.top_oil_temp_profile,
+                    "hot_spot_temperature": self.hot_spot_temp_profile,
+                }
+            )
         return df
 
     model_config = ConfigDict(arbitrary_types_allowed=True)

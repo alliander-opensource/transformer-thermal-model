@@ -417,12 +417,12 @@ def test_if_rise_matches_iec(iec_load_profile):
         assert calculated_hot_spot_temp == pytest.approx(expected["hot_spot_temperature"], abs=1.5)
 
 
-# def test_three_fase_model(three_fase_transformer, three_fase_profile_input):
-#     """Test if the three-phase transformer model works as expected."""
-#     model = Model(
-#         temperature_profile=three_fase_profile_input,
-#         transformer=three_fase_transformer,
-#     )
-#     results = model.run()
-#     top_oil_temp = np.array(results.top_oil_temp_profile)
-#     hot_spot_temp = np.array(results.hot_spot_temp_profile)
+def test_three_phase_model(three_phase_transformer, three_fase_profile_input):
+    """Test if the three-phase transformer model works as expected."""
+    model = Model(
+        temperature_profile=three_fase_profile_input,
+        transformer=three_phase_transformer,
+    )
+    results = model.run()
+    top_oil_temp = np.array(results.top_oil_temp_profile)
+    hot_spot_temp = np.array(results.hot_spot_temp_profile)

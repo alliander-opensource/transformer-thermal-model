@@ -255,9 +255,19 @@ class Model:
         top_oil_temp_profile, hot_spot_temp_profile = self._calculate_temperature_profiles(
             load, t_internal, f1, f2_windings, f2_oil, top_k, static_hot_spot_incr
         )
+
         logger.info("The calculation with the Thermal model is completed.")
-        logger.info(f"Max top-oil temperature: {max(top_oil_temp_profile)}")
-        logger.info(f"Max hot-spot temperature: {max(hot_spot_temp_profile)}")
+        # Handle both 1D and multi-dimensional profiles
+        max_top_oil_temp = np.max(top_oil_temp_profile)
+        max_hot_spot_temp = np.max(hot_spot_temp_profile)
+        logger.info(f"Max top-oil temperature: {max_top_oil_temp}")
+        logger.info(f"Max hot-spot temperature: {max_hot_spot_temp}")
+
+        if isinstance(self.transformer, ThreePhaseTransformer):
+            return OutputProfile(
+                top_oil_temp_profile=pd.DataFrame(top_oil_temp_profile, index=self.data.datetime_index),
+                hot_spot_temp_profile=pd.DataFrame(hot_spot_temp_profile, index=self.data.datetime_index),
+            )
 
         return OutputProfile(
             top_oil_temp_profile=pd.Series(top_oil_temp_profile, index=self.data.datetime_index),

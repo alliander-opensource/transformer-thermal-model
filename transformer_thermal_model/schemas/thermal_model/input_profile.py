@@ -209,6 +209,35 @@ class ThreeWindingInputProfile(BaseInputProfile):
                 self.load_profile_low_voltage_side,
             ]
         )
+    
+    @classmethod
+    def create(
+        cls,
+        datetime_index: Collection[datetime],
+        ambient_temperature_profile: Collection[float],
+        load_profile_high_voltage_side: Collection[float],
+        load_profile_middle_voltage_side: Collection[float],
+        load_profile_low_voltage_side: Collection[float],
+    ) -> Self:
+        """Create a ThreeWindingInputProfile from datetime index, ambient temperature profile, and three load profiles.
+
+        Args:
+            datetime_index: The datetime index for the profiles.
+            ambient_temperature_profile: The ambient temperature profile for the transformer.
+            load_profile_high_voltage_side: Load profile for the high voltage side.
+            load_profile_middle_voltage_side: Load profile for the middle voltage side.
+            load_profile_low_voltage_side: Load profile for the low voltage side.
+
+        Returns:
+            A ThreeWindingInputProfile object.
+        """
+        return cls(
+            datetime_index=np.array(datetime_index, dtype=np.datetime64),
+            ambient_temperature_profile=np.array(ambient_temperature_profile, dtype=float),
+            load_profile_high_voltage_side=np.array(load_profile_high_voltage_side, dtype=float),
+            load_profile_middle_voltage_side=np.array(load_profile_middle_voltage_side, dtype=float),
+            load_profile_low_voltage_side=np.array(load_profile_low_voltage_side, dtype=float),
+        )
 
     @model_validator(mode="after")
     def _check_three_winding_profiles(self) -> Self:

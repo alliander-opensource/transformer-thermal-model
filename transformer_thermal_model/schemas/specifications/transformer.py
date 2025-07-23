@@ -14,7 +14,6 @@ class WindingSpecifications(BaseModel):
 
     # Winding specific specs
     nom_load: float = Field(..., description="Nominal load current from the type plate [A]")
-    load_loss: float = Field(..., description="Load loss or short-circuit loss or copper loss from the windings [W]")
     winding_oil_gradient: float = Field(default=17, description="Winding oil gradient (worst case) [K]", ge=0)
 
 
@@ -34,6 +33,18 @@ class ThreePhaseTransformerSpecifications(BaseModel):
         ...,
         description="High-voltage winding specifications, including nominal load and load loss [A, W]",
     )
+    load_loss_hv_lv: float = Field(
+        ...,
+        description="Load loss between high-voltage and low-voltage winding [W]",
+    )
+    load_loss_hv_mv: float = Field(
+        ...,
+        description="Load loss between high-voltage and medium-voltage winding [W]",
+    )
+    load_loss_mv_lv: float = Field(
+        ...,
+        description="Load loss between medium-voltage and low-voltage winding [W]",
+    )
 
     load_loss_total: float | None = None
 
@@ -46,7 +57,7 @@ class ThreePhaseTransformerSpecifications(BaseModel):
         """
         if self.load_loss_total is not None:
             return self.load_loss_total
-        return self.lv_winding.load_loss + self.mv_winding.load_loss + self.hv_winding.load_loss
+        return self.load_loss_hv_lv + self.load_loss_hv_mv + self.load_loss_mv_lv
 
 
 class UserTransformerSpecifications(BaseModel):
@@ -98,6 +109,13 @@ class UserTransformerSpecifications(BaseModel):
         default=None, description="Lowering of the end temperature with respect to the current specification [K]"
     )
 
+    # three-phase transformer specific specs
+    three_phase: ThreePhaseTransformerSpecifications | None = Field(
+        default=None,
+        description=(
+            "Three-phase transformer specifications, including low, medium, and high voltage winding specifications."
+        )
+    )
 
 class DefaultTransformerSpecifications(BaseModel):
     """The default transformer specifications that will be defined when the user does not provide them.

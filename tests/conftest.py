@@ -6,8 +6,12 @@ import pandas as pd
 import pytest
 
 from transformer_thermal_model.cooler import CoolerType
-from transformer_thermal_model.schemas import InputProfile, UserTransformerSpecifications
-from transformer_thermal_model.transformer import DistributionTransformer, PowerTransformer
+from transformer_thermal_model.schemas import InputProfile, UserTransformerSpecifications, ThreeWindingInputProfile
+from transformer_thermal_model.schemas.specifications.transformer import (
+    ThreePhaseTransformerSpecifications,
+    WindingSpecifications,
+)
+from transformer_thermal_model.transformer import DistributionTransformer, PowerTransformer, ThreePhaseTransformer
 
 
 @pytest.fixture(scope="function")
@@ -99,45 +103,45 @@ def iec_load_profile():
     return input_profile
 
 
-# @pytest.fixture(scope="function")
-# def three_fase_transformer() -> ThreePhaseTransformer:
-#     """Create a three-phase transformer object."""
-#     three_phase_specs = ThreePhaseTransformerSpecifications(
-#         nom_load_lv=500,  # Nominal load low voltage side [A]
-#         nom_load_mv=750,  # Nominal load medium voltage side [A]
-#         nom_load_hv=1000,  # Nominal load high voltage side [A]
-#         load_loss_hv_mv=300,  # Load loss between HV and MV [W]
-#         load_loss_mv_lv=400,  # Load loss between MV and LV [W]
-#         load_loss_hv_lv=500,  # Load loss between HV windings [W]
-#     )
+@pytest.fixture(scope="function")
+def three_phase_transformer() -> ThreePhaseTransformer:
+    """Create a three-phase transformer object."""
+    three_phase_specs = ThreePhaseTransformerSpecifications(
+        lv_winding=WindingSpecifications(nom_load=1000, winding_oil_gradient=2),
+        mv_winding=WindingSpecifications(nom_load=2000, winding_oil_gradient=3),
+        hv_winding=WindingSpecifications(nom_load=3000, winding_oil_gradient=4),
+        load_loss_hv_lv=50,
+        load_loss_hv_mv=75,
+        load_loss_mv_lv=25,
+    )
 
-#     user_specs = UserTransformerSpecifications(
-#         load_loss=1000,  # Transformer load loss [W]
-#         nom_load_sec_side=1500,  # Transformer nominal current secondary side [A]
-#         no_load_loss=200,  # Transformer no-load loss [W]
-#         amb_temp_surcharge=20,  # Ambient temperature surcharge [K]
-#         hot_spot_fac=1.1,
-#         three_phase=three_phase_specs,
-#     )
-#     trafo = ThreePhaseTransformer(user_specs=user_specs, cooling_type=CoolerType.ONAN)
-#     return trafo
+    user_specs = UserTransformerSpecifications(
+        load_loss=1000,  # Transformer load loss [W]
+        nom_load_sec_side=1500,  # Transformer nominal current secondary side [A]
+        no_load_loss=200,  # Transformer no-load loss [W]
+        amb_temp_surcharge=20,  # Ambient temperature surcharge [K]
+        hot_spot_fac=1.1,
+        three_phase=three_phase_specs,
+    )
+
+    trafo = ThreePhaseTransformer(user_specs=user_specs, cooling_type=CoolerType.ONAN)
+    return trafo
 
 
-# @pytest.fixture(scope="function")
-# def three_fase_profile_input() -> InputProfile:
-#     """Create a three-phase transformer input profile."""
-#     datetime_index = pd.date_range("2021-01-01 00:00:00", periods=3)
-#     load_profile_high_voltage_side = [1, 2, 3]
-#     load_profile_middle_voltage_side = [4, 5, 6]
-#     load_profile_low_voltage_side = [7, 8, 9]
-#     ambient_temperature_profile = [10, 20, 30]
+@pytest.fixture(scope="function")
+def three_fase_profile_input() -> ThreeWindingInputProfile:
+    """Create a three-phase transformer input profile."""
+    datetime_index = pd.date_range("2021-01-01 00:00:00", periods=3)
+    load_profile_high_voltage_side = [1, 2, 3]
+    load_profile_middle_voltage_side = [4, 5, 6]
+    load_profile_low_voltage_side = [7, 8, 9]
+    ambient_temperature_profile = [10, 20, 30]
 
-#     thermal_model_input = InputProfile.create(
-#         datetime_index=datetime_index,
-#         load_profile=load_profile_high_voltage_side,
-#         load_profile_high_voltage_side=load_profile_high_voltage_side,
-#         load_profile_middle_voltage_side=load_profile_middle_voltage_side,
-#         load_profile_low_voltage_side=load_profile_low_voltage_side,
-#         ambient_temperature_profile=ambient_temperature_profile,
-#     )
-#     return thermal_model_input
+    thermal_model_input = ThreeWindingInputProfile.create(
+        datetime_index=datetime_index,
+        load_profile_high_voltage_side=load_profile_high_voltage_side,
+        load_profile_middle_voltage_side=load_profile_middle_voltage_side,
+        load_profile_low_voltage_side=load_profile_low_voltage_side,
+        ambient_temperature_profile=ambient_temperature_profile
+    )
+    return thermal_model_input
