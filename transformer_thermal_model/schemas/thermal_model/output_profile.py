@@ -15,7 +15,7 @@ class OutputProfile(BaseModel):
     Additionally, this class has a helper function to convert the output to a single dataframe for convenience.
     """
 
-    top_oil_temp_profile: pd.Series | pd.DataFrame
+    top_oil_temp_profile: pd.Series
     hot_spot_temp_profile: pd.Series | pd.DataFrame
 
     def convert_to_dataframe(self) -> pd.DataFrame:

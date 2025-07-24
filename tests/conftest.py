@@ -111,7 +111,7 @@ def three_phase_transformer() -> ThreePhaseTransformer:
     user_specs = UserTreePhaseTransformerSpecifications(
         lv_winding=WindingSpecifications(nom_load=1000, winding_oil_gradient=23),
         mv_winding=WindingSpecifications(nom_load=1000, winding_oil_gradient=23),
-        hv_winding=WindingSpecifications(nom_load=1000, winding_oil_gradient=23),
+        hv_winding=WindingSpecifications(nom_load=1500, winding_oil_gradient=23),
         load_loss_hv_lv=10,  # Transformer load loss high voltage to low voltage [W]
         load_loss_hv_mv=10,  # Transformer load loss high voltage to medium voltage [W]
         load_loss_mv_lv=10,  # Transformer load loss medium voltage to low voltage [W]
