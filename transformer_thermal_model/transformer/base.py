@@ -8,9 +8,12 @@ import numpy as np
 
 from transformer_thermal_model.cooler import CoolerType
 from transformer_thermal_model.schemas import (
+    BaseTransformerSpecifications,
     DefaultTransformerSpecifications,
+    ThreePhaseTransformerSpecifications,
     TransformerSpecifications,
-    UserTransformerSpecifications,
+    UserBaseTransformerSpecifications,
+    UserTreePhaseTransformerSpecifications,
 )
 
 
@@ -28,11 +31,11 @@ class Transformer(ABC):
     """
 
     cooling_type: CoolerType
-    specs: TransformerSpecifications
+    specs: BaseTransformerSpecifications
 
     def __init__(
         self,
-        user_specs: UserTransformerSpecifications,
+        user_specs: UserBaseTransformerSpecifications,
         cooling_type: CoolerType,
     ):
         """Initialize the Transformer object.
@@ -44,7 +47,11 @@ class Transformer(ABC):
             cooling_type (CoolerType): The cooling type. Can be ONAN, ONAF.
         """
         self.cooling_type: CoolerType = cooling_type
-        self.specs = TransformerSpecifications.create(self.defaults, user_specs)
+        if type(user_specs) is UserTreePhaseTransformerSpecifications:
+            self.specs = ThreePhaseTransformerSpecifications.create(self.defaults, user_specs)
+        else:
+            self.specs = TransformerSpecifications.create(self.defaults, user_specs)
+
 
     @property
     @abstractmethod

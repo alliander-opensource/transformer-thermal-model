@@ -66,12 +66,12 @@ class InputProfile(BaseInputProfile):
           Shape should be (3, N) or (N, 3), where N is the number of time steps.
     """
 
-    load_profile_lv_side: np.typing.NDArray[np.float64]
+    load_profile_sec_side: np.typing.NDArray[np.float64]
 
     @property
     def load_profile(self) -> np.typing.NDArray[np.float64]:
         """Return the single load profile for the transformer."""
-        return self.load_profile_lv_side
+        return self.load_profile_sec_side
 
     @classmethod
     def create(
@@ -111,7 +111,7 @@ class InputProfile(BaseInputProfile):
             InputProfile(datetime_index=array(['2023-01-01T00:00:00.000000',
             '2023-01-01T01:00:00.000000', '2023-01-01T02:00:00.000000'],
             dtype='datetime64[us]'), ambient_temperature_profile=array([25. , 24.5, 24. ]),
-            load_profile_lv_side=array([0.8, 0.9, 1. ]))
+            load_profile_sec_side=array([0.8, 0.9, 1. ]))
 
         Example: Directly creating an InputProfile object using numpy arrays.
             ```python
@@ -128,25 +128,25 @@ class InputProfile(BaseInputProfile):
             ...         ],
             ...         dtype=np.datetime64,
             ...     ),
-            ...     load_profile_lv_side=np.array([0.8, 0.9, 1.0], dtype=float),
+            ...     load_profile_sec_side=np.array([0.8, 0.9, 1.0], dtype=float),
             ...     ambient_temperature_profile=np.array([25.0, 24.5, 24.0], dtype=float)
             ... )
             >>> input_profile
             InputProfile(datetime_index=array(['2023-01-01T00:00:00.000000',
             '2023-01-01T01:00:00.000000', '2023-01-01T02:00:00.000000'],
             dtype='datetime64[us]'), ambient_temperature_profile=array([25. , 24.5, 24. ]),
-            load_profile_lv_side=array([0.8, 0.9, 1. ]))
+            load_profile_sec_side=array([0.8, 0.9, 1. ]))
         """
         return cls(
             datetime_index=np.array(datetime_index, dtype=np.datetime64),
-            load_profile_lv_side=np.array(load_profile, dtype=float),
+            load_profile_sec_side=np.array(load_profile, dtype=float),
             ambient_temperature_profile=np.array(ambient_temperature_profile, dtype=float),
         )
 
     @model_validator(mode="after")
     def _check_same_length_of_profiles(self) -> Self:
         """Check if the length of the profiles is the same."""
-        if len(self.datetime_index) != len(self.load_profile_lv_side) or len(self.datetime_index) != len(
+        if len(self.datetime_index) != len(self.load_profile_sec_side) or len(self.datetime_index) != len(
             self.ambient_temperature_profile
         ):
             raise ValueError(
@@ -181,7 +181,7 @@ class InputProfile(BaseInputProfile):
 
         return cls(
             datetime_index=df["datetime_index"].to_numpy(),
-            load_profile_lv_side=df["load_profile"].to_numpy(),
+            load_profile_sec_side=df["load_profile"].to_numpy(),
             ambient_temperature_profile=df["ambient_temperature_profile"].to_numpy(),
         )
 

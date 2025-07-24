@@ -23,23 +23,12 @@ class OutputProfile(BaseModel):
 
         For Series, link by timestamp index. For DataFrame, concatenate columns and use index if available.
         """
-        if isinstance(self.top_oil_temp_profile, pd.Series):
-            df = pd.DataFrame(
-                {
-                    "timestamp": self.top_oil_temp_profile.index,
-                    "top_oil_temperature": self.top_oil_temp_profile,
-                    "hot_spot_temperature": self.hot_spot_temp_profile,
-                }
-            )
-        else:
-            # Assume DataFrame for three-phase case
-            df = pd.DataFrame(
-                {
-                    "timestamp": self.top_oil_temp_profile.index if hasattr(self.top_oil_temp_profile, "index") else None,
-                    "top_oil_temperature": self.top_oil_temp_profile,
-                    "hot_spot_temperature": self.hot_spot_temp_profile,
-                }
-            )
+        df = pd.DataFrame(
+            {
+                "timestamp": self.top_oil_temp_profile.index,
+                "top_oil_temperature": self.top_oil_temp_profile,
+                "hot_spot_temperature": self.hot_spot_temp_profile,
+            })
         return df
 
     model_config = ConfigDict(arbitrary_types_allowed=True)

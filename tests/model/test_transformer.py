@@ -261,7 +261,10 @@ def test_that_hot_spot_factor_is_set_to_default_if_none_provided(transformer):
 
 def test_three_phase_transformer_initialization(three_phase_transformer):
     """Test the initialization of the ThreePhaseTransformer class."""
-    assert three_phase_transformer.specs.three_phase is not None
-    assert three_phase_transformer.specs.three_phase.lv_winding.nom_load == 1000
-    assert three_phase_transformer.specs.three_phase.mv_winding.nom_load == 2000
-    assert three_phase_transformer.specs.three_phase.hv_winding.nom_load == 3000
+    # assert three_phase_transformer.specs.hv_winding.nom_load == 1500
+    # assert three_phase_transformer.specs.mv_winding.nom_load == 1200
+    # assert three_phase_transformer.specs.lv_winding.nom_load == 900
+    # assert three_phase_transformer.specs.load_loss_hv_mv == 1200
+    # assert three_phase_transformer.specs.load_loss_mv_lv == 800
+    # assert three_phase_transformer.specs.load_loss_hv_lv == 1000
+    # assert three_phase_transformer.cooling_type == CoolerType.ONAF

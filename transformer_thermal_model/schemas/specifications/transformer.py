@@ -3,11 +3,13 @@
 # SPDX-License-Identifier: MPL-2.0
 
 import logging
+from abc import abstractmethod
+from typing import Self
 
+import numpy as np
 from pydantic import BaseModel, Field
 
 logger = logging.getLogger(__name__)
-
 
 class WindingSpecifications(BaseModel):
     """The winding specifications that are common to all transformers."""
@@ -16,9 +18,61 @@ class WindingSpecifications(BaseModel):
     nom_load: float = Field(..., description="Nominal load current from the type plate [A]")
     winding_oil_gradient: float = Field(default=17, description="Winding oil gradient (worst case) [K]", ge=0)
 
+class UserBaseTransformerSpecifications(BaseModel):
+    """Base class for transformer specifications, containing common attributes."""
+    
+    no_load_loss: float = Field(
+        ...,
+        description=(
+            "Transformer no-load loss, the passive loss when a transformer is under voltage. Also called iron-loss "
+            "because the loss occurs in the core of the transformer. (taken from worst-case from FA-test) [W]"
+        ),
+    )
+    amb_temp_surcharge: float = Field(
+        ...,
+        description=(
+            "Ambient temperature surcharge, A flat temperature surcharge due to some environmental factors related to "
+            "the transformer (e.g. +10K when standing inside) [K]"
+        ),
+    )
+    
+    # Cooler specific specs
+    time_const_oil: float | None = Field(default=None, description="Time constant oil [min]", gt=0)
+    time_const_windings: float | None = Field(default=None, description="Time constant windings [min]", gt=0)
+    top_oil_temp_rise: float | None = Field(default=None, description="Top-oil temperature rise [K]", ge=0)
+    winding_oil_gradient: float | None = Field(default=None, description="Winding oil gradient (worst case) [K]", ge=0)
+    hot_spot_fac: float | None = Field(default=None, description="Hot-spot factor [-]", ge=0)
 
-class ThreePhaseTransformerSpecifications(BaseModel):
-    """The transformer specifications that are specific to a three-phase transformer."""
+    # Transformer specific specs
+    oil_const_k11: float | None = Field(default=None, description="Oil constant k11 [-]", gt=0)
+    winding_const_k21: int | None = Field(default=None, description="Winding constant k21 [-]", gt=0)
+    winding_const_k22: int | None = Field(default=None, description="Winding constant k22 [-]", gt=0)
+    oil_exp_x: float | None = Field(default=None, description="Oil exponent x [-]", ge=0)
+    winding_exp_y: float | None = Field(default=None, description="Winding exponent y [-]", ge=0)
+    end_temp_reduction: float | None = Field(
+        default=None, description="Lowering of the end temperature with respect to the current specification [K]"
+    )
+
+class UserTransformerSpecifications(UserBaseTransformerSpecifications):
+    """The transformer specifications that the user must and can provide.
+
+    If any of the optional values are provided, they will overwrite the `defaults` that are set in the
+    respective `Transformer` class.
+    """
+
+    load_loss: float = Field(
+        ...,
+        description=(
+            "Transformer load loss or short-circuit loss or copper loss from the windings "
+            "(taken from worst-case from FA-test) [W]"
+        ),
+    )
+    nom_load_sec_side: float = Field(
+        ..., description="Transformer nominal current secondary side from the type plate [A]"
+    )
+
+class UserTreePhaseTransformerSpecifications(UserBaseTransformerSpecifications):
+    """The transformer specifications that the user must and can provide for a three-phase transformer."""
 
     # three-phase transformer specific specs
     lv_winding: WindingSpecifications = Field(
@@ -48,75 +102,6 @@ class ThreePhaseTransformerSpecifications(BaseModel):
 
     load_loss_total: float | None = None
 
-    @property
-    def total_load_loss(self) -> float:
-        """Returns the total load loss for the three-phase transformer.
-
-        If 'load_loss_total' is set, returns that value.
-        Otherwise, calculates as the sum of individual load losses.
-        """
-        if self.load_loss_total is not None:
-            return self.load_loss_total
-        return self.load_loss_hv_lv + self.load_loss_hv_mv + self.load_loss_mv_lv
-
-
-class UserTransformerSpecifications(BaseModel):
-    """The transformer specifications that the user must and can provide.
-
-    If any of the optional values are provided, they will overwrite the `defaults` that are set in the
-    respective `Transformer` class.
-    """
-
-    load_loss: float = Field(
-        ...,
-        description=(
-            "Transformer load loss or short-circuit loss or copper loss from the windings "
-            "(taken from worst-case from FA-test) [W]"
-        ),
-    )
-    nom_load_sec_side: float = Field(
-        ..., description="Transformer nominal current secondary side from the type plate [A]"
-    )
-    no_load_loss: float = Field(
-        ...,
-        description=(
-            "Transformer no-load loss, the passive loss when a transformer is under voltage. Also called iron-loss "
-            "because the loss occurs in the core of the transformer. (taken from worst-case from FA-test) [W]"
-        ),
-    )
-    amb_temp_surcharge: float = Field(
-        ...,
-        description=(
-            "Ambient temperature surcharge, A flat temperature surcharge due to some environmental factors related to "
-            "the transformer (e.g. +10K when standing inside) [K]"
-        ),
-    )
-
-    # Cooler specific specs
-    time_const_oil: float | None = Field(default=None, description="Time constant oil [min]", gt=0)
-    time_const_windings: float | None = Field(default=None, description="Time constant windings [min]", gt=0)
-    top_oil_temp_rise: float | None = Field(default=None, description="Top-oil temperature rise [K]", ge=0)
-    winding_oil_gradient: float | None = Field(default=None, description="Winding oil gradient (worst case) [K]", ge=0)
-    hot_spot_fac: float | None = Field(default=None, description="Hot-spot factor [-]", ge=0)
-
-    # Transformer specific specs
-    oil_const_k11: float | None = Field(default=None, description="Oil constant k11 [-]", gt=0)
-    winding_const_k21: int | None = Field(default=None, description="Winding constant k21 [-]", gt=0)
-    winding_const_k22: int | None = Field(default=None, description="Winding constant k22 [-]", gt=0)
-    oil_exp_x: float | None = Field(default=None, description="Oil exponent x [-]", ge=0)
-    winding_exp_y: float | None = Field(default=None, description="Winding exponent y [-]", ge=0)
-    end_temp_reduction: float | None = Field(
-        default=None, description="Lowering of the end temperature with respect to the current specification [K]"
-    )
-
-    # three-phase transformer specific specs
-    three_phase: ThreePhaseTransformerSpecifications | None = Field(
-        default=None,
-        description=(
-            "Three-phase transformer specifications, including low, medium, and high voltage winding specifications."
-        )
-    )
-
 class DefaultTransformerSpecifications(BaseModel):
     """The default transformer specifications that will be defined when the user does not provide them.
 
@@ -138,29 +123,16 @@ class DefaultTransformerSpecifications(BaseModel):
     winding_exp_y: float
     end_temp_reduction: float
 
-
-class TransformerSpecifications(BaseModel):
-    """Class containing transformer specifications.
-
-    This class is a combination of the mandatory user-provided specifications and the default transformer
-    specifications. Should the user provide any of the optional specifications, they will override the default
-    specifications, via the `create` class method.
-    """
-
-    # mandatory user-provided specs
-    load_loss: float
-    nom_load_sec_side: float
+class BaseTransformerSpecifications(BaseModel):
+    """Base class for transformer specifications, containing common attributes."""
+    # Common specs
     no_load_loss: float
     amb_temp_surcharge: float
-
-    # Cooler specific specs
     time_const_oil: float
     time_const_windings: float
     top_oil_temp_rise: float
     winding_oil_gradient: float
     hot_spot_fac: float
-
-    # Transformer specific specs
     oil_const_k11: float
     winding_const_k21: int
     winding_const_k22: int
@@ -168,15 +140,79 @@ class TransformerSpecifications(BaseModel):
     winding_exp_y: float
     end_temp_reduction: float
 
-    # three-phase transformer specific specs
-    three_phase: ThreePhaseTransformerSpecifications | None = None
+    @property
+    def nominal_load_array(cls) -> np.ndarray:
+        """Return the nominal loads as a numpy array."""
+        raise NotImplementedError("This method should be implemented in subclasses.")
+
+    @property
+    def winding_oil_gradient_array(cls) -> np.ndarray:
+        """Return the winding oil gradient as a numpy array."""
+        raise NotImplementedError("This method should be implemented in subclasses.")
+
+class TransformerSpecifications(BaseTransformerSpecifications):
+    """Class containing single-phase transformer specifications."""
+    load_loss: float
+    nom_load_sec_side: float
 
     @classmethod
     def create(
         cls, defaults: DefaultTransformerSpecifications, user: UserTransformerSpecifications
-    ) -> "TransformerSpecifications":
-        """Create the transformer specifications from the defaults and the user specifications."""
+    ) -> Self:
+        """Create a TransformerSpecifications instance by merging defaults with user specifications."""
         data = defaults.model_dump()
         data.update(user.model_dump(exclude_none=True))
         logger.info("Complete transformer specifications: %s", data)
         return cls(**data)
+    
+    @property
+    def nominal_load_array(cls) -> np.ndarray:
+        """Return the nominal loads as a numpy array."""
+        return np.array([cls.nom_load_sec_side])
+
+    @property
+    def winding_oil_gradient_array(cls) -> np.ndarray:
+        """Return the winding oil gradient as a numpy array."""
+        return np.array([cls.winding_oil_gradient])
+
+class ThreePhaseTransformerSpecifications(BaseTransformerSpecifications):
+    """The transformer specifications that are specific to a three-phase transformer."""
+    lv_winding: WindingSpecifications
+    mv_winding: WindingSpecifications
+    hv_winding: WindingSpecifications
+    load_loss_hv_lv: float
+    load_loss_hv_mv: float
+    load_loss_mv_lv: float
+    load_loss_total: float
+
+    @classmethod
+    def create(
+        cls, defaults: DefaultTransformerSpecifications, user: UserTreePhaseTransformerSpecifications
+    ) -> Self:
+        """Create a ThreePhaseTransformerSpecifications instance by merging defaults with user specifications."""
+        data = defaults.model_dump()
+        data.update(user.model_dump(exclude_none=True))
+        logger.info("Complete three-phase transformer specifications: %s", data)
+        
+        if user.load_loss_total is None:
+            data["load_loss_total"] = (
+                user.load_loss_hv_lv + user.load_loss_hv_mv + user.load_loss_mv_lv
+            )
+
+        return cls(**data)
+
+    @property
+    def nominal_load_array(cls) -> np.ndarray:
+        """Return the nominal loads as a numpy array."""
+        return np.array([
+            [cls.hv_winding.nom_load],
+            [cls.mv_winding.nom_load],
+            [cls.lv_winding.nom_load]
+        ])
+
+    @property
+    def winding_oil_gradient_array(cls) -> np.ndarray:
+        """Return the winding oil gradient as a numpy array."""
+        return np.array([[cls.hv_winding.winding_oil_gradient], 
+                         [cls.mv_winding.winding_oil_gradient], 
+                         [cls.lv_winding.winding_oil_gradient]])

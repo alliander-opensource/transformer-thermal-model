@@ -159,8 +159,8 @@ class Model:
         """Calculate the static hot-spot temperature increase using vectorized operations."""
         return (
             self.transformer.specs.hot_spot_fac
-            * self.transformer.specs.winding_oil_gradient
-            * (load / self.transformer.specs.nom_load_sec_side) ** self.transformer.specs.winding_exp_y
+            * self.transformer.specs.winding_oil_gradient_array
+            * (load / self.transformer.specs.nominal_load_array) ** self.transformer.specs.winding_exp_y
         )
 
     def _calculate_temperature_profiles(
@@ -202,8 +202,12 @@ class Model:
         top_oil_temp = t_internal[0] if self.init_top_oil_temp is None else self.init_top_oil_temp
         hot_spot_increase_windings = 0.0
         hot_spot_increase_oil = 0.0
-        top_oil_temp_profile[0] = top_oil_temp
-        hot_spot_temp_profile[0] = top_oil_temp
+        if top_oil_temp_profile.ndim == 1:
+            top_oil_temp_profile[0] = top_oil_temp
+            hot_spot_temp_profile[0] = top_oil_temp
+        else:
+            top_oil_temp_profile[:, 0] = top_oil_temp
+            hot_spot_temp_profile[:, 0] = top_oil_temp
 
         # Iteratively calculate profiles
         for i in range(1, len(load)):
@@ -265,8 +269,8 @@ class Model:
 
         if isinstance(self.transformer, ThreePhaseTransformer):
             return OutputProfile(
-                top_oil_temp_profile=pd.DataFrame(top_oil_temp_profile, index=self.data.datetime_index),
-                hot_spot_temp_profile=pd.DataFrame(hot_spot_temp_profile, index=self.data.datetime_index),
+                top_oil_temp_profile=pd.DataFrame(top_oil_temp_profile),
+                hot_spot_temp_profile=pd.DataFrame(hot_spot_temp_profile),
             )
 
         return OutputProfile(

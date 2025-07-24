@@ -392,8 +392,8 @@ def test_if_rise_matches_iec(iec_load_profile):
         user_specs=transformer_specifications,
         cooling_type=CoolerType.ONAF,
     )
-    iec_load_profile.load_profile_lv_side = (
-        iec_load_profile.load_profile_lv_side * transformer_specifications.nom_load_sec_side
+    iec_load_profile.load_profile_sec_side = (
+        iec_load_profile.load_profile_sec_side * transformer_specifications.nom_load_sec_side
     )
     thermal_model = Model(temperature_profile=iec_load_profile, transformer=transformer, init_top_oil_temp=25.6 + 12.7)
     results = thermal_model.run()
@@ -417,12 +417,41 @@ def test_if_rise_matches_iec(iec_load_profile):
         assert calculated_hot_spot_temp == pytest.approx(expected["hot_spot_temperature"], abs=1.5)
 
 
-def test_three_phase_model(three_phase_transformer, three_fase_profile_input):
+def test_three_phase_model(three_phase_transformer, three_phase_profile_input):
     """Test if the three-phase transformer model works as expected."""
     model = Model(
-        temperature_profile=three_fase_profile_input,
+        temperature_profile=three_phase_profile_input,
         transformer=three_phase_transformer,
     )
+
+    end_temp = three_phase_transformer._end_temperature_top_oil(
+        three_phase_profile_input.load_profile
+    )
+    print("Expected end temperature:", end_temp)
+
     results = model.run()
     top_oil_temp = np.array(results.top_oil_temp_profile)
     hot_spot_temp = np.array(results.hot_spot_temp_profile)
+    print("Top oil temperature profile:", top_oil_temp)
+    print("Hot spot temperature profile:", hot_spot_temp)
+    expected_top_oil_temp = np.array([25.0, 26.0, 27.0, 28.0, 29.0])
+    assert np.allclose(top_oil_temp, expected_top_oil_temp, rtol=1e-5)
+
+
+def test_one_phase_transformer(one_phase_transformer, one_phase_profile_input):
+    """Test if the one-phase transformer model works as expected."""
+    model = Model(
+        temperature_profile=one_phase_profile_input,
+        transformer=one_phase_transformer,
+    )
+    end_temp = one_phase_transformer._end_temperature_top_oil(
+        one_phase_profile_input.load_profile
+    )
+    print("Expected end temperature:", end_temp)
+    results = model.run()
+    top_oil_temp = np.array(results.top_oil_temp_profile)
+    hot_spot_temp = np.array(results.hot_spot_temp_profile)
+    print("Top oil temperature profile:", top_oil_temp)
+    print("Hot spot temperature profile:", hot_spot_temp)
+    expected_top_oil_temp = np.array([25.0, 26.0, 27.0, 28.0, 29.0])
+    assert np.allclose(top_oil_temp, expected_top_oil_temp, rtol=1e-5)

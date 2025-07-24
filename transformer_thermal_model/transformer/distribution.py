@@ -45,11 +45,11 @@ class DistributionTransformer(Transformer):
         end_temp_reduction=0.0
         >>> # the combination of the user specifications and the default specifications
         >>> print(my_transformer.specs)
-        load_loss=5200.0 nom_load_sec_side=900.0 no_load_loss=800.0
+        no_load_loss=800.0
         amb_temp_surcharge=10.0 time_const_oil=180.0 time_const_windings=4.0
         top_oil_temp_rise=60.0 winding_oil_gradient=23.0 hot_spot_fac=1.2
         oil_const_k11=1.0 winding_const_k21=1 winding_const_k22=2 oil_exp_x=0.8
-        winding_exp_y=1.6 end_temp_reduction=0.0 three_phase=None
+        winding_exp_y=1.6 end_temp_reduction=0.0 load_loss=5200.0 nom_load_sec_side=900.0 
 
         ```
     """
