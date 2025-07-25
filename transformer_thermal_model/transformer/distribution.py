@@ -42,11 +42,11 @@ class DistributionTransformer(Transformer):
         end_temp_reduction=0.0
         >>> # the combination of the user specifications and the default specifications
         >>> print(my_transformer.specs)
-        load_loss=5200.0 nom_load_sec_side=900.0 no_load_loss=800.0
+        no_load_loss=800.0
         amb_temp_surcharge=10.0 time_const_oil=180.0 time_const_windings=4.0
         top_oil_temp_rise=60.0 winding_oil_gradient=23.0 hot_spot_fac=1.2
         oil_const_k11=1.0 winding_const_k21=1 winding_const_k22=2 oil_exp_x=0.8
-        winding_exp_y=1.6 end_temp_reduction=0.0
+        winding_exp_y=1.6 end_temp_reduction=0.0 load_loss=5200.0 nom_load_sec_side=900.0 
 
         ```
     """
@@ -91,6 +91,16 @@ class DistributionTransformer(Transformer):
     @property
     def _pre_factor(self) -> float:
         return self.specs.top_oil_temp_rise + self.specs.amb_temp_surcharge
+    
+    def _end_temperature_top_oil(self, load: np.ndarray) -> np.ndarray:
+        """Calculate the end temperature of the top-oil."""
+        load_ratio = np.power(load / self.specs.nom_load_sec_side, 2)
+        total_loss_ratio = (self.specs.no_load_loss + self.specs.load_loss * load_ratio) / (
+            self.specs.no_load_loss + self.specs.load_loss
+        )
+        step_one_end_t0 = self._pre_factor * np.power(total_loss_ratio, self.specs.oil_exp_x)
+
+        return step_one_end_t0
 
     def _calculate_internal_temp(self, ambient_temperature: np.ndarray) -> np.ndarray:
         """Calculate the internal temperature of the transformer.
