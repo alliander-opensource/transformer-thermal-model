@@ -6,7 +6,12 @@ import pandas as pd
 import pytest
 
 from transformer_thermal_model.cooler import CoolerType
-from transformer_thermal_model.schemas import InputProfile, UserTransformerSpecifications
+from transformer_thermal_model.schemas import (
+    InputProfile,
+    UserTransformerSpecifications,
+    UserTreePhaseTransformerSpecifications,
+    WindingSpecifications,
+)
 from transformer_thermal_model.transformer import DistributionTransformer, PowerTransformer
 
 
@@ -97,3 +102,18 @@ def iec_load_profile():
     )
     input_profile = InputProfile.from_dataframe(df=profile)
     return input_profile
+
+
+@pytest.fixture(scope="function")
+def user_three_phase_transformer_specs() -> UserTreePhaseTransformerSpecifications:
+    """Create a three-phase transformer specifications object."""
+    return UserTreePhaseTransformerSpecifications(
+        no_load_loss=800,
+        amb_temp_surcharge=10,
+        lv_winding=WindingSpecifications(nom_load=1000, winding_oil_gradient=500),
+        mv_winding=WindingSpecifications(nom_load=2000, winding_oil_gradient=1000),
+        hv_winding=WindingSpecifications(nom_load=3000, winding_oil_gradient=1500),
+        load_loss_hv_lv=50,
+        load_loss_hv_mv=100,
+        load_loss_mv_lv=150,
+    )
