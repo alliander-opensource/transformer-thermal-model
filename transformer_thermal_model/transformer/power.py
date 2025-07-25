@@ -55,7 +55,7 @@ class PowerTransformerComponents(StrEnum):
         amb_temp_surcharge=20.0 time_const_oil=210.0 time_const_windings=10.0
         top_oil_temp_rise=60.0 winding_oil_gradient=17.0 hot_spot_fac=1.3
         oil_const_k11=0.5 winding_const_k21=2 winding_const_k22=2 oil_exp_x=0.8
-        winding_exp_y=1.3 end_temp_reduction=0.0 load_loss=1000.0 nom_load_sec_side=1500.0 
+        winding_exp_y=1.3 end_temp_reduction=0.0 load_loss=1000.0 nom_load_sec_side=1500.0
 
         ```
 
@@ -258,7 +258,6 @@ class PowerTransformer(Transformer):
                 ct_load = self.internal_component_specs.cur_trans_capacity
 
             return ct_load / nominal_load
-
 
     def _end_temperature_top_oil(self, load: np.ndarray) -> np.ndarray:
         """Calculate the end temperature of the top-oil."""

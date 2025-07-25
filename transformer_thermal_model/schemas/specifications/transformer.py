@@ -76,6 +76,7 @@ class UserTransformerSpecifications(BaseUserTransformerSpecifications):
         ..., description="Transformer nominal current secondary side from the type plate [A]"
     )
 
+
 class UserTreePhaseTransformerSpecifications(BaseUserTransformerSpecifications):
     """An extended version of the base transformer specifications for three-phase transformers."""
 
@@ -106,6 +107,7 @@ class UserTreePhaseTransformerSpecifications(BaseUserTransformerSpecifications):
     )
 
     load_loss_total: float | None = None
+
 
 class DefaultTransformerSpecifications(BaseModel):
     """The default transformer specifications that will be defined when the user does not provide them.
@@ -155,7 +157,7 @@ class BaseTransformerSpecifications(BaseModel):
     def winding_oil_gradient_array(cls) -> np.ndarray:
         """Return the winding oil gradient as a numpy array."""
         raise NotImplementedError("This method should be implemented in subclasses.")
-    
+
 
 class TransformerSpecifications(BaseTransformerSpecifications):
     """Class containing transformer specifications.
@@ -177,7 +179,7 @@ class TransformerSpecifications(BaseTransformerSpecifications):
         data.update(user.model_dump(exclude_none=True))
         logger.info("Complete transformer specifications: %s", data)
         return cls(**data)
-    
+
     @property
     def nominal_load_array(cls) -> np.ndarray:
         """Return the nominal loads as a numpy array."""
@@ -187,10 +189,11 @@ class TransformerSpecifications(BaseTransformerSpecifications):
     def winding_oil_gradient_array(cls) -> np.ndarray:
         """Return the winding oil gradient as a numpy array."""
         return np.array([cls.winding_oil_gradient])
-    
+
 
 class ThreePhaseTransformerSpecifications(BaseTransformerSpecifications):
     """The transformer specifications that are specific to a three-phase transformer."""
+
     lv_winding: WindingSpecifications
     mv_winding: WindingSpecifications
     hv_winding: WindingSpecifications
@@ -200,33 +203,29 @@ class ThreePhaseTransformerSpecifications(BaseTransformerSpecifications):
     load_loss_total: float
 
     @classmethod
-    def create(
-        cls, defaults: DefaultTransformerSpecifications, user: UserTreePhaseTransformerSpecifications
-    ) -> Self:
+    def create(cls, defaults: DefaultTransformerSpecifications, user: UserTreePhaseTransformerSpecifications) -> Self:
         """Create a ThreePhaseTransformerSpecifications instance by merging defaults with user specifications."""
         data = defaults.model_dump()
         data.update(user.model_dump(exclude_none=True))
         logger.info("Complete three-phase transformer specifications: %s", data)
 
         if user.load_loss_total is None:
-            data["load_loss_total"] = (
-                user.load_loss_hv_lv + user.load_loss_hv_mv + user.load_loss_mv_lv
-            )
+            data["load_loss_total"] = user.load_loss_hv_lv + user.load_loss_hv_mv + user.load_loss_mv_lv
 
         return cls(**data)
 
     @property
     def nominal_load_array(cls) -> np.ndarray:
         """Return the nominal loads as a numpy array."""
-        return np.array([
-            [cls.hv_winding.nom_load],
-            [cls.mv_winding.nom_load],
-            [cls.lv_winding.nom_load]
-        ])
+        return np.array([[cls.hv_winding.nom_load], [cls.mv_winding.nom_load], [cls.lv_winding.nom_load]])
 
     @property
     def winding_oil_gradient_array(cls) -> np.ndarray:
         """Return the winding oil gradient as a numpy array."""
-        return np.array([[cls.hv_winding.winding_oil_gradient], 
-                         [cls.mv_winding.winding_oil_gradient], 
-                         [cls.lv_winding.winding_oil_gradient]])
+        return np.array(
+            [
+                [cls.hv_winding.winding_oil_gradient],
+                [cls.mv_winding.winding_oil_gradient],
+                [cls.lv_winding.winding_oil_gradient],
+            ]
+        )
