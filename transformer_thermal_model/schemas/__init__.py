@@ -11,6 +11,7 @@ from .specifications.transformer import (
     TransformerSpecifications,
     UserTransformerSpecifications,
     UserTreePhaseTransformerSpecifications,
+    WindingSpecifications,
 )
 from .specifications.transformer_component import TransformerComponentSpecifications
 from .thermal_model import InputProfile, OutputProfile
@@ -24,6 +25,7 @@ __all__ = [
     "ThreePhaseTransformerSpecifications",
     "BaseUserTransformerSpecifications",
     "TransformerComponentSpecifications",
+    "WindingSpecifications",
     "InputProfile",
     "OutputProfile",
 ]
