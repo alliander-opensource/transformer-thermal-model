@@ -32,6 +32,7 @@ def test_three_phase_transformer(user_three_phase_transformer_specs):
     assert (transformer.nominal_load_array == np.array([[3000], [2000], [1000]])).all()
     assert (transformer.winding_oil_gradient_array == np.array([[1500], [1000], [500]])).all()
 
+
 def test_three_phase_input_profile(three_phase_input_profile):
     """Test the creation of a three-phase input profile."""
     assert len(three_phase_input_profile.datetime_index) == 3
@@ -56,5 +57,3 @@ def test_wrong_three_phase_input_profile():
             load_profile_low_voltage_side=[300, 400],
             ambient_temperature_profile=[10, 20, 30],
         )
-    
-
