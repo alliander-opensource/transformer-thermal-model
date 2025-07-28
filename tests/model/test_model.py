@@ -392,7 +392,9 @@ def test_if_rise_matches_iec(iec_load_profile):
         user_specs=transformer_specifications,
         cooling_type=CoolerType.ONAF,
     )
-    iec_load_profile.load_profile = iec_load_profile.load_profile * transformer_specifications.nom_load_sec_side
+    iec_load_profile.load_profile_sec_side = (
+        iec_load_profile.load_profile_sec_side * transformer_specifications.nom_load_sec_side
+    )
     thermal_model = Model(temperature_profile=iec_load_profile, transformer=transformer, init_top_oil_temp=25.6 + 12.7)
     results = thermal_model.run()
     hot_spot_temp_profile = results.hot_spot_temp_profile

@@ -3,8 +3,11 @@
 # SPDX-License-Identifier: MPL-2.0
 
 import numpy as np
+import pandas as pd
+import pytest
 
 from transformer_thermal_model.schemas import DefaultTransformerSpecifications, ThreePhaseTransformerSpecifications
+from transformer_thermal_model.schemas.thermal_model.input_profile import ThreeWindingInputProfile
 
 
 def test_three_phase_transformer(user_three_phase_transformer_specs):
@@ -28,3 +31,30 @@ def test_three_phase_transformer(user_three_phase_transformer_specs):
     assert transformer.time_const_oil == 180
     assert (transformer.nominal_load_array == np.array([[3000], [2000], [1000]])).all()
     assert (transformer.winding_oil_gradient_array == np.array([[1500], [1000], [500]])).all()
+
+def test_three_phase_input_profile(three_phase_input_profile):
+    """Test the creation of a three-phase input profile."""
+    assert len(three_phase_input_profile.datetime_index) == 3
+    assert len(three_phase_input_profile.load_profile) == 3
+
+
+def test_wrong_three_phase_input_profile():
+    """Test the creation of a three-phase input profile with wrong data."""
+    with pytest.raises(ValueError, match="The length of the profiles and index should be the same"):
+        ThreeWindingInputProfile.create(
+            datetime_index=pd.date_range("2021-01-01 00:00:00", periods=3),
+            load_profile_high_voltage_side=[100, 200],
+            load_profile_middle_voltage_side=[200, 300],
+            load_profile_low_voltage_side=[300, 400],
+            ambient_temperature_profile=[10, 20, 30],
+        )
+    with pytest.raises(ValueError, match="The length of the profiles and index should be the same"):
+        ThreeWindingInputProfile.create(
+            datetime_index=pd.date_range("2021-01-01 00:00:00", periods=3),
+            load_profile_high_voltage_side=[100, 200, 300],
+            load_profile_middle_voltage_side=[200, 300],
+            load_profile_low_voltage_side=[300, 400],
+            ambient_temperature_profile=[10, 20, 30],
+        )
+    
+
