@@ -12,6 +12,7 @@ from transformer_thermal_model.cooler import CoolerType
 from transformer_thermal_model.schemas import (
     DefaultTransformerSpecifications,
     TransformerComponentSpecifications,
+    TransformerSpecifications,
     UserTransformerSpecifications,
 )
 
@@ -110,6 +111,7 @@ class PowerTransformer(Transformer):
     )
     internal_component_specs: TransformerComponentSpecifications | None = None
     _err = "Internal components are not set. Please provide these if you wish to calculate the limiting component."
+    specs: TransformerSpecifications
 
     def __init__(
         self,
@@ -137,9 +139,9 @@ class PowerTransformer(Transformer):
             self.internal_component_specs = internal_component_specs
 
         super().__init__(
-            user_specs=user_specs,
             cooling_type=cooling_type,
         )
+        self.specs = TransformerSpecifications.create(self.defaults, user_specs)
 
     @property
     def defaults(self) -> DefaultTransformerSpecifications:

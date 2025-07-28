@@ -152,7 +152,7 @@ class Model:
         return (
             self.transformer.specs.hot_spot_fac
             * self.transformer.specs.winding_oil_gradient
-            * (load / self.transformer.specs.nom_load_sec_side) ** self.transformer.specs.winding_exp_y
+            * (load / self.transformer.specs.nominal_load_array) ** self.transformer.specs.winding_exp_y
         )
 
     def _calculate_temperature_profiles(
@@ -248,8 +248,8 @@ class Model:
             load, t_internal, f1, f2_windings, f2_oil, top_k, static_hot_spot_incr
         )
         logger.info("The calculation with the Thermal model is completed.")
-        logger.info(f"Max top-oil temperature: {max(top_oil_temp_profile)}")
-        logger.info(f"Max hot-spot temperature: {max(hot_spot_temp_profile)}")
+        logger.info(f"Max top-oil temperature: {np.amax(top_oil_temp_profile)}")
+        logger.info(f"Max hot-spot temperature: {np.amax(hot_spot_temp_profile)}")
 
         return OutputProfile(
             top_oil_temp_profile=pd.Series(top_oil_temp_profile, index=self.data.datetime_index),

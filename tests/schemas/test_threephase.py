@@ -35,7 +35,9 @@ def test_three_phase_transformer(user_three_phase_transformer_specs):
 
 def test_three_phase_input_profile(three_phase_input_profile):
     """Test the creation of a three-phase input profile."""
-    assert len(three_phase_input_profile.datetime_index) == len(three_phase_input_profile.load_profile_high_voltage_side)
+    assert len(three_phase_input_profile.datetime_index) == len(
+        three_phase_input_profile.load_profile_high_voltage_side
+    )
     assert len(three_phase_input_profile.load_profile) == 3
 
 

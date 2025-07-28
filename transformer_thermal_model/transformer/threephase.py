@@ -9,6 +9,7 @@ import numpy as np
 from transformer_thermal_model.cooler import CoolerType
 from transformer_thermal_model.schemas import (
     DefaultTransformerSpecifications,
+    ThreePhaseTransformerSpecifications,
     TransformerComponentSpecifications,
     UserTreePhaseTransformerSpecifications,
 )
@@ -17,6 +18,7 @@ from .base import Transformer
 
 logger = logging.getLogger(__name__)
 
+
 class ThreePhaseTransformer(Transformer):
     """A three-phase transformer.
 
@@ -24,6 +26,7 @@ class ThreePhaseTransformer(Transformer):
     This class inherits from the Transformer class. This transformer can be
     used with ONAN (Oil Natural Air Natural) cooling type.
     """
+
     _onan_defaults = DefaultTransformerSpecifications(
         time_const_oil=210,
         time_const_windings=10,
@@ -50,6 +53,7 @@ class ThreePhaseTransformer(Transformer):
         winding_exp_y=1.3,
         end_temp_reduction=0,
     )
+    specs: ThreePhaseTransformerSpecifications
 
     def __init__(
         self,
@@ -59,9 +63,9 @@ class ThreePhaseTransformer(Transformer):
     ):
         """Initialize the ThreePhaseTransformer object."""
         super().__init__(
-            user_specs=user_specs,
             cooling_type=cooling_type,
         )
+        self.specs = ThreePhaseTransformerSpecifications.create(self.defaults, user_specs)
         logger.debug("Initialized ThreePhaseTransformer with specifications: %s", user_specs)
 
     @property
@@ -74,11 +78,11 @@ class ThreePhaseTransformer(Transformer):
             return self._onan_defaults
         else:
             return self._onaf_defaults
-    
+
     @property
     def _pre_factor(self) -> float:
         return self.specs.top_oil_temp_rise
-    
+
     def _calculate_internal_temp(self, ambient_temperature: np.ndarray) -> np.ndarray:
         """Calculate the internal temperature of the transformer."""
         return ambient_temperature + self.specs.amb_temp_surcharge
@@ -104,18 +108,12 @@ class ThreePhaseTransformer(Transformer):
     def _get_loss_mc(self) -> float:
         """Calculate the medium side load loss."""
         return (0.5 / self._c2) * (
-            self._c2 * self.specs.load_loss_hv_mv
-            - self.specs.load_loss_hv_lv
-            + self.specs.load_loss_mv_lv
+            self._c2 * self.specs.load_loss_hv_mv - self.specs.load_loss_hv_lv + self.specs.load_loss_mv_lv
         )
 
     def _get_loss_lc(self) -> float:
         """Calculate the low side load loss."""
-        return 0.5 * (
-            self.specs.load_loss_hv_lv
-            - self._c2 * self.specs.load_loss_hv_mv
-            + self.specs.load_loss_mv_lv
-        )
+        return 0.5 * (self.specs.load_loss_hv_lv - self._c2 * self.specs.load_loss_hv_mv + self.specs.load_loss_mv_lv)
 
     def _end_temperature_top_oil(self, load_profile: np.ndarray) -> np.ndarray:
         """Calculate the end temperature of the top-oil."""
@@ -123,7 +121,7 @@ class ThreePhaseTransformer(Transformer):
         mv_rise = self._get_loss_mc() * np.power(load_profile[1] / self.specs.mv_winding.nom_load, 2)
         lv_rise = self._get_loss_lc() * np.power(load_profile[2] / self.specs.lv_winding.nom_load, 2)
 
-        end_temp_top_oil = self._pre_factor * (
-            hv_rise + mv_rise + lv_rise + self.specs.no_load_loss
-        ) / self.specs.load_loss_total
+        end_temp_top_oil = (
+            self._pre_factor * (hv_rise + mv_rise + lv_rise + self.specs.no_load_loss) / self.specs.load_loss_total
+        )
         return end_temp_top_oil
