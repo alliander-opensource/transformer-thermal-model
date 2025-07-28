@@ -259,9 +259,9 @@ class PowerTransformer(Transformer):
 
             return ct_load / nominal_load
 
-    def _end_temperature_top_oil(self, load: np.ndarray) -> np.ndarray:
+    def _end_temperature_top_oil(self, load_profile: np.ndarray) -> np.ndarray:
         """Calculate the end temperature of the top-oil."""
-        load_ratio = np.power(load / self.specs.nom_load_sec_side, 2)
+        load_ratio = np.power(load_profile / self.specs.nom_load_sec_side, 2)
         total_loss_ratio = (self.specs.no_load_loss + self.specs.load_loss * load_ratio) / (
             self.specs.no_load_loss + self.specs.load_loss
         )

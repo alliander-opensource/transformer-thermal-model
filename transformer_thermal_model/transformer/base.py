@@ -74,7 +74,7 @@ class Transformer(ABC):
         pass
 
     @abstractmethod
-    def _end_temperature_top_oil(self, load: np.ndarray) -> np.ndarray:
+    def _end_temperature_top_oil(self, load_profile: np.ndarray) -> np.ndarray:
         pass
 
     def _set_HS_fac(self, hot_spot_factor: float) -> None:
