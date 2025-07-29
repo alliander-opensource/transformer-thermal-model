@@ -9,8 +9,8 @@ from transformer_thermal_model.cooler import CoolerType
 from transformer_thermal_model.schemas import (
     InputProfile,
     ThreeWindingInputProfile,
+    UserThreePhaseTransformerSpecifications,
     UserTransformerSpecifications,
-    UserTreePhaseTransformerSpecifications,
     WindingSpecifications,
 )
 from transformer_thermal_model.transformer import DistributionTransformer, PowerTransformer
@@ -106,9 +106,9 @@ def iec_load_profile():
 
 
 @pytest.fixture(scope="function")
-def user_three_phase_transformer_specs() -> UserTreePhaseTransformerSpecifications:
+def user_three_phase_transformer_specs() -> UserThreePhaseTransformerSpecifications:
     """Create a three-phase transformer specifications object."""
-    return UserTreePhaseTransformerSpecifications(
+    return UserThreePhaseTransformerSpecifications(
         no_load_loss=50,
         amb_temp_surcharge=10,
         lv_winding=WindingSpecifications(nom_load=800, winding_oil_gradient=20),

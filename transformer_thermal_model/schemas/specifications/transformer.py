@@ -77,7 +77,7 @@ class UserTransformerSpecifications(BaseUserTransformerSpecifications):
     )
 
 
-class UserTreePhaseTransformerSpecifications(BaseUserTransformerSpecifications):
+class UserThreePhaseTransformerSpecifications(BaseUserTransformerSpecifications):
     """An extended version of the base transformer specifications for three-phase transformers."""
 
     # three-phase transformer specific specs
@@ -203,7 +203,7 @@ class ThreePhaseTransformerSpecifications(BaseTransformerSpecifications):
     load_loss_total: float
 
     @classmethod
-    def create(cls, defaults: DefaultTransformerSpecifications, user: UserTreePhaseTransformerSpecifications) -> Self:
+    def create(cls, defaults: DefaultTransformerSpecifications, user: UserThreePhaseTransformerSpecifications) -> Self:
         """Create a ThreePhaseTransformerSpecifications instance by merging defaults with user specifications."""
         data = defaults.model_dump()
         data.update(user.model_dump(exclude_none=True))

@@ -11,7 +11,7 @@ from transformer_thermal_model.schemas import (
     DefaultTransformerSpecifications,
     ThreePhaseTransformerSpecifications,
     TransformerComponentSpecifications,
-    UserTreePhaseTransformerSpecifications,
+    UserThreePhaseTransformerSpecifications,
 )
 
 from .base import Transformer
@@ -57,7 +57,7 @@ class ThreePhaseTransformer(Transformer):
 
     def __init__(
         self,
-        user_specs: UserTreePhaseTransformerSpecifications,
+        user_specs: UserThreePhaseTransformerSpecifications,
         cooling_type: CoolerType,
         internal_component_specs: TransformerComponentSpecifications | None = None,
     ):
