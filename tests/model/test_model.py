@@ -428,3 +428,8 @@ def test_threephase_transformer_initialization(user_three_phase_transformer_spec
         temperature_profile=three_phase_input_profile,
         transformer=transformer,
     )
+    result = model.run()
+    top_oil_temp_profile = result.top_oil_temp_profile
+    hot_spot_temp_profile = result.hot_spot_temp_profile
+    assert top_oil_temp_profile.shape == (len(three_phase_input_profile),)
+    assert hot_spot_temp_profile.shape == (len(three_phase_input_profile), 3)

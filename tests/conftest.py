@@ -109,25 +109,25 @@ def iec_load_profile():
 def user_three_phase_transformer_specs() -> UserTreePhaseTransformerSpecifications:
     """Create a three-phase transformer specifications object."""
     return UserTreePhaseTransformerSpecifications(
-        no_load_loss=800,
+        no_load_loss=50,
         amb_temp_surcharge=10,
-        lv_winding=WindingSpecifications(nom_load=1000, winding_oil_gradient=500),
-        mv_winding=WindingSpecifications(nom_load=2000, winding_oil_gradient=1000),
-        hv_winding=WindingSpecifications(nom_load=3000, winding_oil_gradient=1500),
+        lv_winding=WindingSpecifications(nom_load=800, winding_oil_gradient=20),
+        mv_winding=WindingSpecifications(nom_load=1000, winding_oil_gradient=20),
+        hv_winding=WindingSpecifications(nom_load=1200, winding_oil_gradient=20),
         load_loss_hv_lv=50,
-        load_loss_hv_mv=100,
-        load_loss_mv_lv=150,
+        load_loss_hv_mv=50,
+        load_loss_mv_lv=50,
     )
 
 
 @pytest.fixture(scope="function")
 def three_phase_input_profile() -> ThreeWindingInputProfile:
     """Create a three-phase input profile."""
-    datetime_index = pd.date_range("2021-01-01 00:00:00", periods=4)
-    load_profile_high_voltage_side = [100, 200, 300, 400]
-    load_profile_middle_voltage_side = [200, 300, 400, 500]
-    load_profile_low_voltage_side = [300, 400, 500, 600]
-    ambient_temperature_profile = [10, 20, 30, 40]
+    datetime_index = pd.date_range("2021-01-01 00:00:00", periods=4, freq="1h")
+    load_profile_high_voltage_side = [500, 1000, 500, 1000]
+    load_profile_middle_voltage_side = [500, 1000, 500, 1000]
+    load_profile_low_voltage_side = [500, 1000, 500, 1000]
+    ambient_temperature_profile = [20, 20, 20, 20]
     return ThreeWindingInputProfile.create(
         datetime_index=datetime_index,
         ambient_temperature_profile=ambient_temperature_profile,

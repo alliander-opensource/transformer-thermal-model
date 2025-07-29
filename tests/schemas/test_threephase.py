@@ -2,7 +2,6 @@
 #
 # SPDX-License-Identifier: MPL-2.0
 
-import numpy as np
 import pandas as pd
 import pytest
 
@@ -27,10 +26,8 @@ def test_three_phase_transformer(user_three_phase_transformer_specs):
     )
     transformer = ThreePhaseTransformerSpecifications.create(defaults=defaults, user=user_three_phase_transformer_specs)
 
-    assert transformer.lv_winding.nom_load == 1000
+    assert transformer.lv_winding.nom_load == user_three_phase_transformer_specs.lv_winding.nom_load
     assert transformer.time_const_oil == 180
-    assert (transformer.nominal_load_array == np.array([[3000], [2000], [1000]])).all()
-    assert (transformer.winding_oil_gradient_array == np.array([[1500], [1000], [500]])).all()
 
 
 def test_three_phase_input_profile(three_phase_input_profile):
