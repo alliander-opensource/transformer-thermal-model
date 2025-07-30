@@ -193,11 +193,11 @@ class TransformerSpecifications(BaseTransformerSpecifications):
 
 class ThreePhaseTransformerSpecifications(BaseTransformerSpecifications):
     """The transformer specifications that are specific to a three-phase transformer.
-    
-    For all three phases the specs should be provided. Note that we use the following abbreviaties:  
-    *  Low voltage: lv  
-    *  Medium voltage: mv  
-    *  High voltage: hv  
+
+    For all three phases the specs should be provided. Note that we use the following abbreviaties:
+    *  Low voltage: lv
+    *  Medium voltage: mv
+    *  High voltage: hv
     """
 
     lv_winding: WindingSpecifications
