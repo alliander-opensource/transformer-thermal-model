@@ -14,8 +14,8 @@ logger = logging.getLogger(__name__)
 class WindingSpecifications(BaseModel):
     """The specifications for a single winding of a transformer."""
 
-    nom_load: float = Field(..., description="Nominal load current from the type plate [A]")
-    winding_oil_gradient: float = Field(..., description="Winding oil gradient [K]", ge=0)
+    nom_load: float = Field(..., description="Nominal load from the type plate [A]")
+    winding_oil_gradient: float = Field(..., description="Winding oil temperature gradient [K]", ge=0)
 
 
 class BaseUserTransformerSpecifications(BaseModel):
@@ -192,7 +192,13 @@ class TransformerSpecifications(BaseTransformerSpecifications):
 
 
 class ThreePhaseTransformerSpecifications(BaseTransformerSpecifications):
-    """The transformer specifications that are specific to a three-phase transformer."""
+    """The transformer specifications that are specific to a three-phase transformer.
+
+    For all three phases the specs should be provided. Note that we use the following abbreviaties:
+    *  Low voltage: lv
+    *  Medium voltage: mv
+    *  High voltage: hv
+    """
 
     lv_winding: WindingSpecifications
     mv_winding: WindingSpecifications
@@ -209,6 +215,7 @@ class ThreePhaseTransformerSpecifications(BaseTransformerSpecifications):
         data.update(user.model_dump(exclude_none=True))
         logger.info("Complete three-phase transformer specifications: %s", data)
 
+        # If no load loss is not provided, it can be calculated based on the individual losses
         if user.load_loss_total is None:
             data["load_loss_total"] = user.load_loss_hv_lv + user.load_loss_hv_mv + user.load_loss_mv_lv
 
