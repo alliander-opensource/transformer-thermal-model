@@ -109,57 +109,6 @@ class UserTreePhaseTransformerSpecifications(BaseUserTransformerSpecifications):
     load_loss_total: float | None = None
 
 
-class UserTransformerSpecifications(BaseUserTransformerSpecifications):
-    """An extended version of the base transformer specifications for power and distribution transformers.
-
-    If any of the optional values are provided, they will overwrite the `defaults` that are set in the
-    respective `Transformer` class.
-    """
-
-    load_loss: float = Field(
-        ...,
-        description=(
-            "Transformer load loss or short-circuit loss or copper loss from the windings "
-            "(taken from worst-case from FA-test) [W]"
-        ),
-    )
-    nom_load_sec_side: float = Field(
-        ..., description="Transformer nominal current secondary side from the type plate [A]"
-    )
-
-
-class UserTreePhaseTransformerSpecifications(BaseUserTransformerSpecifications):
-    """An extended version of the base transformer specifications for three-phase transformers."""
-
-    # three-phase transformer specific specs
-    lv_winding: WindingSpecifications = Field(
-        ...,
-        description="Low-voltage winding specifications, including nominal load and load loss [A, W]",
-    )
-    mv_winding: WindingSpecifications = Field(
-        ...,
-        description="Medium-voltage winding specifications, including nominal load and load loss [A, W]",
-    )
-    hv_winding: WindingSpecifications = Field(
-        ...,
-        description="High-voltage winding specifications, including nominal load and load loss [A, W]",
-    )
-    load_loss_hv_lv: float = Field(
-        ...,
-        description="Load loss between high-voltage and low-voltage winding [W]",
-    )
-    load_loss_hv_mv: float = Field(
-        ...,
-        description="Load loss between high-voltage and medium-voltage winding [W]",
-    )
-    load_loss_mv_lv: float = Field(
-        ...,
-        description="Load loss between medium-voltage and low-voltage winding [W]",
-    )
-
-    load_loss_total: float | None = None
-
-
 class DefaultTransformerSpecifications(BaseModel):
     """The default transformer specifications that will be defined when the user does not provide them.
 
@@ -185,9 +134,6 @@ class DefaultTransformerSpecifications(BaseModel):
 class BaseTransformerSpecifications(BaseModel):
     """Base Class containing transformer specifications."""
 
-class BaseTransformerSpecifications(BaseModel):
-    """Base Class containing transformer specifications."""
-
     no_load_loss: float
     amb_temp_surcharge: float
     time_const_oil: float
@@ -201,28 +147,6 @@ class BaseTransformerSpecifications(BaseModel):
     oil_exp_x: float
     winding_exp_y: float
     end_temp_reduction: float
-
-    @property
-    def nominal_load_array(cls) -> np.ndarray:
-        """Return the nominal loads as a numpy array."""
-        raise NotImplementedError("This method should be implemented in subclasses.")
-
-    @property
-    def winding_oil_gradient_array(cls) -> np.ndarray:
-        """Return the winding oil gradient as a numpy array."""
-        raise NotImplementedError("This method should be implemented in subclasses.")
-
-
-class TransformerSpecifications(BaseTransformerSpecifications):
-    """Class containing transformer specifications.
-
-    This class is a combination of the mandatory user-provided specifications and the default transformer
-    specifications. Should the user provide any of the optional specifications, they will override the default
-    specifications, via the `create` class method.
-    """
-
-    load_loss: float
-    nom_load_sec_side: float
 
     @property
     def nominal_load_array(cls) -> np.ndarray:
