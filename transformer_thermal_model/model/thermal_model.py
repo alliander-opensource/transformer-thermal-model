@@ -219,7 +219,7 @@ class Model:
                     hot_spot_increase_oil, static_hot_spot_incr_oil[i], f2_oil[i]
                 )
                 hot_spot_temp_profile[i] = top_oil_temp_profile[i] + hot_spot_increase_windings - hot_spot_increase_oil
-        
+
         # for a three winding transformer with multiple load profiles:
         else:
             hot_spot_temp_profile[:, 0] = top_oil_temp_profile[0]
@@ -238,8 +238,6 @@ class Model:
                     )
 
         return hot_spot_temp_profile
-
-
 
     def _update_top_oil_temp(self, current_temp: float, t_internal: float, top_k: float, f1: float) -> float:
         """Update the top-oil temperature for a single time step."""
