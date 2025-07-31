@@ -47,7 +47,7 @@ class BaseInputProfile(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     @property
-    def load_profile(self) -> np.typing.NDArray[np.float64]:
+    def load_profile_array(self) -> np.typing.NDArray[np.float64]:
         """Require subclasses to define a load_profile property."""
         raise NotImplementedError("Subclasses must define a load_profile field or property.")
 
@@ -60,12 +60,12 @@ class InputProfile(BaseInputProfile):
 
     Attributes:
         datetime_index: A 1d array with the datetime index for the profiles.
-        load_profile_sec_side: A 1d array with the load profile for the transformer.
+        load_profile: A 1d array with the load profile for the transformer.
         ambient_temperature_profile: A 1d array with the ambient temperature profile for the transformer.
 
     """
 
-    load_profile_sec_side: np.typing.NDArray[np.float64]
+    load_profile: np.typing.NDArray[np.float64]
 
     @classmethod
     def create(
@@ -105,7 +105,7 @@ class InputProfile(BaseInputProfile):
             InputProfile(datetime_index=array(['2023-01-01T00:00:00.000000',
             '2023-01-01T01:00:00.000000', '2023-01-01T02:00:00.000000'],
             dtype='datetime64[us]'), ambient_temperature_profile=array([25. , 24.5, 24. ]),
-            load_profile_sec_side=array([0.8, 0.9, 1. ]))
+            load_profile=array([0.8, 0.9, 1. ]))
 
         Example: Directly creating an InputProfile object using numpy arrays.
             ```python
@@ -122,43 +122,43 @@ class InputProfile(BaseInputProfile):
             ...         ],
             ...         dtype=np.datetime64,
             ...     ),
-            ...     load_profile_sec_side=np.array([0.8, 0.9, 1.0], dtype=float),
+            ...     load_profile=np.array([0.8, 0.9, 1.0], dtype=float),
             ...     ambient_temperature_profile=np.array([25.0, 24.5, 24.0], dtype=float)
             ... )
             >>> input_profile
             InputProfile(datetime_index=array(['2023-01-01T00:00:00.000000',
             '2023-01-01T01:00:00.000000', '2023-01-01T02:00:00.000000'],
             dtype='datetime64[us]'), ambient_temperature_profile=array([25. , 24.5, 24. ]),
-            load_profile_sec_side=array([0.8, 0.9, 1. ]))
+            load_profile=array([0.8, 0.9, 1. ]))
         """
         return cls(
             datetime_index=np.array(datetime_index, dtype=np.datetime64),
-            load_profile_sec_side=np.array(load_profile, dtype=float),
+            load_profile=np.array(load_profile, dtype=float),
             ambient_temperature_profile=np.array(ambient_temperature_profile, dtype=float),
         )
 
     @property
-    def load_profile(self) -> np.typing.NDArray[np.float64]:
+    def load_profile_array(self) -> np.typing.NDArray[np.float64]:
         """Return the single load profile for the transformer."""
-        return self.load_profile_sec_side
+        return self.load_profile
 
     @model_validator(mode="after")
     def _check_same_length_of_profiles(self) -> Self:
         """Check if the length of the profiles is the same."""
-        if len(self.datetime_index) != len(self.load_profile_sec_side) or len(self.datetime_index) != len(
-                    self.ambient_temperature_profile
-                ):
+        if len(self.datetime_index) != len(self.load_profile) or len(self.datetime_index) != len(
+            self.ambient_temperature_profile
+        ):
             raise ValueError(
                 f"The length of the profiles and index should be the same. Index length: {len(self.datetime_index)}, "
-                f"load profile length: {len(self.load_profile_sec_side)}"
+                f"load profile length: {len(self.load_profile)}"
             )
         return self
 
     @model_validator(mode="after")
     def _check_load_profile_is_one_dimensional(self) -> Self:
         """Check if the arrays are one-dimensional."""
-        if self.load_profile_sec_side.ndim != 1:
-            raise ValueError("The load_profile_sec_side array must be one-dimensional.")
+        if self.load_profile.ndim != 1:
+            raise ValueError("The load_profile array must be one-dimensional.")
         return self
 
     @classmethod
@@ -182,7 +182,7 @@ class InputProfile(BaseInputProfile):
 
         return cls(
             datetime_index=df["datetime_index"].to_numpy(),
-            load_profile_sec_side=df["load_profile"].to_numpy(),
+            load_profile=df["load_profile"].to_numpy(),
             ambient_temperature_profile=df["ambient_temperature_profile"].to_numpy(),
         )
 
