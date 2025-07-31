@@ -53,15 +53,15 @@ class BaseInputProfile(BaseModel):
 
 
 class InputProfile(BaseInputProfile):
-    """Class containing the temperature and load profiles for the thermal model `Model()`.
+    """Class containing the temperature and load profiles of two winding transformers for the thermal model `Model()`.
 
     This class is also capable of converting the results to a single dataframe with the timestamp as the index
     for convenience.
 
     Attributes:
-        datetime_index: The datetime index for the profiles.
-        load_profile_sec_side: The load profile for the transformer.
-        ambient_temperature_profile: The ambient temperature profile for the transformer.
+        datetime_index: A 1d array with the datetime index for the profiles.
+        load_profile_sec_side: A 1d array with the load profile for the transformer.
+        ambient_temperature_profile: A 1d array with the ambient temperature profile for the transformer.
 
     """
 
@@ -145,13 +145,10 @@ class InputProfile(BaseInputProfile):
     @model_validator(mode="after")
     def _check_same_length_of_profiles(self) -> Self:
         """Check if the length of the profiles is the same."""
-        if len(self.datetime_index) != len(self.load_profile_sec_side) or len(self.datetime_index) != len(
-            self.ambient_temperature_profile
-        ):
+        if len(self.datetime_index) != len(self.load_profile_sec_side):
             raise ValueError(
                 f"The length of the profiles and index should be the same. Index length: {len(self.datetime_index)}, "
-                f"load profile length: {len(self.load_profile_sec_side)}, ambient temperature profile length: "
-                f"{len(self.ambient_temperature_profile)}"
+                f"load profile length: {len(self.load_profile_sec_side)}"
             )
         return self
 
@@ -203,7 +200,7 @@ class ThreeWindingInputProfile(BaseInputProfile):
 
     @property
     def load_profile(self) -> np.typing.NDArray[np.float64]:
-        """Return a tuple of the three load profiles (high, middle, low voltage sides)."""
+        """Return an array with shape (3,n) of the three load profiles (high, middle, low voltage sides)."""
         return np.array(
             [
                 self.load_profile_high_voltage_side,
@@ -276,13 +273,11 @@ class ThreeWindingInputProfile(BaseInputProfile):
             len(self.datetime_index) != len(self.load_profile_high_voltage_side)
             or len(self.datetime_index) != len(self.load_profile_middle_voltage_side)
             or len(self.datetime_index) != len(self.load_profile_low_voltage_side)
-            or len(self.datetime_index) != len(self.ambient_temperature_profile)
         ):
             raise ValueError(
                 f"The length of the profiles and index should be the same. Index length: {len(self.datetime_index)}, "
                 f"high voltage load profile length: {len(self.load_profile_high_voltage_side)}, "
                 f"middle voltage load profile length: {len(self.load_profile_middle_voltage_side)}, "
                 f"low voltage load profile length: {len(self.load_profile_low_voltage_side)}, "
-                f"ambient temperature profile length: {len(self.ambient_temperature_profile)}"
             )
         return self
