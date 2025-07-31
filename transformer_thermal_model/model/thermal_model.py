@@ -7,7 +7,8 @@ import logging
 import numpy as np
 import pandas as pd
 
-from transformer_thermal_model.schemas import InputProfile, OutputProfile
+from transformer_thermal_model.schemas import OutputProfile
+from transformer_thermal_model.schemas.thermal_model.input_profile import BaseInputProfile
 from transformer_thermal_model.transformer import Transformer
 
 logger = logging.getLogger(__name__)
@@ -66,14 +67,14 @@ class Model:
     """
 
     transformer: Transformer
-    data: InputProfile
+    data: BaseInputProfile
     init_top_oil_temp: float | None
     hot_spot_temp_profile: pd.Series
     top_oil_temp_profile: pd.Series
 
     def __init__(
         self,
-        temperature_profile: InputProfile,
+        temperature_profile: BaseInputProfile,
         transformer: Transformer,
         init_top_oil_temp: float | None = None,
     ) -> None:

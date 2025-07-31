@@ -8,6 +8,7 @@ import pytest
 from transformer_thermal_model.cooler import CoolerType
 from transformer_thermal_model.schemas import (
     InputProfile,
+    ThreeWindingInputProfile,
     UserTransformerSpecifications,
     UserTreePhaseTransformerSpecifications,
     WindingSpecifications,
@@ -116,4 +117,21 @@ def user_three_phase_transformer_specs() -> UserTreePhaseTransformerSpecificatio
         load_loss_hv_lv=50,
         load_loss_hv_mv=100,
         load_loss_mv_lv=150,
+    )
+
+
+@pytest.fixture(scope="function")
+def three_phase_input_profile() -> ThreeWindingInputProfile:
+    """Create a three-phase input profile."""
+    datetime_index = pd.date_range("2021-01-01 00:00:00", periods=3)
+    load_profile_high_voltage_side = [100, 200, 300]
+    load_profile_middle_voltage_side = [200, 300, 400]
+    load_profile_low_voltage_side = [300, 400, 500]
+    ambient_temperature_profile = [10, 20, 30]
+    return ThreeWindingInputProfile.create(
+        datetime_index=datetime_index,
+        ambient_temperature_profile=ambient_temperature_profile,
+        load_profile_high_voltage_side=load_profile_high_voltage_side,
+        load_profile_middle_voltage_side=load_profile_middle_voltage_side,
+        load_profile_low_voltage_side=load_profile_low_voltage_side,
     )
