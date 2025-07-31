@@ -9,7 +9,7 @@ import pandas as pd
 
 from transformer_thermal_model.schemas import OutputProfile
 from transformer_thermal_model.schemas.thermal_model.input_profile import BaseInputProfile
-from transformer_thermal_model.transformer import Transformer
+from transformer_thermal_model.transformer import ThreeWindingTransformer, Transformer
 
 logger = logging.getLogger(__name__)
 
@@ -151,7 +151,7 @@ class Model:
         """Calculate the static hot-spot temperature increase using vectorized operations."""
         return (
             self.transformer.specs.hot_spot_fac
-            * self.transformer.specs.winding_oil_gradient
+            * self.transformer.specs.winding_oil_gradient_array
             * (load / self.transformer.specs.nominal_load_array) ** self.transformer.specs.winding_exp_y
         )
 
@@ -183,34 +183,37 @@ class Model:
 
         """
         # Preallocate arrays for temperature profiles
-        top_oil_temp_profile = np.zeros_like(load, dtype=np.float64)
+        top_oil_temp_profile = np.zeros_like(t_internal, dtype=np.float64)
         hot_spot_temp_profile = np.zeros_like(load, dtype=np.float64)
+
+        # Initialize first values
+        top_oil_temp = t_internal[0] if self.init_top_oil_temp is None else self.init_top_oil_temp
+        top_oil_temp_profile[0] = top_oil_temp
+
+        # First loop: calculate top-oil temperature profile
+        for i in range(1, len(t_internal)):
+            top_oil_temp = self._update_top_oil_temp(top_oil_temp, t_internal[i], top_k[i], f1[i])
+            top_oil_temp_profile[i] = top_oil_temp
 
         # Split the static hot-spot increase into two parts for windings and oil
         static_hot_spot_incr_windings = static_hot_spot_incr * self.transformer.specs.winding_const_k21
         static_hot_spot_incr_oil = static_hot_spot_incr * (self.transformer.specs.winding_const_k21 - 1)
 
-        # Initialize first values
-        top_oil_temp = t_internal[0] if self.init_top_oil_temp is None else self.init_top_oil_temp
+        # Initialize hot-spot increases for windings and oil
         hot_spot_increase_windings = 0.0
         hot_spot_increase_oil = 0.0
-        top_oil_temp_profile[0] = top_oil_temp
-        hot_spot_temp_profile[0] = top_oil_temp
+        # Set first value for hot-spot profile
+        hot_spot_temp_profile[0] = top_oil_temp_profile[0]
 
-        # Iteratively calculate profiles
-        for i in range(1, len(load)):
-            top_oil_temp = self._update_top_oil_temp(top_oil_temp, t_internal[i], top_k[i], f1[i])
-            # Calculate the hotspot temperature based on formula 17 from IEC 2060076-7_2018.
-            # The hot-spot increase of the windings is based on from 15 from IEC 2060076-7_2018.
+        # Second loop: calculate hot-spot temperature profile
+        for i in range(1, len(t_internal)):
             hot_spot_increase_windings = self._update_hot_spot_increase(
                 hot_spot_increase_windings, static_hot_spot_incr_windings[i], f2_windings[i]
             )
-            # The hot-spot increase of the oil is based on from 16 from IEC 2060076-7_2018
             hot_spot_increase_oil = self._update_hot_spot_increase(
                 hot_spot_increase_oil, static_hot_spot_incr_oil[i], f2_oil[i]
             )
-            hot_spot_temp_profile[i] = top_oil_temp + hot_spot_increase_windings - hot_spot_increase_oil
-            top_oil_temp_profile[i] = top_oil_temp
+            hot_spot_temp_profile[i] = top_oil_temp_profile[i] + hot_spot_increase_windings - hot_spot_increase_oil
 
         return top_oil_temp_profile, hot_spot_temp_profile
 
@@ -248,9 +251,18 @@ class Model:
             load, t_internal, f1, f2_windings, f2_oil, top_k, static_hot_spot_incr
         )
         logger.info("The calculation with the Thermal model is completed.")
-        logger.info(f"Max top-oil temperature: {max(top_oil_temp_profile)}")
-        logger.info(f"Max hot-spot temperature: {max(hot_spot_temp_profile)}")
+        logger.info(f"Max top-oil temperature: {np.max(top_oil_temp_profile)}")
+        logger.info(f"Max hot-spot temperature: {np.max(hot_spot_temp_profile)}")
 
+        if type(self.transformer) is ThreeWindingTransformer:
+            return OutputProfile(
+                top_oil_temp_profile=pd.Series(top_oil_temp_profile, index=self.data.datetime_index),
+                hot_spot_temp_profile=pd.DataFrame(
+                    hot_spot_temp_profile.transpose(),
+                    columns=["high_voltage_side", "middle_voltage_side", "low_voltage_side"],
+                    index=self.data.datetime_index,
+                ),
+            )
         return OutputProfile(
             top_oil_temp_profile=pd.Series(top_oil_temp_profile, index=self.data.datetime_index),
             hot_spot_temp_profile=pd.Series(hot_spot_temp_profile, index=self.data.datetime_index),

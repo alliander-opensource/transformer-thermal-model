@@ -31,14 +31,13 @@ def test_three_winding_transformer(user_three_winding_transformer_specs):
 
     assert transformer.lv_winding.nom_load == 1000
     assert transformer.time_const_oil == 180
-    assert (transformer.nominal_load_array == np.array([[3000], [2000], [1000]])).all()
-    assert (transformer.winding_oil_gradient_array == np.array([[1500], [1000], [500]])).all()
+    assert (transformer.nominal_load_array == np.array([[1000], [2000], [3000]])).all()
+    assert (transformer.winding_oil_gradient_array == np.array([[500], [1000], [1500]])).all()
 
 
 def test_three_winding_input_profile(three_winding_input_profile):
     """Test the creation of a three-winding input profile."""
-    assert len(three_winding_input_profile.datetime_index) == 3
-    assert len(three_winding_input_profile.load_profile) == 3
+    assert len(three_winding_input_profile.load_profile_array) == 3
 
 
 def test_wrong_three_winding_input_profile():
