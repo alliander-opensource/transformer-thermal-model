@@ -6,12 +6,12 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from transformer_thermal_model.schemas import DefaultTransformerSpecifications, ThreePhaseTransformerSpecifications
+from transformer_thermal_model.schemas import DefaultTransformerSpecifications, ThreeWindingTransformerSpecifications
 from transformer_thermal_model.schemas.thermal_model.input_profile import ThreeWindingInputProfile
 
 
-def test_three_phase_transformer(user_three_phase_transformer_specs):
-    """Test the creation of a three-phase transformer specifications object."""
+def test_three_winding_transformer(user_three_winding_transformer_specs):
+    """Test the creation of a three-winding transformer specifications object."""
     defaults = DefaultTransformerSpecifications(
         time_const_oil=180,
         time_const_windings=4,
@@ -25,7 +25,9 @@ def test_three_phase_transformer(user_three_phase_transformer_specs):
         winding_exp_y=1.6,
         end_temp_reduction=0,
     )
-    transformer = ThreePhaseTransformerSpecifications.create(defaults=defaults, user=user_three_phase_transformer_specs)
+    transformer = ThreeWindingTransformerSpecifications.create(
+        defaults=defaults, user=user_three_winding_transformer_specs
+    )
 
     assert transformer.lv_winding.nom_load == 1000
     assert transformer.time_const_oil == 180
@@ -33,14 +35,14 @@ def test_three_phase_transformer(user_three_phase_transformer_specs):
     assert (transformer.winding_oil_gradient_array == np.array([[1500], [1000], [500]])).all()
 
 
-def test_three_phase_input_profile(three_phase_input_profile):
-    """Test the creation of a three-phase input profile."""
-    assert len(three_phase_input_profile.datetime_index) == 3
-    assert len(three_phase_input_profile.load_profile) == 3
+def test_three_winding_input_profile(three_winding_input_profile):
+    """Test the creation of a three-winding input profile."""
+    assert len(three_winding_input_profile.datetime_index) == 3
+    assert len(three_winding_input_profile.load_profile) == 3
 
 
-def test_wrong_three_phase_input_profile():
-    """Test the creation of a three-phase input profile with wrong data."""
+def test_wrong_three_winding_input_profile():
+    """Test the creation of a three-winding input profile with wrong data."""
     with pytest.raises(ValueError, match="The length of the profiles and index should be the same"):
         ThreeWindingInputProfile.create(
             datetime_index=pd.date_range("2021-01-01 00:00:00", periods=3),
