@@ -9,6 +9,7 @@ from .enums import (
     TransformerType,
 )
 from .power import PowerTransformer, PowerTransformerComponents
+from .threewinding import ThreeWindingTransformer
 
 __all__ = [
     "DistributionTransformer",
@@ -17,4 +18,5 @@ __all__ = [
     "Transformer",
     "TransformerType",
     "PowerTransformerComponents",
+    "ThreeWindingTransformer",
 ]

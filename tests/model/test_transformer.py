@@ -4,6 +4,7 @@
 
 import copy
 
+import numpy as np
 import pytest
 
 from transformer_thermal_model.components import BushingConfig, TransformerSide, VectorConfig
@@ -12,7 +13,7 @@ from transformer_thermal_model.schemas import (
     TransformerComponentSpecifications,
     UserTransformerSpecifications,
 )
-from transformer_thermal_model.transformer import DistributionTransformer, PowerTransformer
+from transformer_thermal_model.transformer import DistributionTransformer, PowerTransformer, ThreeWindingTransformer
 
 
 def test_transformer_initialization():
@@ -257,3 +258,35 @@ def check_dif_onan_onaf(onan_power_transformer, onaf_power_transformer):
 def test_that_hot_spot_factor_is_set_to_default_if_none_provided(transformer):
     """Test that a transformer initiated with `hot_spot_factor=None`, the value is set to the default value."""
     assert transformer.specs.hot_spot_fac == transformer.defaults.hot_spot_fac
+
+
+def test_initialize_three_winding_transformer(user_three_winding_transformer_specs, three_winding_input_profile):
+    """Initialize a ThreeWindingTransformer with the given user specifications."""
+    transformer = ThreeWindingTransformer(user_specs=user_three_winding_transformer_specs, cooling_type=CoolerType.ONAN)
+
+    load_profile = three_winding_input_profile.load_profile
+    end_temp_top_oil = transformer._end_temperature_top_oil(load_profile)
+
+    assert transformer.specs.no_load_loss == user_three_winding_transformer_specs.no_load_loss
+    assert transformer.specs.time_const_oil == 210  # Default value for ONAN transformer
+    assert end_temp_top_oil.shape == (len(three_winding_input_profile.datetime_index),)
+
+
+def test_three_winding_top_oil_calculation(user_three_winding_transformer_specs):
+    """Test the top oil temperature calculation for a three-winding transformer."""
+    transformer = ThreeWindingTransformer(user_specs=user_three_winding_transformer_specs, cooling_type=CoolerType.ONAN)
+
+    # constant load profile should provide constant top oil temperature
+    load_profile = np.array([[3000, 3000, 3000, 3000], [2000, 2000, 2000, 2000], [1000, 1000, 1000, 1000]])
+    end_temp_top_oil = transformer._end_temperature_top_oil(load_profile)
+    assert np.all(end_temp_top_oil == end_temp_top_oil[0])
+
+    # If the load load increases, the top oil temperature should increase
+    load_profile = np.array([[3000, 4000, 5000, 6000], [2000, 3000, 4000, 5000], [1000, 2000, 3000, 4000]])
+    end_temp_top_oil = transformer._end_temperature_top_oil(load_profile)
+    assert all(earlier < later for earlier, later in zip(end_temp_top_oil, end_temp_top_oil[1:], strict=False))
+
+    # If the load load decreases, the top oil temperature should decrease
+    load_profile = np.array([[6000, 5000, 4000, 3000], [5000, 4000, 3000, 2000], [4000, 3000, 2000, 1000]])
+    end_temp_top_oil = transformer._end_temperature_top_oil(load_profile)
+    assert all(earlier > later for earlier, later in zip(end_temp_top_oil, end_temp_top_oil[1:], strict=False))

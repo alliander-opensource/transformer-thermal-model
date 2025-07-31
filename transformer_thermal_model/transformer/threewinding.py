@@ -17,9 +17,10 @@ from .base import Transformer
 
 logger = logging.getLogger(__name__)
 
-class ThreeWindingTransformer(Transformer): 
+
+class ThreeWindingTransformer(Transformer):
     """A three-winding transformer.
-    
+
     This class represents a power transformer. This class inherits from the Transformer class.
 
     Attributes:
