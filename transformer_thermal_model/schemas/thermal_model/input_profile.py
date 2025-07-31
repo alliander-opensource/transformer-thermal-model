@@ -94,7 +94,7 @@ class InputProfile(BaseModel):
             ...     datetime_index=datetime_index,
             ...     load_profile=load_profile,
             ...     ambient_temperature_profile=ambient_temperature_profile,
-            ...     top_oil_temperature=top_oil_temperature,
+            ...     top_oil_temperature_profile=top_oil_temperature,
             ... )
             >>> input_profile
             InputProfile(datetime_index=array(['2023-01-01T00:00:00.000000',
