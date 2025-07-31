@@ -184,13 +184,11 @@ class Model:
         """
         # Preallocate arrays for temperature profiles
         top_oil_temp_profile = np.zeros_like(t_internal, dtype=np.float64)
-        hot_spot_temp_profile = np.zeros_like(load, dtype=np.float64)
 
         # Initialize first values
         top_oil_temp = t_internal[0] if self.init_top_oil_temp is None else self.init_top_oil_temp
         top_oil_temp_profile[0] = top_oil_temp
 
-        # First loop: calculate top-oil temperature profile
         for i in range(1, len(t_internal)):
             top_oil_temp = self._update_top_oil_temp(top_oil_temp, t_internal[i], top_k[i], f1[i])
             top_oil_temp_profile[i] = top_oil_temp
@@ -199,21 +197,42 @@ class Model:
         static_hot_spot_incr_windings = static_hot_spot_incr * self.transformer.specs.winding_const_k21
         static_hot_spot_incr_oil = static_hot_spot_incr * (self.transformer.specs.winding_const_k21 - 1)
 
-        # Initialize hot-spot increases for windings and oil
-        hot_spot_increase_windings = 0.0
-        hot_spot_increase_oil = 0.0
-        # Set first value for hot-spot profile
-        hot_spot_temp_profile[0] = top_oil_temp_profile[0]
+        if load.ndim == 1:
+            # Initialize hot-spot increases for windings and oil
+            hot_spot_increase_windings = 0.0
+            hot_spot_increase_oil = 0.0
 
-        # Second loop: calculate hot-spot temperature profile
-        for i in range(1, len(t_internal)):
-            hot_spot_increase_windings = self._update_hot_spot_increase(
-                hot_spot_increase_windings, static_hot_spot_incr_windings[i], f2_windings[i]
-            )
-            hot_spot_increase_oil = self._update_hot_spot_increase(
-                hot_spot_increase_oil, static_hot_spot_incr_oil[i], f2_oil[i]
-            )
-            hot_spot_temp_profile[i] = top_oil_temp_profile[i] + hot_spot_increase_windings - hot_spot_increase_oil
+            # Set first value for hot-spot profile
+            hot_spot_temp_profile = np.zeros_like(load, dtype=np.float64)
+            hot_spot_temp_profile[0] = top_oil_temp_profile[0]
+
+            for i in range(1, len(load)):
+                hot_spot_increase_windings = self._update_hot_spot_increase(
+                    hot_spot_increase_windings, static_hot_spot_incr_windings[i], f2_windings[i]
+                )
+                hot_spot_increase_oil = self._update_hot_spot_increase(
+                    hot_spot_increase_oil, static_hot_spot_incr_oil[i], f2_oil[i]
+                )
+                hot_spot_temp_profile[i] = top_oil_temp_profile[i] + hot_spot_increase_windings - hot_spot_increase_oil
+
+        else:
+            # Set first value for hot-spot profile
+            hot_spot_temp_profile = np.zeros_like(load, dtype=np.float64)
+            hot_spot_temp_profile[:, 0] = top_oil_temp_profile[0]
+
+            for profile in range(len(load)):
+                hot_spot_increase_windings = 0.0
+                hot_spot_increase_oil = 0.0
+                for i in range(1, len(load[profile])):
+                    hot_spot_increase_windings = self._update_hot_spot_increase(
+                        hot_spot_increase_windings, static_hot_spot_incr_windings[profile][i], f2_windings[i]
+                    )
+                    hot_spot_increase_oil = self._update_hot_spot_increase(
+                        hot_spot_increase_oil, static_hot_spot_incr_oil[profile][i], f2_oil[i]
+                    )
+                    hot_spot_temp_profile[profile][i] = (
+                        top_oil_temp_profile[i] + hot_spot_increase_windings - hot_spot_increase_oil
+                    )
 
         return top_oil_temp_profile, hot_spot_temp_profile
 
