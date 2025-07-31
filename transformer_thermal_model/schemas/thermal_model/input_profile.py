@@ -145,7 +145,9 @@ class InputProfile(BaseInputProfile):
     @model_validator(mode="after")
     def _check_same_length_of_profiles(self) -> Self:
         """Check if the length of the profiles is the same."""
-        if len(self.datetime_index) != len(self.load_profile_sec_side):
+        if len(self.datetime_index) != len(self.load_profile_sec_side) or len(self.datetime_index) != len(
+                    self.ambient_temperature_profile
+                ):
             raise ValueError(
                 f"The length of the profiles and index should be the same. Index length: {len(self.datetime_index)}, "
                 f"load profile length: {len(self.load_profile_sec_side)}"
