@@ -14,7 +14,7 @@ from .specifications.transformer import (
     WindingSpecifications,
 )
 from .specifications.transformer_component import TransformerComponentSpecifications
-from .thermal_model import InputProfile, OutputProfile
+from .thermal_model import InputProfile, OutputProfile, ThreeWindingInputProfile
 
 __all__ = [
     "UserTransformerSpecifications",
@@ -27,5 +27,6 @@ __all__ = [
     "TransformerComponentSpecifications",
     "WindingSpecifications",
     "InputProfile",
+    "ThreeWindingInputProfile",
     "OutputProfile",
 ]
