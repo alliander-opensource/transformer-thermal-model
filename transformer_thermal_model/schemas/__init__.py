@@ -7,10 +7,10 @@ from .specifications.transformer import (
     BaseTransformerSpecifications,
     BaseUserTransformerSpecifications,
     DefaultTransformerSpecifications,
-    ThreePhaseTransformerSpecifications,
+    ThreeWindingTransformerSpecifications,
     TransformerSpecifications,
+    UserThreeWindingTransformerSpecifications,
     UserTransformerSpecifications,
-    UserTreePhaseTransformerSpecifications,
     WindingSpecifications,
 )
 from .specifications.transformer_component import TransformerComponentSpecifications
@@ -21,8 +21,8 @@ __all__ = [
     "DefaultTransformerSpecifications",
     "TransformerSpecifications",
     "BaseTransformerSpecifications",
-    "UserTreePhaseTransformerSpecifications",
-    "ThreePhaseTransformerSpecifications",
+    "UserThreeWindingTransformerSpecifications",
+    "ThreeWindingTransformerSpecifications",
     "BaseUserTransformerSpecifications",
     "TransformerComponentSpecifications",
     "WindingSpecifications",

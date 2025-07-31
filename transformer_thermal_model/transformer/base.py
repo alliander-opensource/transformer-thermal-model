@@ -11,10 +11,10 @@ from transformer_thermal_model.schemas import (
     BaseTransformerSpecifications,
     BaseUserTransformerSpecifications,
     DefaultTransformerSpecifications,
-    ThreePhaseTransformerSpecifications,
+    ThreeWindingTransformerSpecifications,
     TransformerSpecifications,
+    UserThreeWindingTransformerSpecifications,
     UserTransformerSpecifications,
-    UserTreePhaseTransformerSpecifications,
 )
 
 
@@ -48,14 +48,14 @@ class Transformer(ABC):
             cooling_type (CoolerType): The cooling type. Can be ONAN, ONAF.
         """
         self.cooling_type: CoolerType = cooling_type
-        if type(user_specs) is UserTreePhaseTransformerSpecifications:
-            self.specs = ThreePhaseTransformerSpecifications.create(self.defaults, user_specs)
+        if type(user_specs) is UserThreeWindingTransformerSpecifications:
+            self.specs = ThreeWindingTransformerSpecifications.create(self.defaults, user_specs)
         elif type(user_specs) is UserTransformerSpecifications:
             self.specs = TransformerSpecifications.create(self.defaults, user_specs)
         else:
             raise TypeError(
                 f"Invalid user specifications type: {type(user_specs)}. "
-                "Expected UserTransformerSpecifications or UserTreePhaseTransformerSpecifications."
+                "Expected UserTransformerSpecifications or UserThreeWindingTransformerSpecifications."
             )
 
     @property

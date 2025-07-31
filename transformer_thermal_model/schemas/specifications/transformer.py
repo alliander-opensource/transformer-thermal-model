@@ -77,10 +77,10 @@ class UserTransformerSpecifications(BaseUserTransformerSpecifications):
     )
 
 
-class UserTreePhaseTransformerSpecifications(BaseUserTransformerSpecifications):
-    """An extended version of the base transformer specifications for three-phase transformers."""
+class UserThreeWindingTransformerSpecifications(BaseUserTransformerSpecifications):
+    """An extended version of the base transformer specifications for three-winding transformers."""
 
-    # three-phase transformer specific specs
+    # three-winding transformer specific specs
     lv_winding: WindingSpecifications = Field(
         ...,
         description="Low-voltage winding specifications, including nominal load and load loss [A, W]",
@@ -191,10 +191,10 @@ class TransformerSpecifications(BaseTransformerSpecifications):
         return np.array([cls.winding_oil_gradient])
 
 
-class ThreePhaseTransformerSpecifications(BaseTransformerSpecifications):
-    """The transformer specifications that are specific to a three-phase transformer.
+class ThreeWindingTransformerSpecifications(BaseTransformerSpecifications):
+    """The transformer specifications that are specific to a three-winding transformer.
 
-    For all three phases the specs should be provided. Note that we use the following abbreviaties:
+    For all three windings the specs should be provided. Note that we use the following abbreviaties:
     *  Low voltage: lv
     *  Medium voltage: mv
     *  High voltage: hv
@@ -209,11 +209,13 @@ class ThreePhaseTransformerSpecifications(BaseTransformerSpecifications):
     load_loss_total: float
 
     @classmethod
-    def create(cls, defaults: DefaultTransformerSpecifications, user: UserTreePhaseTransformerSpecifications) -> Self:
-        """Create a ThreePhaseTransformerSpecifications instance by merging defaults with user specifications."""
+    def create(
+        cls, defaults: DefaultTransformerSpecifications, user: UserThreeWindingTransformerSpecifications
+    ) -> Self:
+        """Create a ThreeWindingTransformerSpecifications instance by merging defaults with user specifications."""
         data = defaults.model_dump()
         data.update(user.model_dump(exclude_none=True))
-        logger.info("Complete three-phase transformer specifications: %s", data)
+        logger.info("Complete three-winding transformer specifications: %s", data)
 
         # If no load loss is not provided, it can be calculated based on the individual losses
         if user.load_loss_total is None:

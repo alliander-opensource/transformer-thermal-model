@@ -9,8 +9,8 @@ from transformer_thermal_model.cooler import CoolerType
 from transformer_thermal_model.schemas import (
     InputProfile,
     ThreeWindingInputProfile,
+    UserThreeWindingTransformerSpecifications,
     UserTransformerSpecifications,
-    UserTreePhaseTransformerSpecifications,
     WindingSpecifications,
 )
 from transformer_thermal_model.transformer import DistributionTransformer, PowerTransformer
@@ -106,9 +106,9 @@ def iec_load_profile():
 
 
 @pytest.fixture(scope="function")
-def user_three_phase_transformer_specs() -> UserTreePhaseTransformerSpecifications:
-    """Create a three-phase transformer specifications object."""
-    return UserTreePhaseTransformerSpecifications(
+def user_three_winding_transformer_specs() -> UserThreeWindingTransformerSpecifications:
+    """Create a three-winding transformer specifications object."""
+    return UserThreeWindingTransformerSpecifications(
         no_load_loss=800,
         amb_temp_surcharge=10,
         lv_winding=WindingSpecifications(nom_load=1000, winding_oil_gradient=500),
@@ -121,8 +121,8 @@ def user_three_phase_transformer_specs() -> UserTreePhaseTransformerSpecificatio
 
 
 @pytest.fixture(scope="function")
-def three_phase_input_profile() -> ThreeWindingInputProfile:
-    """Create a three-phase input profile."""
+def three_winding_input_profile() -> ThreeWindingInputProfile:
+    """Create a three-winding input profile."""
     datetime_index = pd.date_range("2021-01-01 00:00:00", periods=3)
     load_profile_high_voltage_side = [100, 200, 300]
     load_profile_middle_voltage_side = [200, 300, 400]
