@@ -8,9 +8,13 @@ import numpy as np
 
 from transformer_thermal_model.cooler import CoolerType
 from transformer_thermal_model.schemas import (
+    BaseTransformerSpecifications,
+    BaseUserTransformerSpecifications,
     DefaultTransformerSpecifications,
+    ThreePhaseTransformerSpecifications,
     TransformerSpecifications,
     UserTransformerSpecifications,
+    UserTreePhaseTransformerSpecifications,
 )
 
 
@@ -28,11 +32,11 @@ class Transformer(ABC):
     """
 
     cooling_type: CoolerType
-    specs: TransformerSpecifications
+    specs: BaseTransformerSpecifications
 
     def __init__(
         self,
-        user_specs: UserTransformerSpecifications,
+        user_specs: BaseUserTransformerSpecifications,
         cooling_type: CoolerType,
     ):
         """Initialize the Transformer object.
@@ -44,7 +48,15 @@ class Transformer(ABC):
             cooling_type (CoolerType): The cooling type. Can be ONAN, ONAF.
         """
         self.cooling_type: CoolerType = cooling_type
-        self.specs = TransformerSpecifications.create(self.defaults, user_specs)
+        if type(user_specs) is UserTreePhaseTransformerSpecifications:
+            self.specs = ThreePhaseTransformerSpecifications.create(self.defaults, user_specs)
+        elif type(user_specs) is UserTransformerSpecifications:
+            self.specs = TransformerSpecifications.create(self.defaults, user_specs)
+        else:
+            raise TypeError(
+                f"Invalid user specifications type: {type(user_specs)}. "
+                "Expected UserTransformerSpecifications or UserTreePhaseTransformerSpecifications."
+            )
 
     @property
     @abstractmethod
@@ -61,15 +73,9 @@ class Transformer(ABC):
     def _calculate_internal_temp(self, ambient_temperature: np.ndarray) -> np.ndarray:
         pass
 
+    @abstractmethod
     def _end_temperature_top_oil(self, load: np.ndarray) -> np.ndarray:
-        """Calculate the end temperature of the top-oil."""
-        load_ratio = np.power(load / self.specs.nom_load_sec_side, 2)
-        total_loss_ratio = (self.specs.no_load_loss + self.specs.load_loss * load_ratio) / (
-            self.specs.no_load_loss + self.specs.load_loss
-        )
-        step_one_end_t0 = self._pre_factor * np.power(total_loss_ratio, self.specs.oil_exp_x)
-
-        return step_one_end_t0
+        pass
 
     def _set_HS_fac(self, hot_spot_factor: float) -> None:
         """Set hot-spot factor to specified value.
