@@ -71,8 +71,8 @@ class InputProfile(BaseInputProfile):
     def create(
         cls,
         datetime_index: Collection[datetime],
-        ambient_temperature_profile: Collection[float],
         load_profile: Collection[float],
+        ambient_temperature_profile: Collection[float],
     ) -> Self:
         """Create an InputProfile from datetime index, load profile, and ambient temperature profile.
 
@@ -133,8 +133,8 @@ class InputProfile(BaseInputProfile):
         """
         return cls(
             datetime_index=np.array(datetime_index, dtype=np.datetime64),
-            ambient_temperature_profile=np.array(ambient_temperature_profile, dtype=float),
             load_profile_sec_side=np.array(load_profile, dtype=float),
+            ambient_temperature_profile=np.array(ambient_temperature_profile, dtype=float),
         )
 
     @property
