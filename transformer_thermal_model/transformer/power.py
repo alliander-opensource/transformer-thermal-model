@@ -12,6 +12,7 @@ from transformer_thermal_model.cooler import CoolerType
 from transformer_thermal_model.schemas import (
     DefaultTransformerSpecifications,
     TransformerComponentSpecifications,
+    TransformerSpecifications,
     UserTransformerSpecifications,
 )
 
@@ -82,6 +83,8 @@ class PowerTransformer(Transformer):
             which are used to calculate the relative component capacities. Defaults to None.
     """
 
+    specs: TransformerSpecifications
+
     _onan_defaults = DefaultTransformerSpecifications(
         time_const_oil=210,
         time_const_windings=10,
@@ -137,9 +140,9 @@ class PowerTransformer(Transformer):
             self.internal_component_specs = internal_component_specs
 
         super().__init__(
-            user_specs=user_specs,
             cooling_type=cooling_type,
         )
+        self.specs = TransformerSpecifications.create(self.defaults, user_specs)
 
     @property
     def defaults(self) -> DefaultTransformerSpecifications:

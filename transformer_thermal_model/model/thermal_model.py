@@ -94,7 +94,7 @@ class Model:
         logger.info(f"First timestamp: {temperature_profile.datetime_index[0]}")
         logger.info(f"Last timestamp: {temperature_profile.datetime_index[-1]}")
         logger.info(f"Amount of data points: {len(temperature_profile)}")
-        logger.info(f"Max load: {np.max(temperature_profile.load_profile)}")
+        logger.info(f"Max load: {np.max(temperature_profile.load_profile_array)}")
         if transformer.specs.hot_spot_fac is None:
             raise AttributeError(
                 "The given Transformer has no hot-spot factor specified. Please specify the hot-spot "
@@ -152,7 +152,7 @@ class Model:
         return (
             self.transformer.specs.hot_spot_fac
             * self.transformer.specs.winding_oil_gradient
-            * (load / self.transformer.specs.nom_load_sec_side) ** self.transformer.specs.winding_exp_y
+            * (load / self.transformer.specs.nominal_load_array) ** self.transformer.specs.winding_exp_y
         )
 
     def _calculate_temperature_profiles(
@@ -235,7 +235,7 @@ class Model:
         """
         logger.info("Running the thermal model.")
         dt = self._get_time_step()
-        load = self.data.load_profile
+        load = self.data.load_profile_array
         t_internal = self._get_internal_temp()
 
         f1 = self._calculate_f1(dt)

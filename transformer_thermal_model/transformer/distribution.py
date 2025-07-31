@@ -7,7 +7,11 @@ import logging
 import numpy as np
 
 from transformer_thermal_model.cooler import CoolerType
-from transformer_thermal_model.schemas import DefaultTransformerSpecifications, UserTransformerSpecifications
+from transformer_thermal_model.schemas import (
+    DefaultTransformerSpecifications,
+    TransformerSpecifications,
+    UserTransformerSpecifications,
+)
 
 from .base import Transformer
 
@@ -51,6 +55,8 @@ class DistributionTransformer(Transformer):
         ```
     """
 
+    specs: TransformerSpecifications
+
     def __init__(
         self,
         user_specs: UserTransformerSpecifications,
@@ -67,9 +73,9 @@ class DistributionTransformer(Transformer):
         logger.info("User transformer specifications: %s", user_specs)
 
         super().__init__(
-            user_specs=user_specs,
             cooling_type=CoolerType.ONAN,
         )
+        self.specs = TransformerSpecifications.create(self.defaults, user_specs)
 
     @property
     def defaults(self) -> DefaultTransformerSpecifications:
