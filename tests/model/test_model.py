@@ -423,5 +423,6 @@ def test_three_winding_transformer(user_three_winding_transformer_specs, three_w
     results = thermal_model.run()
     top_oil_temp = results.top_oil_temp_profile
     hot_spot_temp = results.hot_spot_temp_profile
+    print(hot_spot_temp)
     assert top_oil_temp.shape == (len(three_winding_input_profile.datetime_index),)
     assert hot_spot_temp.shape == (len(three_winding_input_profile.datetime_index), 3)

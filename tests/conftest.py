@@ -112,11 +112,11 @@ def user_three_winding_transformer_specs() -> UserThreeWindingTransformerSpecifi
         no_load_loss=20,
         amb_temp_surcharge=10,
         lv_winding=WindingSpecifications(nom_load=1000, winding_oil_gradient=20),
-        mv_winding=WindingSpecifications(nom_load=2000, winding_oil_gradient=20),
-        hv_winding=WindingSpecifications(nom_load=3000, winding_oil_gradient=20),
-        load_loss_hv_lv=50,
+        mv_winding=WindingSpecifications(nom_load=1000, winding_oil_gradient=20),
+        hv_winding=WindingSpecifications(nom_load=1000, winding_oil_gradient=20),
+        load_loss_hv_lv=100,
         load_loss_hv_mv=100,
-        load_loss_mv_lv=150,
+        load_loss_mv_lv=100,
     )
 
 
@@ -125,7 +125,7 @@ def three_winding_input_profile() -> ThreeWindingInputProfile:
     """Create a three-winding input profile."""
     data_points = 10
     datetime_index = pd.date_range("2021-01-01 00:00:00", periods=data_points, freq="min")
-    load_profile_high_voltage_side = [1500] * data_points
+    load_profile_high_voltage_side = [4000] * data_points
     load_profile_middle_voltage_side = [1300] * data_points
     load_profile_low_voltage_side = [1300] * data_points
     ambient_temperature_profile = [30] * data_points

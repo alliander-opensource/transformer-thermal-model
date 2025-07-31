@@ -117,9 +117,9 @@ class ThreeWindingTransformer(Transformer):
 
     def _end_temperature_top_oil(self, load_profile: np.ndarray) -> np.ndarray:
         """Calculate the end temperature of the top-oil."""
-        lv_rise = self._get_loss_lc() * np.power(load_profile[2] / self.specs.lv_winding.nom_load, 2)
+        lv_rise = self._get_loss_lc() * np.power(load_profile[0] / self.specs.lv_winding.nom_load, 2)
         mv_rise = self._get_loss_mc() * np.power(load_profile[1] / self.specs.mv_winding.nom_load, 2)
-        hv_rise = self._get_loss_hc() * np.power(load_profile[0] / self.specs.hv_winding.nom_load, 2)
+        hv_rise = self._get_loss_hc() * np.power(load_profile[2] / self.specs.hv_winding.nom_load, 2)
 
         end_temp_top_oil = (
             self._pre_factor * (hv_rise + mv_rise + lv_rise + self.specs.no_load_loss) / self.specs.load_loss_total

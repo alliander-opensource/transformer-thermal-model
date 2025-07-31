@@ -282,7 +282,7 @@ class Model:
                 top_oil_temp_profile=pd.Series(top_oil_temp_profile, index=self.data.datetime_index),
                 hot_spot_temp_profile=pd.DataFrame(
                     hot_spot_temp_profile.transpose(),
-                    columns=["high_voltage_side", "middle_voltage_side", "low_voltage_side"],
+                    columns=["low_voltage_side", "middle_voltage_side", "high_voltage_side"],
                     index=self.data.datetime_index,
                 ),
             )

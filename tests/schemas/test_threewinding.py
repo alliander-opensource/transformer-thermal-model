@@ -29,7 +29,7 @@ def test_three_winding_transformer(user_three_winding_transformer_specs):
         defaults=defaults, user=user_three_winding_transformer_specs
     )
 
-    assert transformer.lv_winding.nom_load == 1000
+    assert transformer.lv_winding.nom_load == user_three_winding_transformer_specs.lv_winding.nom_load
     assert transformer.time_const_oil == 180
     assert (
         transformer.nominal_load_array
