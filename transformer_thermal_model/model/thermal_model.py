@@ -289,7 +289,9 @@ class Model:
                     index=self.data.datetime_index,
                 ),
             )
-        return OutputProfile(
-            top_oil_temp_profile=pd.Series(top_oil_temp_profile, index=self.data.datetime_index),
-            hot_spot_temp_profile=pd.Series(hot_spot_temp_profile, index=self.data.datetime_index),
-        )
+        else:
+            # For a two winding transformer, hot_spot_temp_profile is a Series
+            return OutputProfile(
+                top_oil_temp_profile=pd.Series(top_oil_temp_profile, index=self.data.datetime_index),
+                hot_spot_temp_profile=pd.Series(hot_spot_temp_profile, index=self.data.datetime_index),
+            )
