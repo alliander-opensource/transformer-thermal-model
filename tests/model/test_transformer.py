@@ -264,7 +264,7 @@ def test_initialize_three_winding_transformer(user_three_winding_transformer_spe
     """Initialize a ThreeWindingTransformer with the given user specifications."""
     transformer = ThreeWindingTransformer(user_specs=user_three_winding_transformer_specs, cooling_type=CoolerType.ONAN)
 
-    load_profile = three_winding_input_profile.load_profile
+    load_profile = three_winding_input_profile.load_profile_array
     end_temp_top_oil = transformer._end_temperature_top_oil(load_profile)
 
     assert transformer.specs.no_load_loss == user_three_winding_transformer_specs.no_load_loss

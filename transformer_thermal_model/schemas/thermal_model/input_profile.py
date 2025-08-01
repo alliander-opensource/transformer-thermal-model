@@ -201,13 +201,13 @@ class ThreeWindingInputProfile(BaseInputProfile):
     load_profile_low_voltage_side: np.typing.NDArray[np.float64]
 
     @property
-    def load_profile(self) -> np.typing.NDArray[np.float64]:
+    def load_profile_array(self) -> np.typing.NDArray[np.float64]:
         """Return an array with shape (3,n) of the three load profiles (high, middle, low voltage sides)."""
         return np.array(
             [
-                self.load_profile_high_voltage_side,
-                self.load_profile_middle_voltage_side,
                 self.load_profile_low_voltage_side,
+                self.load_profile_middle_voltage_side,
+                self.load_profile_high_voltage_side,
             ]
         )
 

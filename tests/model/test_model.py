@@ -11,6 +11,7 @@ from transformer_thermal_model.model import Model
 from transformer_thermal_model.schemas import UserTransformerSpecifications
 from transformer_thermal_model.toolbox.temp_sim_profile_tools import create_temp_sim_profile_from_df
 from transformer_thermal_model.transformer import PowerTransformer
+from transformer_thermal_model.transformer.threewinding import ThreeWindingTransformer
 
 
 @pytest.fixture
@@ -413,3 +414,39 @@ def test_if_rise_matches_iec(iec_load_profile):
         calculated_hot_spot_temp = hot_spot_temp_profile[timestamp]
         assert calculated_top_oil_temp == pytest.approx(expected["top_oil_temperature"], abs=1.5)
         assert calculated_hot_spot_temp == pytest.approx(expected["hot_spot_temperature"], abs=1.5)
+
+
+def test_three_winding_transformer(user_three_winding_transformer_specs, three_winding_input_profile):
+    """Test the three-winding transformer model."""
+    transformer = ThreeWindingTransformer(user_specs=user_three_winding_transformer_specs, cooling_type=CoolerType.ONAF)
+    length = len(three_winding_input_profile.datetime_index)
+
+    # With high load on high voltage side
+    three_winding_input_profile.load_profile_high_voltage_side = [2000] * length
+    three_winding_input_profile.load_profile_middle_voltage_side = [1000] * length
+    three_winding_input_profile.load_profile_low_voltage_side = [1000] * length
+    thermal_model = Model(temperature_profile=three_winding_input_profile, transformer=transformer)
+    results = thermal_model.run()
+    hot_spot_temp = results.hot_spot_temp_profile
+    assert hot_spot_temp["high_voltage_side"].sum() > hot_spot_temp["middle_voltage_side"].sum()
+    assert hot_spot_temp["high_voltage_side"].sum() > hot_spot_temp["low_voltage_side"].sum()
+
+    # with high load on middle voltage side
+    three_winding_input_profile.load_profile_high_voltage_side = [1000] * length
+    three_winding_input_profile.load_profile_middle_voltage_side = [2000] * length
+    three_winding_input_profile.load_profile_low_voltage_side = [1000] * length
+    thermal_model = Model(temperature_profile=three_winding_input_profile, transformer=transformer)
+    results = thermal_model.run()
+    hot_spot_temp = results.hot_spot_temp_profile
+    assert hot_spot_temp["middle_voltage_side"].sum() > hot_spot_temp["high_voltage_side"].sum()
+    assert hot_spot_temp["middle_voltage_side"].sum() > hot_spot_temp["low_voltage_side"].sum()
+
+    # with high load on low voltage side
+    three_winding_input_profile.load_profile_high_voltage_side = [1000] * length
+    three_winding_input_profile.load_profile_middle_voltage_side = [1000] * length
+    three_winding_input_profile.load_profile_low_voltage_side = [2000] * length
+    thermal_model = Model(temperature_profile=three_winding_input_profile, transformer=transformer)
+    results = thermal_model.run()
+    hot_spot_temp = results.hot_spot_temp_profile
+    assert hot_spot_temp["low_voltage_side"].sum() > hot_spot_temp["high_voltage_side"].sum()
+    assert hot_spot_temp["low_voltage_side"].sum() > hot_spot_temp["middle_voltage_side"].sum()
