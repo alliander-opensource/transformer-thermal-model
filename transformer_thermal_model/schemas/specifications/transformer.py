@@ -226,15 +226,21 @@ class ThreeWindingTransformerSpecifications(BaseTransformerSpecifications):
     @property
     def nominal_load_array(cls) -> np.ndarray:
         """Return the nominal loads as a numpy array."""
-        return np.array([[cls.hv_winding.nom_load], [cls.mv_winding.nom_load], [cls.lv_winding.nom_load]])
+        return np.array(
+            [
+                [cls.lv_winding.nom_load],
+                [cls.mv_winding.nom_load],
+                [cls.hv_winding.nom_load],
+            ]
+        )
 
     @property
     def winding_oil_gradient_array(cls) -> np.ndarray:
         """Return the winding oil gradient as a numpy array."""
         return np.array(
             [
-                [cls.hv_winding.winding_oil_gradient],
-                [cls.mv_winding.winding_oil_gradient],
                 [cls.lv_winding.winding_oil_gradient],
+                [cls.mv_winding.winding_oil_gradient],
+                [cls.hv_winding.winding_oil_gradient],
             ]
         )
