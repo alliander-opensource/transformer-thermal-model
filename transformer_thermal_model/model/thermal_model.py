@@ -172,12 +172,12 @@ class Model:
             np.ndarray: The computed top-oil temperature profile over time.
         """
         top_oil_temp_profile = np.zeros_like(t_internal, dtype=np.float64)
-        top_oil_temp = t_internal[0] if self.init_top_oil_temp is None else self.init_top_oil_temp
-        top_oil_temp_profile[0] = top_oil_temp
+        top_oil_temp_profile[0] = t_internal[0] if self.init_top_oil_temp is None else self.init_top_oil_temp
 
         for i in range(1, len(t_internal)):
-            top_oil_temp = self._update_top_oil_temp(top_oil_temp, t_internal[i], top_k[i], f1[i])
-            top_oil_temp_profile[i] = top_oil_temp
+            top_oil_temp_profile[i]  = self._update_top_oil_temp(top_oil_temp_profile[i-1], 
+                                                                 t_internal[i], top_k[i], f1[i])
+
 
         return top_oil_temp_profile
 
