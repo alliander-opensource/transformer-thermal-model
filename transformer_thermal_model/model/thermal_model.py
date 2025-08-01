@@ -175,9 +175,9 @@ class Model:
         top_oil_temp_profile[0] = t_internal[0] if self.init_top_oil_temp is None else self.init_top_oil_temp
 
         for i in range(1, len(t_internal)):
-            top_oil_temp_profile[i]  = self._update_top_oil_temp(top_oil_temp_profile[i-1], 
-                                                                 t_internal[i], top_k[i], f1[i])
-
+            top_oil_temp_profile[i] = self._update_top_oil_temp(
+                top_oil_temp_profile[i - 1], t_internal[i], top_k[i], f1[i]
+            )
 
         return top_oil_temp_profile
 
@@ -207,34 +207,37 @@ class Model:
 
         # For a two winding transformer:
         if load.ndim == 1:
-            hot_spot_increase_windings = 0.0
-            hot_spot_increase_oil = 0.0
             hot_spot_temp_profile[0] = top_oil_temp_profile[0]
-
+            hot_spot_increase_windings = np.zeros_like(load)
+            hot_spot_increase_oil = np.zeros_like(load)
             for i in range(1, len(load)):
-                hot_spot_increase_windings = self._update_hot_spot_increase(
-                    hot_spot_increase_windings, static_hot_spot_incr_windings[i], f2_windings[i]
+                hot_spot_increase_windings[i] = self._update_hot_spot_increase(
+                    hot_spot_increase_windings[i - 1], static_hot_spot_incr_windings[i], f2_windings[i]
                 )
-                hot_spot_increase_oil = self._update_hot_spot_increase(
-                    hot_spot_increase_oil, static_hot_spot_incr_oil[i], f2_oil[i]
+                hot_spot_increase_oil[i] = self._update_hot_spot_increase(
+                    hot_spot_increase_oil[i - 1], static_hot_spot_incr_oil[i], f2_oil[i]
                 )
-                hot_spot_temp_profile[i] = top_oil_temp_profile[i] + hot_spot_increase_windings - hot_spot_increase_oil
+                hot_spot_temp_profile[i] = (
+                    top_oil_temp_profile[i] + hot_spot_increase_windings[i] - hot_spot_increase_oil[i]
+                )
 
-        # for a three winding transformer with multiple load profiles:
+        # For a three winding transformer with multiple load profiles:
         else:
             hot_spot_temp_profile[:, 0] = top_oil_temp_profile[0]
-            for profile in range(len(load)):
-                hot_spot_increase_windings = 0.0
-                hot_spot_increase_oil = 0.0
-                for i in range(1, len(load[profile])):
-                    hot_spot_increase_windings = self._update_hot_spot_increase(
-                        hot_spot_increase_windings, static_hot_spot_incr_windings[profile][i], f2_windings[i]
+            n_profiles = load.shape[0]
+            n_steps = load.shape[1]
+            for profile in range(n_profiles):
+                hot_spot_increase_windings = np.zeros(n_steps)
+                hot_spot_increase_oil = np.zeros(n_steps)
+                for i in range(1, n_steps):
+                    hot_spot_increase_windings[i] = self._update_hot_spot_increase(
+                        hot_spot_increase_windings[i - 1], static_hot_spot_incr_windings[profile][i], f2_windings[i]
                     )
-                    hot_spot_increase_oil = self._update_hot_spot_increase(
-                        hot_spot_increase_oil, static_hot_spot_incr_oil[profile][i], f2_oil[i]
+                    hot_spot_increase_oil[i] = self._update_hot_spot_increase(
+                        hot_spot_increase_oil[i - 1], static_hot_spot_incr_oil[profile][i], f2_oil[i]
                     )
                     hot_spot_temp_profile[profile][i] = (
-                        top_oil_temp_profile[i] + hot_spot_increase_windings - hot_spot_increase_oil
+                        top_oil_temp_profile[i] + hot_spot_increase_windings[i] - hot_spot_increase_oil[i]
                     )
 
         return hot_spot_temp_profile
