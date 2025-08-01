@@ -125,9 +125,9 @@ def three_winding_input_profile() -> ThreeWindingInputProfile:
     """Create a three-winding input profile."""
     data_points = 10
     datetime_index = pd.date_range("2021-01-01 00:00:00", periods=data_points, freq="min")
-    load_profile_high_voltage_side = [4000] * data_points
-    load_profile_middle_voltage_side = [1300] * data_points
-    load_profile_low_voltage_side = [1300] * data_points
+    load_profile_high_voltage_side = [1000] * data_points
+    load_profile_middle_voltage_side = [1000] * data_points
+    load_profile_low_voltage_side = [1000] * data_points
     ambient_temperature_profile = [30] * data_points
     return ThreeWindingInputProfile.create(
         datetime_index=datetime_index,
