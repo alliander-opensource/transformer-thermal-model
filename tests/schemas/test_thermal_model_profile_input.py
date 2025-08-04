@@ -13,12 +13,13 @@ from transformer_thermal_model.schemas.thermal_model.input_profile import InputP
 
 
 @pytest.mark.parametrize(
-    "datetime_index, load_profile, ambient_temperature_profile, expectation, message",
+    "datetime_index, load_profile, ambient_temperature_profile, top_oil_temperature_profile, expectation, message",
     [
         (
             pd.date_range("2021-01-01 00:00:00", periods=3),
             [1, 2, 3],
             [1, 2, 3],
+            None,
             does_not_raise(),
             None,
         ),
@@ -26,6 +27,15 @@ from transformer_thermal_model.schemas.thermal_model.input_profile import InputP
             pd.date_range("2021-01-01 00:00:00", periods=3),
             np.array([1, 2, 3]),
             [1, 2, 3],
+            None,
+            does_not_raise(),
+            None,
+        ),
+        (
+            pd.date_range("2021-01-01 00:00:00", periods=3),
+            np.array([1, 2, 3]),
+            [1, 2, 3],
+            [2, 3, 4],
             does_not_raise(),
             None,
         ),
@@ -33,6 +43,7 @@ from transformer_thermal_model.schemas.thermal_model.input_profile import InputP
             pd.date_range("2021-01-01 00:00:00", periods=3),
             pd.Series([1, 2, 3]),
             [1, 2, 3],
+            None,
             does_not_raise(),
             None,
         ),
@@ -40,6 +51,7 @@ from transformer_thermal_model.schemas.thermal_model.input_profile import InputP
             pd.date_range("2021-01-01 00:00:00", periods=3),
             pd.Series([1, 2, 3], index=pd.date_range("2021-01-01 00:00:00", periods=3)),
             [1, 2, 3],
+            None,
             does_not_raise(),
             None,
         ),
@@ -47,6 +59,7 @@ from transformer_thermal_model.schemas.thermal_model.input_profile import InputP
             np.array([datetime(2021, 1, 1, 0, 0, 0), datetime(2021, 1, 1, 0, 15, 0), datetime(2021, 1, 1, 0, 30, 0)]),
             [1, 2, 3],
             [1, 2, 3],
+            None,
             does_not_raise(),
             None,
         ),
@@ -54,6 +67,7 @@ from transformer_thermal_model.schemas.thermal_model.input_profile import InputP
             pd.date_range("2021-01-01 00:00:00", periods=3),
             [1, 2, 3],
             [1, 2],
+            None,
             pytest.raises(ValueError),
             "The length of the profiles and index should be the same",
         ),
@@ -61,6 +75,7 @@ from transformer_thermal_model.schemas.thermal_model.input_profile import InputP
             pd.date_range("2021-01-01 00:00:00", periods=3),
             [1, 2],
             [1, 2, 3],
+            None,
             pytest.raises(ValueError),
             "The length of the profiles and index should be the same",
         ),
@@ -68,6 +83,7 @@ from transformer_thermal_model.schemas.thermal_model.input_profile import InputP
             pd.to_datetime(["2021-01-01 00:00:00", "2021-01-01 00:15:00", "2021-01-01 00:05:00"]),
             [1, 2, 3],
             [1, 2, 3],
+            None,
             pytest.raises(ValueError),
             "The datetime index should be sorted.",
         ),
@@ -75,6 +91,7 @@ from transformer_thermal_model.schemas.thermal_model.input_profile import InputP
             np.array(["a", "b", "c"]),
             [1, 2, 3],
             [1, 2, 3],
+            None,
             pytest.raises(ValueError),
             None,
         ),
@@ -82,11 +99,21 @@ from transformer_thermal_model.schemas.thermal_model.input_profile import InputP
             {"a": 1, "b": 3, "c": 3},
             [1, 2, 3],
             [1, 2, 3],
+            None,
             pytest.raises(ValueError),
             "Could not convert object to NumPy datetime",
         ),
         (
             np.array(["2021-01-01 00:00:00", "2021-01-01 00:15:00", "2021-01-01 00:25:00"], dtype="datetime64[s]"),
+            [2, 4, 5],
+            {"a": 1, "b": 3, "c": 3},
+            None,
+            pytest.raises(TypeError),
+            None,
+        ),
+        (
+            np.array(["2021-01-01 00:00:00", "2021-01-01 00:15:00", "2021-01-01 00:25:00"], dtype="datetime64[s]"),
+            [2, 4, 5],
             [2, 4, 5],
             {"a": 1, "b": 3, "c": 3},
             pytest.raises(TypeError),
@@ -96,6 +123,7 @@ from transformer_thermal_model.schemas.thermal_model.input_profile import InputP
             np.array(["2021-01-01 00:00:00", "2021-01-01 00:15:00", "2021-01-01 00:25:00"], dtype="datetime64[s]"),
             [[2, 4, 5], [2, 4, 5]],
             [2, 3, 4],
+            None,
             pytest.raises(ValueError),
             None,
         ),
@@ -103,20 +131,30 @@ from transformer_thermal_model.schemas.thermal_model.input_profile import InputP
             np.array(["2021-01-01 00:00:00", "2021-01-01 00:15:00", "2021-01-01 00:25:00"], dtype="datetime64[s]"),
             (2, 4, 5),
             pd.DataFrame([2, 3, 4], [2, 3, 4]),
+            None,
             pytest.raises(ValueError),
             "array must be one-dimensional",
+        ),
+        (
+            np.array(["2021-01-01 00:00:00", "2021-01-01 00:15:00", "2021-01-01 00:25:00"], dtype="datetime64[s]"),
+            (2, 4, 5),
+            [2, 3, 4],
+            pd.DataFrame([2, 3, 4], [2, 3, 4]),
+            pytest.raises(ValueError),
+            "array must be one-dimensional.",
         ),
         (
             [1, 2, 3],  # unixtimes
             [1, 2, 3],
             [1, 2, 3],
+            None,
             pytest.raises(ValueError),
             "Converting an integer to a NumPy datetime requires a specified unit",
         ),
     ],
 )
 def test_that_the_input_data_for_thermal_model_is_validated_properly(
-    datetime_index, load_profile, ambient_temperature_profile, expectation, message
+    datetime_index, load_profile, ambient_temperature_profile, top_oil_temperature_profile, expectation, message
 ):
     """Test that the InputProfile can be created from two Series."""
     with expectation as e:
@@ -125,6 +163,7 @@ def test_that_the_input_data_for_thermal_model_is_validated_properly(
                 datetime_index=datetime_index,
                 load_profile=load_profile,
                 ambient_temperature_profile=ambient_temperature_profile,
+                top_oil_temperature_profile=top_oil_temperature_profile,
             )
             is not None
         )

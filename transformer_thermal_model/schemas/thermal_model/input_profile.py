@@ -31,7 +31,7 @@ class InputProfile(BaseModel):
     datetime_index: np.typing.NDArray[np.datetime64]
     load_profile: np.typing.NDArray[np.float64]
     ambient_temperature_profile: np.typing.NDArray[np.float64]
-    top_oil_temperature_profile: np.typing.NDArray[np.float64] | None
+    top_oil_temperature_profile: np.typing.NDArray[np.float64] | None = None
 
     @classmethod
     def create(
@@ -73,7 +73,7 @@ class InputProfile(BaseModel):
             InputProfile(datetime_index=array(['2023-01-01T00:00:00.000000',
             '2023-01-01T01:00:00.000000', '2023-01-01T02:00:00.000000'],
             dtype='datetime64[us]'), load_profile=array([0.8, 0.9, 1. ]),
-            ambient_temperature_profile=array([25. , 24.5, 24. ]))
+            ambient_temperature_profile=array([25. , 24.5, 24. ]), top_oil_temperature_profile=None)
 
             ```
 
@@ -97,10 +97,9 @@ class InputProfile(BaseModel):
             ...     top_oil_temperature_profile=top_oil_temperature,
             ... )
             >>> input_profile
-            InputProfile(datetime_index=array(['2023-01-01T00:00:00.000000',
-            '2023-01-01T01:00:00.000000', '2023-01-01T02:00:00.000000'],
-            dtype='datetime64[us]'), load_profile=array([0.8, 0.9, 1. ]),
-            ambient_temperature_profile=array([25. , 24.5, 24. ]))
+            InputProfile(datetime_index=array(['2023-01-01T00:00:00.000000', '2023-01-01T01:00:00.000000',
+            '2023-01-01T02:00:00.000000'], dtype='datetime64[us]'), load_profile=array([0.8, 0.9, 1. ]), 
+            ambient_temperature_profile=array([25. , 24.5, 24. ]), top_oil_temperature_profile=array([37. , 36.5, 36. ]))
 
             ```
 
@@ -126,7 +125,7 @@ class InputProfile(BaseModel):
             InputProfile(datetime_index=array(['2023-01-01T00:00:00.000000',
             '2023-01-01T01:00:00.000000', '2023-01-01T02:00:00.000000'],
             dtype='datetime64[us]'), load_profile=array([0.8, 0.9, 1. ]),
-            ambient_temperature_profile=array([25. , 24.5, 24. ]))
+            ambient_temperature_profile=array([25. , 24.5, 24. ]), top_oil_temperature_profile=None)
 
             ```
         """
@@ -136,7 +135,7 @@ class InputProfile(BaseModel):
             ambient_temperature_profile=np.array(ambient_temperature_profile, dtype=float),
             top_oil_temperature_profile=
                 np.array(top_oil_temperature_profile, dtype=float) 
-                if top_oil_temperature_profile else None,
+                if top_oil_temperature_profile is not None else None,
         )
 
     @model_validator(mode="after")
