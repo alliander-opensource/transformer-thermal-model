@@ -413,3 +413,47 @@ def test_if_rise_matches_iec(iec_load_profile):
         calculated_hot_spot_temp = hot_spot_temp_profile[timestamp]
         assert calculated_top_oil_temp == pytest.approx(expected["top_oil_temperature"], abs=1.5)
         assert calculated_hot_spot_temp == pytest.approx(expected["hot_spot_temperature"], abs=1.5)
+
+
+def test_top_oil_input(onan_power_transformer):
+    """Test if the temperature rise matches the expected one."""
+    tau_time = onan_power_transformer.specs.oil_const_k11 * onan_power_transformer.specs.time_const_oil
+    ambient_temp = 20
+    time_step_list = [pd.to_datetime("2021-01-01 00:00:00") + pd.Timedelta(minutes=i * tau_time) for i in range(0, 16)]
+    profile = pd.DataFrame(
+        {
+            "timestamp": time_step_list,
+            "load": [1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 0, 0, 0, 0, 0, 0, 0, 0],
+            "ambient_temperature": [ambient_temp] * len(time_step_list),
+        }
+    )
+    thermal_model = Model(
+        temperature_profile=create_temp_sim_profile_from_df(profile), 
+        transformer=onan_power_transformer
+    )
+    results = thermal_model.run()
+
+    # Now run with the calculated top oil temperature.
+    top_oil_profile = pd.DataFrame(
+        {
+            "timestamp": time_step_list,
+            "load": [1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 0, 0, 0, 0, 0, 0, 0, 0],
+            # Mess up the ambient temperature make sure we get an error if it is being used
+            "ambient_temperature": [ambient_temp + 100] * len(time_step_list), 
+            "top_oil_temperature": results.top_oil_temp_profile,
+        }
+    )
+    top_oil_thermal_model = Model(
+        temperature_profile=create_temp_sim_profile_from_df(top_oil_profile), 
+        transformer=onan_power_transformer
+    )
+    top_oil_results = top_oil_thermal_model.run() # the top oil profile should be used as it was provided
+
+    assert sum(abs(top_oil_results.top_oil_temp_profile - results.top_oil_temp_profile)) < 1e-6
+    assert sum(abs(top_oil_results.hot_spot_temp_profile - results.hot_spot_temp_profile)) < 1e-6
+
+    # now run with the changed ambient temperature. The top oil and hot spot temperatures should be different now
+    top_oil_results = top_oil_thermal_model.run(force_use_ambient_temperature=True)
+
+    assert not sum(abs(top_oil_results.top_oil_temp_profile - results.top_oil_temp_profile)) < 1e-6
+    assert not sum(abs(top_oil_results.hot_spot_temp_profile - results.hot_spot_temp_profile)) < 1e-6

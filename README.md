@@ -335,6 +335,73 @@ calculation, which also creates the benefit for you that you can
 relate the result to your provided input for eventual
 cross-validation or analysis.
 
+#### Using the top oil temperature as an input to the model
+
+
+Optionally, you can provide the top oil temperature as an input parameter to the `InputProfile` 
+to use it in place of the ambient temperature as an input to the model:
+
+```Python
+import pandas as pd
+
+from transformer_thermal_model.model import Model
+from transformer_thermal_model.cooler import CoolerType
+from transformer_thermal_model.schemas import UserTransformerSpecifications, InputProfile
+from transformer_thermal_model.transformer import PowerTransformer
+
+one_week = 4*24*7
+datetime_index = pd.date_range("2020-01-01", periods=one_week, freq="15min")
+
+nominal_load = 100
+load_points = pd.Series([nominal_load] * one_week, index=datetime_index)
+ambient_temp = 21
+temperature_points = pd.Series([ambient_temp] * one_week, index=datetime_index)
+top_oil_temp = 42
+top_oil_points = pd.Series([top_oil_temp] * one_week, index=datetime_index)
+
+profile_input = InputProfile.create(
+   datetime_index = datetime_index,
+   load_profile = load_points,
+   ambient_temperature_profile = temperature_points,
+   # Here is where we add the top oil temperature as an input. It has the same shape as the ambient temperature.
+   top_oil_temperature_profile = top_oil_points
+)
+
+tr_specs = UserTransformerSpecifications(
+   load_loss=1000,  # Transformer load loss [W]
+   nom_load_sec_side=1500,  # Transformer nominal current secondary side [A]
+   no_load_loss=200,  # Transformer no-load loss [W]
+   amb_temp_surcharge=20,  # Ambient temperature surcharge [K]
+)
+transformer = PowerTransformer(user_specs=tr_specs, cooling_type=CoolerType.ONAF)
+model = Model(
+   temperature_profile = profile_input,
+   transformer = transformer
+)
+
+# As we have provided the top oil temperature as an input, this is now being used in place of the ambient temperature.
+# If you still want to use the top oil temperature you can do so using model.run(force_use_ambient_temperature=True)
+results = model.run()
+
+top_oil_temp_profile = results.top_oil_temp_profile
+hot_spot_temp_profile = results.hot_spot_temp_profile
+```
+
+```text
+>>> top_oil_temp_profile.head(3)
+2020-01-01 00:00:00    42.0
+2020-01-01 00:15:00    42.0
+2020-01-01 00:30:00    42.0
+
+>>> hot_spot_temp_profile.head(3)
+2020-01-01 00:00:00    42.000000
+2020-01-01 00:15:00    42.741258
+2020-01-01 00:30:00    42.938711
+```
+
+Note, how the top oil temperature we receive as the output `results.top_oil_temp_profile` exactly matches 
+the top oil temperature we provided as the input. 
+
 ## License
 
 This project is licensed under the Mozilla Public License, version 2.0 - see
