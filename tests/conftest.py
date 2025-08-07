@@ -123,7 +123,7 @@ def user_three_winding_transformer_specs() -> UserThreeWindingTransformerSpecifi
 @pytest.fixture(scope="function")
 def three_winding_input_profile() -> ThreeWindingInputProfile:
     """Create a three-winding input profile."""
-    data_points = 10
+    data_points = 4 * 24 * 7
     datetime_index = pd.date_range("2021-01-01 00:00:00", periods=data_points, freq="min")
     load_profile_high_voltage_side = [1000] * data_points
     load_profile_middle_voltage_side = [1000] * data_points
