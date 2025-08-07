@@ -462,15 +462,13 @@ def test_three_winding_equals_power():
     """Test if the three-winding transformer model equals the power transformer model.
 
     If we use the same load and normal load for all three windings, and choose the losses such that the
-    top-oil temperature rise is the same, the three-winding transformer model should yield the same 
+    top-oil temperature rise is the same, the three-winding transformer model should yield the same
     results as the power transformer model.
     """
     # Define the time range for your simulation
     datetime_index = [pd.to_datetime("2025-07-01 00:00:00") + pd.Timedelta(minutes=2 * i) for i in np.arange(0, 180)]
 
-    load_series = pd.Series(
-        data=1 * 500 + 500, index=datetime_index
-    )
+    load_series = pd.Series(data=1 * 500 + 500, index=datetime_index)
     ambient_series = pd.Series(data=20, index=datetime_index)
 
     # Create the input profile for the three-winding transformer
@@ -498,9 +496,10 @@ def test_three_winding_equals_power():
         load_loss_hv_mv=20000,
         load_loss_mv_lv=20000,
     )
-    three_winding_transformer = ThreeWindingTransformer(user_specs=user_specs_three_winding, 
-                                                        cooling_type=CoolerType.ONAN)
-    
+    three_winding_transformer = ThreeWindingTransformer(
+        user_specs=user_specs_three_winding, cooling_type=CoolerType.ONAN
+    )
+
     user_specs_power = UserTransformerSpecifications(
         load_loss=30000,  # Transformer load loss [W]
         nom_load_sec_side=1600,  # Transformer nominal current secondary side [A]
@@ -512,9 +511,9 @@ def test_three_winding_equals_power():
 
     model_three_winding = Model(temperature_profile=three_winding_profile_input, transformer=three_winding_transformer)
     results_three_winding = model_three_winding.run()
-    
+
     model_power = Model(temperature_profile=power_input_profile, transformer=power_transformer)
-    results_power = model_power.run()   
+    results_power = model_power.run()
 
     # Compare the results
     # Use numpy.allclose for approximate equality

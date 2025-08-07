@@ -84,6 +84,7 @@ def test_wrong_three_winding_input_profile():
             ambient_temperature_profile=[10, 20, 30],
         )
 
+
 def test_three_winding_transformer_total_loss():
     """Test the total loss calculation of a three-winding transformer."""
     user_specs_three_winding = UserThreeWindingTransformerSpecifications(
@@ -96,8 +97,9 @@ def test_three_winding_transformer_total_loss():
         load_loss_hv_mv=20000,
         load_loss_mv_lv=20000,
     )
-    three_winding_transformer = ThreeWindingTransformer(user_specs=user_specs_three_winding, 
-                                                        cooling_type=CoolerType.ONAN)
+    three_winding_transformer = ThreeWindingTransformer(
+        user_specs=user_specs_three_winding, cooling_type=CoolerType.ONAN
+    )
     total_loss_calculated = three_winding_transformer.specs.load_loss_total
 
     assert total_loss_calculated == 40000
@@ -111,9 +113,10 @@ def test_three_winding_transformer_total_loss():
         load_loss_hv_lv=20000,
         load_loss_hv_mv=20000,
         load_loss_mv_lv=20000,
-        load_loss_total=35000
+        load_loss_total=35000,
     )
-    three_winding_transformer = ThreeWindingTransformer(user_specs=user_specs_three_winding, 
-                                                        cooling_type=CoolerType.ONAN)
+    three_winding_transformer = ThreeWindingTransformer(
+        user_specs=user_specs_three_winding, cooling_type=CoolerType.ONAN
+    )
     total_loss_calculated = three_winding_transformer.specs.load_loss_total
     assert total_loss_calculated == 35000
