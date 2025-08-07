@@ -12,6 +12,7 @@ from transformer_thermal_model.cooler import CoolerType
 from transformer_thermal_model.schemas import (
     DefaultTransformerSpecifications,
     TransformerComponentSpecifications,
+    TransformerSpecifications,
     UserTransformerSpecifications,
 )
 
@@ -51,11 +52,11 @@ class PowerTransformerComponents(StrEnum):
         end_temp_reduction=0.0
         >>> # the combination of the user specifications and the default specifications
         >>> print(my_transformer.specs)
-        load_loss=1000.0 nom_load_sec_side=1500.0 no_load_loss=200.0
+        no_load_loss=200.0
         amb_temp_surcharge=20.0 time_const_oil=210.0 time_const_windings=10.0
         top_oil_temp_rise=60.0 winding_oil_gradient=17.0 hot_spot_fac=1.3
         oil_const_k11=0.5 winding_const_k21=2 winding_const_k22=2 oil_exp_x=0.8
-        winding_exp_y=1.3 end_temp_reduction=0.0
+        winding_exp_y=1.3 end_temp_reduction=0.0 load_loss=1000.0 nom_load_sec_side=1500.0
 
         ```
 
@@ -81,6 +82,8 @@ class PowerTransformer(Transformer):
         internal_component_specs (TransformerComponentSpecifications | None): The internal component specifications
             which are used to calculate the relative component capacities. Defaults to None.
     """
+
+    specs: TransformerSpecifications
 
     _onan_defaults = DefaultTransformerSpecifications(
         time_const_oil=210,
@@ -137,9 +140,9 @@ class PowerTransformer(Transformer):
             self.internal_component_specs = internal_component_specs
 
         super().__init__(
-            user_specs=user_specs,
             cooling_type=cooling_type,
         )
+        self.specs = TransformerSpecifications.create(self.defaults, user_specs)
 
     @property
     def defaults(self) -> DefaultTransformerSpecifications:
@@ -258,6 +261,16 @@ class PowerTransformer(Transformer):
                 ct_load = self.internal_component_specs.cur_trans_capacity
 
             return ct_load / nominal_load
+
+    def _end_temperature_top_oil(self, load: np.ndarray) -> np.ndarray:
+        """Calculate the end temperature of the top-oil."""
+        load_ratio = np.power(load / self.specs.nom_load_sec_side, 2)
+        total_loss_ratio = (self.specs.no_load_loss + self.specs.load_loss * load_ratio) / (
+            self.specs.no_load_loss + self.specs.load_loss
+        )
+        step_one_end_t0 = self._pre_factor * np.power(total_loss_ratio, self.specs.oil_exp_x)
+
+        return step_one_end_t0
 
     @property
     def component_capacities(self) -> dict:
