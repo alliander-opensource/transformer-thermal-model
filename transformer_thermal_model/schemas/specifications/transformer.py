@@ -206,7 +206,7 @@ class ThreeWindingTransformerSpecifications(BaseTransformerSpecifications):
     load_loss_hv_lv: float
     load_loss_hv_mv: float
     load_loss_mv_lv: float
-    load_loss_total: float
+    load_loss_total_user: float | None = None
 
     @classmethod
     def create(
@@ -217,11 +217,39 @@ class ThreeWindingTransformerSpecifications(BaseTransformerSpecifications):
         data.update(user.model_dump(exclude_none=True))
         logger.info("Complete three-winding transformer specifications: %s", data)
 
-        # If no load loss is not provided, it can be calculated based on the individual losses
-        if user.load_loss_total is None:
-            data["load_loss_total"] = user.load_loss_hv_lv + user.load_loss_hv_mv + user.load_loss_mv_lv
-
+        data["load_loss_total_user"] = user.load_loss_total if user.load_loss_total is not None else None
         return cls(**data)
+
+    @property
+    def _c1(self) -> float:
+        """Calculate the constant c1 for the three-phase transformer."""
+        return self.hv_winding.nom_load / self.mv_winding.nom_load
+
+    @property
+    def _c2(self) -> float:
+        """Calculate the constant c2 for the three-phase transformer."""
+        return self.mv_winding.nom_load / self.lv_winding.nom_load
+
+    def _get_loss_hc(self) -> float:
+        """Calculate the high side load loss."""
+        return (0.5 / self._c1) * (
+            self.load_loss_hv_mv - (1 / self._c2) * self.load_loss_mv_lv + (1 / self._c2) * self.load_loss_hv_lv
+        )
+
+    def _get_loss_mc(self) -> float:
+        """Calculate the medium side load loss."""
+        return (0.5 / self._c2) * (self._c2 * self.load_loss_hv_mv - self.load_loss_hv_lv + self.load_loss_mv_lv)
+
+    def _get_loss_lc(self) -> float:
+        """Calculate the low side load loss."""
+        return 0.5 * (self.load_loss_hv_lv - self._c2 * self.load_loss_hv_mv + self.load_loss_mv_lv)
+
+    @property
+    def load_loss_total(cls) -> float:
+        """Calculate the total load loss for the three-winding transformer."""
+        if cls.load_loss_total_user:
+            return cls.load_loss_total_user
+        return cls._get_loss_hc() + cls._get_loss_mc() + cls._get_loss_lc() + cls.no_load_loss
 
     @property
     def nominal_load_array(cls) -> np.ndarray:

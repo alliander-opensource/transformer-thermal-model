@@ -8,7 +8,13 @@ import pytest
 
 from transformer_thermal_model.cooler import CoolerType
 from transformer_thermal_model.model import Model
-from transformer_thermal_model.schemas import UserTransformerSpecifications
+from transformer_thermal_model.schemas import (
+    InputProfile,
+    ThreeWindingInputProfile,
+    UserThreeWindingTransformerSpecifications,
+    UserTransformerSpecifications,
+    WindingSpecifications,
+)
 from transformer_thermal_model.toolbox.temp_sim_profile_tools import create_temp_sim_profile_from_df
 from transformer_thermal_model.transformer import PowerTransformer
 from transformer_thermal_model.transformer.threewinding import ThreeWindingTransformer
@@ -450,3 +456,77 @@ def test_three_winding_transformer(user_three_winding_transformer_specs, three_w
     hot_spot_temp = results.hot_spot_temp_profile
     assert hot_spot_temp["low_voltage_side"].sum() > hot_spot_temp["high_voltage_side"].sum()
     assert hot_spot_temp["low_voltage_side"].sum() > hot_spot_temp["middle_voltage_side"].sum()
+
+
+def test_three_winding_equals_power():
+    """Test if the three-winding transformer model equals the power transformer model.
+
+    If we use the same load and normal load for all three windings, and choose the losses such that the
+    top-oil temperature rise is the same, the three-winding transformer model should yield the same 
+    results as the power transformer model.
+    """
+    # Define the time range for your simulation
+    datetime_index = [pd.to_datetime("2025-07-01 00:00:00") + pd.Timedelta(minutes=2 * i) for i in np.arange(0, 180)]
+
+    load_series = pd.Series(
+        data=1 * 500 + 500, index=datetime_index
+    )
+    ambient_series = pd.Series(data=20, index=datetime_index)
+
+    # Create the input profile for the three-winding transformer
+    three_winding_profile_input = ThreeWindingInputProfile.create(
+        datetime_index=datetime_index,
+        ambient_temperature_profile=ambient_series,
+        load_profile_high_voltage_side=load_series,
+        load_profile_middle_voltage_side=load_series,
+        load_profile_low_voltage_side=load_series,
+    )
+    power_input_profile = InputProfile.create(
+        datetime_index=datetime_index,
+        ambient_temperature_profile=ambient_series,
+        load_profile=load_series,
+    )
+
+    # Define the transformer specifications for each winding
+    user_specs_three_winding = UserThreeWindingTransformerSpecifications(
+        no_load_loss=10000,
+        amb_temp_surcharge=0,
+        lv_winding=WindingSpecifications(nom_load=1600, winding_oil_gradient=23),
+        mv_winding=WindingSpecifications(nom_load=1600, winding_oil_gradient=23),
+        hv_winding=WindingSpecifications(nom_load=1600, winding_oil_gradient=23),
+        load_loss_hv_lv=20000,
+        load_loss_hv_mv=20000,
+        load_loss_mv_lv=20000,
+    )
+    three_winding_transformer = ThreeWindingTransformer(user_specs=user_specs_three_winding, 
+                                                        cooling_type=CoolerType.ONAN)
+    
+    user_specs_power = UserTransformerSpecifications(
+        load_loss=30000,  # Transformer load loss [W]
+        nom_load_sec_side=1600,  # Transformer nominal current secondary side [A]
+        no_load_loss=10000,  # Transformer no-load loss [W]
+        amb_temp_surcharge=0,  # Ambient temperature surcharge [K]
+        winding_oil_gradient=23,  # Winding oil gradient (worst case) [K]
+    )
+    power_transformer = PowerTransformer(user_specs=user_specs_power, cooling_type=CoolerType.ONAN)
+
+    model_three_winding = Model(temperature_profile=three_winding_profile_input, transformer=three_winding_transformer)
+    results_three_winding = model_three_winding.run()
+    
+    model_power = Model(temperature_profile=power_input_profile, transformer=power_transformer)
+    results_power = model_power.run()   
+
+    # Compare the results
+    # Use numpy.allclose for approximate equality
+    assert np.allclose(
+        results_three_winding.top_oil_temp_profile.values,
+        results_power.top_oil_temp_profile.values,
+        rtol=1e-6,
+        atol=1e-4,
+    )
+    assert np.allclose(
+        results_three_winding.hot_spot_temp_profile["low_voltage_side"].values,
+        results_power.hot_spot_temp_profile.values,
+        rtol=1e-6,
+        atol=1e-4,
+    )
