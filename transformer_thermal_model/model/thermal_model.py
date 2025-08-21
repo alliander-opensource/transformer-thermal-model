@@ -231,7 +231,9 @@ class Model:
                 hot_spot_increase_oil = np.zeros(n_steps)
                 for i in range(1, n_steps):
                     hot_spot_increase_windings[i] = self._update_hot_spot_increase(
-                        hot_spot_increase_windings[i - 1], static_hot_spot_incr_windings[profile][i], f2_windings[profile][i]
+                        hot_spot_increase_windings[i - 1],
+                        static_hot_spot_incr_windings[profile][i],
+                        f2_windings[profile][i],
                     )
                     hot_spot_increase_oil[i] = self._update_hot_spot_increase(
                         hot_spot_increase_oil[i - 1], static_hot_spot_incr_oil[profile][i], f2_oil[i]
