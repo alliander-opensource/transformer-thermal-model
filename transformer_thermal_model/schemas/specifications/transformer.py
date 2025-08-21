@@ -159,12 +159,12 @@ class BaseTransformerSpecifications(BaseModel):
     def winding_oil_gradient_array(cls) -> np.ndarray:
         """Return the winding oil gradient as a numpy array."""
         raise NotImplementedError("This method should be implemented in subclasses.")
-    
+
     @property
     def time_const_windings_array(cls) -> np.ndarray:
         """Return the winding time constant as a numpy array."""
         raise NotImplementedError("This method should be implemented in subclasses.")
-    
+
     @property
     def hot_spot_fac_array(cls) -> np.ndarray:
         """Return the hotspot factor as a numpy array."""
@@ -201,12 +201,12 @@ class TransformerSpecifications(BaseTransformerSpecifications):
     def winding_oil_gradient_array(cls) -> np.ndarray:
         """Return the winding oil gradient as a numpy array."""
         return np.array([cls.winding_oil_gradient])
-    
+
     @property
     def time_const_windings_array(cls) -> np.ndarray:
         """Return the winding time constant as a numpy array."""
         return np.array([cls.time_const_windings])
-    
+
     @property
     def hot_spot_fac_array(cls) -> np.ndarray:
         """Return the hotspot factor as a numpy array."""
@@ -294,7 +294,7 @@ class ThreeWindingTransformerSpecifications(BaseTransformerSpecifications):
                 [cls.hv_winding.winding_oil_gradient],
             ]
         )
-    
+
     @property
     def time_const_windings_array(cls) -> np.ndarray:
         """Return the winding oil gradient as a numpy array."""
@@ -305,7 +305,7 @@ class ThreeWindingTransformerSpecifications(BaseTransformerSpecifications):
                 [cls.hv_winding.time_const_windings],
             ]
         )
-    
+
     @property
     def hot_spot_fac_array(cls) -> np.ndarray:
         """Return the winding oil gradient as a numpy array."""
