@@ -203,7 +203,7 @@ class TransformerSpecifications(BaseTransformerSpecifications):
         return np.array([cls.winding_oil_gradient])
     
     @property
-    def time_const_windings_gradient_array(cls) -> np.ndarray:
+    def time_const_windings_array(cls) -> np.ndarray:
         """Return the winding time constant as a numpy array."""
         return np.array([cls.time_const_windings])
     
