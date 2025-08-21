@@ -138,7 +138,7 @@ class Model:
     def _calculate_f2_winding(self, dt: np.ndarray) -> np.ndarray:
         """Calculate the time delay constant f2 for the hot-spot temperature. due to the windings."""
         winding_delay = np.exp(
-            -dt / (self.transformer.specs.winding_const_k22 * self.transformer.specs.time_const_windings)
+            -dt / (self.transformer.specs.winding_const_k22 * self.transformer.specs.time_const_windings_array)
         )
         return winding_delay
 
@@ -150,7 +150,7 @@ class Model:
     def _calculate_static_hot_spot_increase(self, load: np.ndarray) -> np.ndarray:
         """Calculate the static hot-spot temperature increase using vectorized operations."""
         return (
-            self.transformer.specs.hot_spot_fac
+            self.transformer.specs.hot_spot_fac_array
             * self.transformer.specs.winding_oil_gradient_array
             * (load / self.transformer.specs.nominal_load_array) ** self.transformer.specs.winding_exp_y
         )
@@ -231,7 +231,7 @@ class Model:
                 hot_spot_increase_oil = np.zeros(n_steps)
                 for i in range(1, n_steps):
                     hot_spot_increase_windings[i] = self._update_hot_spot_increase(
-                        hot_spot_increase_windings[i - 1], static_hot_spot_incr_windings[profile][i], f2_windings[i]
+                        hot_spot_increase_windings[i - 1], static_hot_spot_incr_windings[profile][i], f2_windings[profile][i]
                     )
                     hot_spot_increase_oil[i] = self._update_hot_spot_increase(
                         hot_spot_increase_oil[i - 1], static_hot_spot_incr_oil[profile][i], f2_oil[i]
