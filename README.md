@@ -335,6 +335,98 @@ calculation, which also creates the benefit for you that you can
 relate the result to your provided input for eventual
 cross-validation or analysis.
 
+### Three winding Transformer modelling
+
+The model also supports thermal modeling of three-winding transformers. To use this feature, provide both a
+`ThreeWindingTransformer` and a `ThreeWindingInputProfile` as input to the `Model`. The
+`ThreeWindingInputProfile` requires a separate load profile for each winding (high, medium, and low voltage sides),
+all sharing the same length and datetime index.
+
+With `UserThreeWindingTransformerSpecifications`, you can specify the nominal load and winding oil gradient for each
+winding, as well as the load losses between windings. The resulting hot-spot temperature profile is returned as a
+DataFrame with columns for each winding, making it easy to analyze the results for each part of the transformer.
+
+```Python
+import pandas as pd
+
+from transformer_thermal_model.cooler import CoolerType
+from transformer_thermal_model.model import Model
+from transformer_thermal_model.schemas import (
+    ThreeWindingInputProfile,
+    UserThreeWindingTransformerSpecifications,
+    WindingSpecifications,
+)
+from transformer_thermal_model.transformer import ThreeWindingTransformer
+
+# Define the time range for your simulation
+one_week = 4 * 24 * 7
+datetime_index = pd.date_range("2020-01-01", periods=one_week, freq="15min")
+
+# Create ambient temperature profile (can be a constant or a realistic profile)
+ambient_temp = 21
+temperature_points = pd.Series([ambient_temp] * one_week, index=datetime_index)
+
+# Create load profiles for each winding (high, medium, low voltage sides)
+load_profile_high_voltage_side = pd.Series([2000] * one_week, index=datetime_index)
+load_profile_middle_voltage_side = pd.Series([1500] * one_week, index=datetime_index)
+load_profile_low_voltage_side = pd.Series([1000] * one_week, index=datetime_index)
+
+# Create the input profile for the three-winding transformer
+profile_input = ThreeWindingInputProfile.create(
+    datetime_index=datetime_index,
+    ambient_temperature_profile=temperature_points,
+    load_profile_high_voltage_side=load_profile_high_voltage_side,
+    load_profile_middle_voltage_side=load_profile_middle_voltage_side,
+    load_profile_low_voltage_side=load_profile_low_voltage_side,
+)
+
+# Define the transformer specifications for each winding
+user_specs = UserThreeWindingTransformerSpecifications(
+    no_load_loss=20,
+    amb_temp_surcharge=10,
+    lv_winding=WindingSpecifications(nom_load=1000, winding_oil_gradient=20),
+    mv_winding=WindingSpecifications(nom_load=1500, winding_oil_gradient=20),
+    hv_winding=WindingSpecifications(nom_load=1500, winding_oil_gradient=20),
+    load_loss_hv_lv=100,
+    load_loss_hv_mv=100,
+    load_loss_mv_lv=100,
+)
+
+# Create the transformer object
+transformer = ThreeWindingTransformer(user_specs=user_specs, cooling_type=CoolerType.ONAN)
+
+# Run the thermal model
+model = Model(
+    temperature_profile=profile_input,
+    transformer=transformer
+)
+results = model.run()
+
+# The results are returned as pandas Series/DataFrame, indexed by your datetime_index
+top_oil_temp_profile = results.top_oil_temp_profile
+hot_spot_temp_profile = results.hot_spot_temp_profile
+
+top_oil_temp_profile = results.top_oil_temp_profile
+hot_spot_temp_profile = results.hot_spot_temp_profile
+```
+
+```text
+>>> top_oil_temp_profile.head()
+2020-01-01 00:00:00    31.000000
+2020-01-01 00:15:00    35.895935
+2020-01-01 00:30:00    40.140113
+2020-01-01 00:45:00    43.819297
+2020-01-01 01:00:00    47.008700
+
+>>> hot_spot_temp_profile.head()
+                     low_voltage_side  middle_voltage_side  high_voltage_side
+2020-01-01 00:00:00         31.000000            31.000000          31.000000
+2020-01-01 00:15:00         59.871700            59.871700          70.745136
+2020-01-01 00:30:00         74.075754            74.075754          89.466172
+2020-01-01 00:45:00         81.275953            81.275953          98.263213
+2020-01-01 01:00:00         85.102444            85.102444         102.378635
+```
+
 ## License
 
 This project is licensed under the Mozilla Public License, version 2.0 - see
