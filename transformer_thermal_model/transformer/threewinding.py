@@ -67,7 +67,7 @@ class ThreeWindingTransformer(Transformer):
         )
         self.specs = ThreeWindingTransformerSpecifications.create(self.defaults, user_specs)
         logger.debug("Initialized ThreeWindingTransformer with specifications: %s", user_specs)
-
+        
     @property
     def defaults(self) -> DefaultTransformerSpecifications:
         """The ClassVar for default TransformerSpecifications.
