@@ -16,8 +16,8 @@ class WindingSpecifications(BaseModel):
 
     nom_load: float = Field(..., description="Nominal load from the type plate [A]")
     winding_oil_gradient: float = Field(..., description="Winding oil temperature gradient [K]", ge=0)
-    time_const_windings: float | None = Field(default=None, description="Time constant windings [min]", gt=0)
-    hot_spot_fac: float | None = Field(default=None, description="Hot-spot factor [-]", ge=0)
+    time_const_windings: float = Field(..., description="Time constant windings [min]", gt=0)
+    hot_spot_fac: float = Field(..., description="Hot-spot factor [-]", ge=0)
 
 
 class BaseUserTransformerSpecifications(BaseModel):
