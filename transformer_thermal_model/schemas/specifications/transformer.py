@@ -16,6 +16,8 @@ class WindingSpecifications(BaseModel):
 
     nom_load: float = Field(..., description="Nominal load from the type plate [A]")
     winding_oil_gradient: float = Field(..., description="Winding oil temperature gradient [K]", ge=0)
+    time_const_windings: float = Field(..., description="Time constant windings [min]", gt=0)
+    hot_spot_fac: float = Field(..., description="Hot-spot factor [-]", ge=0)
 
 
 class BaseUserTransformerSpecifications(BaseModel):
@@ -158,6 +160,16 @@ class BaseTransformerSpecifications(BaseModel):
         """Return the winding oil gradient as a numpy array."""
         raise NotImplementedError("This method should be implemented in subclasses.")
 
+    @property
+    def time_const_windings_array(cls) -> np.ndarray:
+        """Return the winding time constant as a numpy array."""
+        raise NotImplementedError("This method should be implemented in subclasses.")
+
+    @property
+    def hot_spot_fac_array(cls) -> np.ndarray:
+        """Return the hotspot factor as a numpy array."""
+        raise NotImplementedError("This method should be implemented in subclasses.")
+
 
 class TransformerSpecifications(BaseTransformerSpecifications):
     """Class containing transformer specifications.
@@ -189,6 +201,16 @@ class TransformerSpecifications(BaseTransformerSpecifications):
     def winding_oil_gradient_array(cls) -> np.ndarray:
         """Return the winding oil gradient as a numpy array."""
         return np.array([cls.winding_oil_gradient])
+
+    @property
+    def time_const_windings_array(cls) -> np.ndarray:
+        """Return the winding time constant as a numpy array."""
+        return np.array([cls.time_const_windings])
+
+    @property
+    def hot_spot_fac_array(cls) -> np.ndarray:
+        """Return the hotspot factor as a numpy array."""
+        return np.array([cls.hot_spot_fac])
 
 
 class ThreeWindingTransformerSpecifications(BaseTransformerSpecifications):
@@ -270,5 +292,27 @@ class ThreeWindingTransformerSpecifications(BaseTransformerSpecifications):
                 [cls.lv_winding.winding_oil_gradient],
                 [cls.mv_winding.winding_oil_gradient],
                 [cls.hv_winding.winding_oil_gradient],
+            ]
+        )
+
+    @property
+    def time_const_windings_array(cls) -> np.ndarray:
+        """Return the winding oil gradient as a numpy array."""
+        return np.array(
+            [
+                [cls.lv_winding.time_const_windings],
+                [cls.mv_winding.time_const_windings],
+                [cls.hv_winding.time_const_windings],
+            ]
+        )
+
+    @property
+    def hot_spot_fac_array(cls) -> np.ndarray:
+        """Return the winding oil gradient as a numpy array."""
+        return np.array(
+            [
+                [cls.lv_winding.hot_spot_fac],
+                [cls.mv_winding.hot_spot_fac],
+                [cls.hv_winding.hot_spot_fac],
             ]
         )
