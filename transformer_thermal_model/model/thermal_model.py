@@ -163,7 +163,7 @@ class Model:
         f2_oil: np.ndarray,
         top_k: np.ndarray,
         static_hot_spot_incr: np.ndarray,
-        use_top_oil: bool
+        use_top_oil: bool,
     ) -> tuple[np.ndarray, np.ndarray]:
         """Calculate the temperature profiles for the transformer's top-oil and hot-spot.
 
@@ -188,7 +188,7 @@ class Model:
         static_hot_spot_incr_oil = static_hot_spot_incr * (self.transformer.specs.winding_const_k21 - 1)
 
         # Preallocate arrays for temperature profiles and initialize first values
-        if use_top_oil:
+        if use_top_oil and self.data.top_oil_temperature_profile is not None:
             top_oil_temp_profile = self.data.top_oil_temperature_profile
         else:
             top_oil_temp_profile = np.zeros_like(load, dtype=np.float64)
@@ -198,16 +198,13 @@ class Model:
         hot_spot_temp_profile[0] = top_oil_temp_profile[0]
 
         hot_spot_increase_windings = 0.0
-        hot_spot_increase_oil = 0.0        
-        
+        hot_spot_increase_oil = 0.0
+
         # Iteratively calculate profiles
         for i in range(1, len(load)):
             if not use_top_oil:
                 top_oil_temp_profile[i] = self._update_top_oil_temp(
-                    top_oil_temp_profile[i - 1], 
-                    t_internal[i], 
-                    top_k[i], 
-                    f1[i]
+                    top_oil_temp_profile[i - 1], t_internal[i], top_k[i], f1[i]
                 )
             # Calculate the hot-spot temperature based on formula 17 from IEC 2060076-7_2018.
             # The hot-spot increase of the windings is based on from 15 from IEC 2060076-7_2018.
@@ -235,13 +232,13 @@ class Model:
 
         This method prepares the calculation inputs, calculates intermediate factors, and computes
         the top-oil and hot-spot temperature profiles for the transformer based on the provided
-        load and internal parameters. If the top oil temperature is provided in the `temperature_profile` it gets 
+        load and internal parameters. If the top oil temperature is provided in the `temperature_profile` it gets
         priority over the ambient temperature. The ambient temperature is then ignored. You can change this behaviour
         using the `force_use_ambient_temperature` parameter.
 
         Args:
-            force_use_ambient_temperature: 
-                Use the ambient temperature to perform the calculation, 
+            force_use_ambient_temperature:
+                Use the ambient temperature to perform the calculation,
                 even if the top oil temperature is given (optional, False by default)
 
         Returns:
@@ -254,7 +251,7 @@ class Model:
         use_top_oil = not force_use_ambient_temperature and self.data.top_oil_temperature_profile is not None
         if use_top_oil and self.data.top_oil_temperature_profile is None:
             raise ValueError("The top_oil_temperature_profile is missing.")
-        
+
         dt = self._get_time_step()
         load = self.data.load_profile
         t_internal = self._get_internal_temp()

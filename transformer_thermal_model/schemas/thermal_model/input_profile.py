@@ -41,7 +41,7 @@ class InputProfile(BaseModel):
         ambient_temperature_profile: Collection[float],
         top_oil_temperature_profile: Collection[float] | None = None,
     ) -> Self:
-        """Create an InputProfile from datetime index, load profile, ambient temperature profile, and optionally the top oil temperature.
+        """Create an InputProfile.
 
         Args:
             datetime_index: The datetime index for the profiles.
@@ -98,8 +98,9 @@ class InputProfile(BaseModel):
             ... )
             >>> input_profile
             InputProfile(datetime_index=array(['2023-01-01T00:00:00.000000', '2023-01-01T01:00:00.000000',
-            '2023-01-01T02:00:00.000000'], dtype='datetime64[us]'), load_profile=array([0.8, 0.9, 1. ]), 
-            ambient_temperature_profile=array([25. , 24.5, 24. ]), top_oil_temperature_profile=array([37. , 36.5, 36. ]))
+            '2023-01-01T02:00:00.000000'], dtype='datetime64[us]'), load_profile=array([0.8, 0.9, 1. ]),
+            ambient_temperature_profile=array([25. , 24.5, 24. ]),
+            top_oil_temperature_profile=array([37. , 36.5, 36. ]))
 
             ```
 
@@ -133,9 +134,9 @@ class InputProfile(BaseModel):
             datetime_index=np.array(datetime_index, dtype=np.datetime64),
             load_profile=np.array(load_profile, dtype=float),
             ambient_temperature_profile=np.array(ambient_temperature_profile, dtype=float),
-            top_oil_temperature_profile=
-                np.array(top_oil_temperature_profile, dtype=float) 
-                if top_oil_temperature_profile is not None else None,
+            top_oil_temperature_profile=np.array(top_oil_temperature_profile, dtype=float)
+            if top_oil_temperature_profile is not None
+            else None,
         )
 
     @model_validator(mode="after")
@@ -156,9 +157,8 @@ class InputProfile(BaseModel):
                 f"load profile length: {len(self.load_profile)}, ambient temperature profile length: "
                 f"{len(self.ambient_temperature_profile)}"
             )
-        if (
-            self.top_oil_temperature_profile is not None and 
-            len(self.top_oil_temperature_profile) != len(self.load_profile)
+        if self.top_oil_temperature_profile is not None and len(self.top_oil_temperature_profile) != len(
+            self.load_profile
         ):
             raise ValueError(
                 "The length of the top_oil_temperature_profile should match the other profiles if provided."
@@ -201,9 +201,9 @@ class InputProfile(BaseModel):
             datetime_index=df["datetime_index"].to_numpy(),
             load_profile=df["load_profile"].to_numpy(),
             ambient_temperature_profile=df["ambient_temperature_profile"].to_numpy(),
-            top_oil_temperature_profile=
-                df["top_oil_temperature_profile"].to_numpy()
-                if "top_oil_temperature_profile" in df.columns else None,
+            top_oil_temperature_profile=df["top_oil_temperature_profile"].to_numpy()
+            if "top_oil_temperature_profile" in df.columns
+            else None,
         )
 
     def __len__(self) -> int:

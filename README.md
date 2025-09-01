@@ -337,8 +337,7 @@ cross-validation or analysis.
 
 #### Using the top oil temperature as an input to the model
 
-
-Optionally, you can provide the top oil temperature as an input parameter to the `InputProfile` 
+Optionally, you can provide the top oil temperature as an input parameter to the `InputProfile`
 to use it in place of the ambient temperature as an input to the model:
 
 ```Python
@@ -399,8 +398,8 @@ hot_spot_temp_profile = results.hot_spot_temp_profile
 2020-01-01 00:30:00    42.938711
 ```
 
-Note, how the top oil temperature we receive as the output `results.top_oil_temp_profile` exactly matches 
-the top oil temperature we provided as the input. 
+Note, how the top oil temperature we receive as the output `results.top_oil_temp_profile` exactly matches
+the top oil temperature we provided as the input.
 
 ## License
 

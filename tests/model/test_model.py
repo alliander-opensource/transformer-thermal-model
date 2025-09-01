@@ -428,8 +428,7 @@ def test_top_oil_input(onan_power_transformer):
         }
     )
     thermal_model = Model(
-        temperature_profile=create_temp_sim_profile_from_df(profile), 
-        transformer=onan_power_transformer
+        temperature_profile=create_temp_sim_profile_from_df(profile), transformer=onan_power_transformer
     )
     results = thermal_model.run()
 
@@ -439,15 +438,14 @@ def test_top_oil_input(onan_power_transformer):
             "timestamp": time_step_list,
             "load": [1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 0, 0, 0, 0, 0, 0, 0, 0],
             # Mess up the ambient temperature make sure we get an error if it is being used
-            "ambient_temperature": [ambient_temp + 100] * len(time_step_list), 
+            "ambient_temperature": [ambient_temp + 100] * len(time_step_list),
             "top_oil_temperature": results.top_oil_temp_profile,
         }
     )
     top_oil_thermal_model = Model(
-        temperature_profile=create_temp_sim_profile_from_df(top_oil_profile), 
-        transformer=onan_power_transformer
+        temperature_profile=create_temp_sim_profile_from_df(top_oil_profile), transformer=onan_power_transformer
     )
-    top_oil_results = top_oil_thermal_model.run() # the top oil profile should be used as it was provided
+    top_oil_results = top_oil_thermal_model.run()  # the top oil profile should be used as it was provided
 
     assert sum(abs(top_oil_results.top_oil_temp_profile - results.top_oil_temp_profile)) < 1e-6
     assert sum(abs(top_oil_results.hot_spot_temp_profile - results.hot_spot_temp_profile)) < 1e-6
