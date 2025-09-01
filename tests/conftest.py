@@ -111,9 +111,15 @@ def user_three_winding_transformer_specs() -> UserThreeWindingTransformerSpecifi
     return UserThreeWindingTransformerSpecifications(
         no_load_loss=20,
         amb_temp_surcharge=10,
-        lv_winding=WindingSpecifications(nom_load=1000, winding_oil_gradient=20, hot_spot_fac=1.2, time_const_windings=10),
-        mv_winding=WindingSpecifications(nom_load=1000, winding_oil_gradient=20, hot_spot_fac=1.2, time_const_windings=10),
-        hv_winding=WindingSpecifications(nom_load=1000, winding_oil_gradient=20, hot_spot_fac=1.2, time_const_windings=10),
+        lv_winding=WindingSpecifications(
+            nom_load=1000, winding_oil_gradient=20, hot_spot_fac=1.2, time_const_windings=10
+        ),
+        mv_winding=WindingSpecifications(
+            nom_load=1000, winding_oil_gradient=20, hot_spot_fac=1.2, time_const_windings=10
+        ),
+        hv_winding=WindingSpecifications(
+            nom_load=1000, winding_oil_gradient=20, hot_spot_fac=1.2, time_const_windings=10
+        ),
         load_loss_hv_lv=100,
         load_loss_hv_mv=100,
         load_loss_mv_lv=100,

@@ -90,9 +90,15 @@ def test_three_winding_transformer_total_loss():
     user_specs_three_winding = UserThreeWindingTransformerSpecifications(
         no_load_loss=10000,
         amb_temp_surcharge=0,
-        lv_winding=WindingSpecifications(nom_load=1600, winding_oil_gradient=23, hot_spot_fac=1.3, time_const_windings=10),
-        mv_winding=WindingSpecifications(nom_load=1600, winding_oil_gradient=23, hot_spot_fac=1.3, time_const_windings=10),
-        hv_winding=WindingSpecifications(nom_load=1600, winding_oil_gradient=23, hot_spot_fac=1.3, time_const_windings=10),
+        lv_winding=WindingSpecifications(
+            nom_load=1600, winding_oil_gradient=23, hot_spot_fac=1.3, time_const_windings=10
+        ),
+        mv_winding=WindingSpecifications(
+            nom_load=1600, winding_oil_gradient=23, hot_spot_fac=1.3, time_const_windings=10
+        ),
+        hv_winding=WindingSpecifications(
+            nom_load=1600, winding_oil_gradient=23, hot_spot_fac=1.3, time_const_windings=10
+        ),
         load_loss_hv_lv=20000,
         load_loss_hv_mv=20000,
         load_loss_mv_lv=20000,
@@ -107,9 +113,15 @@ def test_three_winding_transformer_total_loss():
     user_specs_three_winding = UserThreeWindingTransformerSpecifications(
         no_load_loss=10000,
         amb_temp_surcharge=0,
-        lv_winding=WindingSpecifications(nom_load=1600, winding_oil_gradient=23, hot_spot_fac=1.3, time_const_windings=10),
-        mv_winding=WindingSpecifications(nom_load=1600, winding_oil_gradient=23, hot_spot_fac=1.3, time_const_windings=10),
-        hv_winding=WindingSpecifications(nom_load=1600, winding_oil_gradient=23, hot_spot_fac=1.3, time_const_windings=10),
+        lv_winding=WindingSpecifications(
+            nom_load=1600, winding_oil_gradient=23, hot_spot_fac=1.3, time_const_windings=10
+        ),
+        mv_winding=WindingSpecifications(
+            nom_load=1600, winding_oil_gradient=23, hot_spot_fac=1.3, time_const_windings=10
+        ),
+        hv_winding=WindingSpecifications(
+            nom_load=1600, winding_oil_gradient=23, hot_spot_fac=1.3, time_const_windings=10
+        ),
         load_loss_hv_lv=20000,
         load_loss_hv_mv=20000,
         load_loss_mv_lv=20000,
