@@ -16,6 +16,7 @@ class WindingSpecifications(BaseModel):
 
     nom_load: float = Field(..., description="Nominal load from the type plate [A]")
     winding_oil_gradient: float = Field(..., description="Winding oil temperature gradient [K]", ge=0)
+    nom_power: float = Field(..., description="Nominal power from the type plate [MVA]", ge=0)
 
 
 class BaseUserTransformerSpecifications(BaseModel):
@@ -223,12 +224,12 @@ class ThreeWindingTransformerSpecifications(BaseTransformerSpecifications):
     @property
     def _c1(self) -> float:
         """Calculate the constant c1 for the three-phase transformer."""
-        return self.hv_winding.nom_load / self.mv_winding.nom_load
+        return (self.mv_winding.nom_power / self.hv_winding.nom_power) ** 2
 
     @property
     def _c2(self) -> float:
         """Calculate the constant c2 for the three-phase transformer."""
-        return self.mv_winding.nom_load / self.lv_winding.nom_load
+        return (self.lv_winding.nom_power / self.mv_winding.nom_power) ** 2
 
     def _get_loss_hc(self) -> float:
         """Calculate the high side load loss."""
