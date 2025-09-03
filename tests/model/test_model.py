@@ -624,8 +624,3 @@ def test_integration_three_winding_transformer():
     assert max(abs(results.hot_spot_temp_profile.low_voltage_side - validation_data.hotspot_ls)) < 0.05, (
         "Hot-spot temperature profile LV does not match validation data"
     )
-
-
-# if name is main run three winding equals power test
-if __name__ == "__main__":
-    test_three_winding_equals_power()

@@ -1,5 +1,6 @@
-# SPDX-FileCopyrightText: 2023 <Your Name or Organization>
-# SPDX-License-Identifier: CC-BY-4.0
+# SPDX-FileCopyrightText: Contributors to the Transformer Thermal Model project
+#
+# SPDX-License-Identifier: MPL-2.0
 #
 # The results presented in this dataset are derived from a previously verified Excel model of a three winding transformer at Alliander.
 # The modelled transformer has the following parameters:     
