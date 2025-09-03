@@ -97,3 +97,19 @@ def iec_load_profile():
     )
     input_profile = InputProfile.from_dataframe(df=profile)
     return input_profile
+
+
+@pytest.fixture(scope="function")
+def onan_power_sample_profile_dataframe(onan_power_transformer):
+    """Create a sample profile for testing."""
+    tau_time = onan_power_transformer.specs.oil_const_k11 * onan_power_transformer.specs.time_const_oil
+    ambient_temp = 20
+    time_step_list = [pd.to_datetime("2021-01-01 00:00:00") + pd.Timedelta(minutes=i * tau_time) for i in range(0, 16)]
+    profile = pd.DataFrame(
+        {
+            "timestamp": time_step_list,
+            "load": [1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 0, 0, 0, 0, 0, 0, 0, 0],
+            "ambient_temperature": [ambient_temp] * len(time_step_list),
+        }
+    )
+    return profile

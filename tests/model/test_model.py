@@ -240,28 +240,25 @@ def test_expected_rise_distribution(distribution_transformer):
     assert sum(abs(hot_spot_temp - expected_results_hotspot)) < 1e-6
 
 
-def test_expected_rise_onan(onan_power_transformer):
+def test_expected_rise_onan(onan_power_transformer, onan_power_sample_profile_dataframe):
     """Test if the temperature rise matches the expected one."""
-    tau_time = onan_power_transformer.specs.oil_const_k11 * onan_power_transformer.specs.time_const_oil
-    ambient_temp = 20
-    time_step_list = [pd.to_datetime("2021-01-01 00:00:00") + pd.Timedelta(minutes=i * tau_time) for i in range(0, 16)]
-    profile = pd.DataFrame(
-        {
-            "timestamp": time_step_list,
-            "load": [1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 0, 0, 0, 0, 0, 0, 0, 0],
-            "ambient_temperature": [ambient_temp] * len(time_step_list),
-        }
-    )
     thermal_model = Model(
-        temperature_profile=create_temp_sim_profile_from_df(profile), transformer=onan_power_transformer
+        temperature_profile=create_temp_sim_profile_from_df(onan_power_sample_profile_dataframe),
+        transformer=onan_power_transformer,
     )
     results = thermal_model.run()
     top_oil_temp = np.array(results.top_oil_temp_profile)
     hot_spot_temp = np.array(results.hot_spot_temp_profile)
 
     # The first time step should be the ambient temperature
-    assert top_oil_temp[0] == ambient_temp + onan_power_transformer.specs.amb_temp_surcharge
-    assert hot_spot_temp[0] == ambient_temp + onan_power_transformer.specs.amb_temp_surcharge
+    assert (
+        top_oil_temp[0]
+        == onan_power_sample_profile_dataframe.ambient_temperature[0] + onan_power_transformer.specs.amb_temp_surcharge
+    )
+    assert (
+        hot_spot_temp[0]
+        == onan_power_sample_profile_dataframe.ambient_temperature[0] + onan_power_transformer.specs.amb_temp_surcharge
+    )
 
     expected_results = np.array(
         [
@@ -415,35 +412,22 @@ def test_if_rise_matches_iec(iec_load_profile):
         assert calculated_hot_spot_temp == pytest.approx(expected["hot_spot_temperature"], abs=1.5)
 
 
-def test_top_oil_input(onan_power_transformer):
+def test_top_oil_input(onan_power_transformer, onan_power_sample_profile_dataframe):
     """Test if the temperature rise matches the expected one."""
-    tau_time = onan_power_transformer.specs.oil_const_k11 * onan_power_transformer.specs.time_const_oil
-    ambient_temp = 20
-    time_step_list = [pd.to_datetime("2021-01-01 00:00:00") + pd.Timedelta(minutes=i * tau_time) for i in range(0, 16)]
-    profile = pd.DataFrame(
-        {
-            "timestamp": time_step_list,
-            "load": [1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 0, 0, 0, 0, 0, 0, 0, 0],
-            "ambient_temperature": [ambient_temp] * len(time_step_list),
-        }
-    )
     thermal_model = Model(
-        temperature_profile=create_temp_sim_profile_from_df(profile), transformer=onan_power_transformer
+        temperature_profile=create_temp_sim_profile_from_df(onan_power_sample_profile_dataframe),
+        transformer=onan_power_transformer,
     )
     results = thermal_model.run()
-
-    # Now run with the calculated top oil temperature.
-    top_oil_profile = pd.DataFrame(
-        {
-            "timestamp": time_step_list,
-            "load": [1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 0, 0, 0, 0, 0, 0, 0, 0],
-            # Mess up the ambient temperature make sure we get an error if it is being used
-            "ambient_temperature": [ambient_temp + 100] * len(time_step_list),
-            "top_oil_temperature": results.top_oil_temp_profile,
-        }
+    onan_power_sample_profile_dataframe["top_oil_temperature_profile"] = results.top_oil_temp_profile.values
+    # Mess up the ambient temperature make sure we get an error if it is being used
+    onan_power_sample_profile_dataframe["ambient_temperature"] = (
+        onan_power_sample_profile_dataframe["ambient_temperature"] * 10
     )
+
     top_oil_thermal_model = Model(
-        temperature_profile=create_temp_sim_profile_from_df(top_oil_profile), transformer=onan_power_transformer
+        temperature_profile=create_temp_sim_profile_from_df(onan_power_sample_profile_dataframe),
+        transformer=onan_power_transformer,
     )
     top_oil_results = top_oil_thermal_model.run()  # the top oil profile should be used as it was provided
 
