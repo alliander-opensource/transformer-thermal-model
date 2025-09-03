@@ -47,10 +47,13 @@ def create_temp_sim_profile_from_df(profile_as_dataframe: pd.DataFrame) -> Input
         InputProfile: The temperature simulation profile.
 
     """
-    renamed_dataframe = profile_as_dataframe.rename(columns={
-        "timestamp": "datetime_index",
-        "load": "load_profile",
-        "ambient_temperature": "ambient_temperature_profile",
-        "top_oil_temperature": "top_oil_temperature_profile",
-    }, inplace=False)
+    renamed_dataframe = profile_as_dataframe.rename(
+        columns={
+            "timestamp": "datetime_index",
+            "load": "load_profile",
+            "ambient_temperature": "ambient_temperature_profile",
+            "top_oil_temperature": "top_oil_temperature_profile",
+        },
+        inplace=False,
+    )
     return InputProfile.from_dataframe(renamed_dataframe)
