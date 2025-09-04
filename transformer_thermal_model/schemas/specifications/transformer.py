@@ -16,7 +16,7 @@ class WindingSpecifications(BaseModel):
 
     nom_load: float = Field(..., description="Nominal load from the type plate [A]")
     winding_oil_gradient: float = Field(..., description="Winding oil temperature gradient [K]", ge=0)
-    time_const_windings: float = Field(..., description="Time constant windings [min]", gt=0)
+    time_const_winding: float = Field(..., description="Time constant windings [min]", gt=0)
     hot_spot_fac: float = Field(..., description="Hot-spot factor [-]", ge=0)
     nom_power: float = Field(..., description="Nominal power from the type plate [MVA]", ge=0)
 
@@ -301,9 +301,9 @@ class ThreeWindingTransformerSpecifications(BaseTransformerSpecifications):
         """Return the winding oil gradient as a numpy array."""
         return np.array(
             [
-                [cls.lv_winding.time_const_windings],
-                [cls.mv_winding.time_const_windings],
-                [cls.hv_winding.time_const_windings],
+                [cls.lv_winding.time_const_winding],
+                [cls.mv_winding.time_const_winding],
+                [cls.hv_winding.time_const_winding],
             ]
         )
 

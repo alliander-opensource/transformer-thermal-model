@@ -218,7 +218,7 @@ def test_internal_components_not_set():
 def check_dif_onan_onaf(onan_power_transformer, onaf_power_transformer):
     """Check the difference between the ONAN and ONAF transformer."""
     assert onan_power_transformer.specs.time_const_oil != onaf_power_transformer.specs.time_const_oil
-    assert onan_power_transformer.specs.time_const_windings != onaf_power_transformer.specs.time_const_windings
+    assert onan_power_transformer.specs.time_const_winding != onaf_power_transformer.specs.time_const_winding
 
 
 @pytest.mark.parametrize(
