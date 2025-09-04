@@ -175,9 +175,6 @@ def test_that_the_input_data_for_thermal_model_is_validated_properly(
             )
             is not None
         )
-
-    print(message)
-    print(str(e))
     assert message is None or message in str(e)
 
 
