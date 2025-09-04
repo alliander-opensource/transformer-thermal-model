@@ -248,28 +248,27 @@ def test_expected_rise_distribution(distribution_transformer: DistributionTransf
     assert sum(abs(hot_spot_temp - expected_results_hotspot)) < 1e-6
 
 
-def test_expected_rise_onan(onan_power_transformer: PowerTransformer):
+def test_expected_rise_onan(
+    onan_power_transformer: PowerTransformer, onan_power_sample_profile_dataframe: pd.DataFrame
+):
     """Test if the temperature rise matches the expected one."""
-    tau_time = onan_power_transformer.specs.oil_const_k11 * onan_power_transformer.specs.time_const_oil
-    ambient_temp = 20
-    time_step_list = [pd.to_datetime("2021-01-01 00:00:00") + pd.Timedelta(minutes=i * tau_time) for i in range(0, 16)]
-    profile = pd.DataFrame(
-        {
-            "timestamp": time_step_list,
-            "load": [1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 0, 0, 0, 0, 0, 0, 0, 0],
-            "ambient_temperature": [ambient_temp] * len(time_step_list),
-        }
-    )
     thermal_model = Model(
-        temperature_profile=create_temp_sim_profile_from_df(profile), transformer=onan_power_transformer
+        temperature_profile=create_temp_sim_profile_from_df(onan_power_sample_profile_dataframe),
+        transformer=onan_power_transformer,
     )
     results = thermal_model.run()
     top_oil_temp = np.array(results.top_oil_temp_profile)
     hot_spot_temp = np.array(results.hot_spot_temp_profile)
 
     # The first time step should be the ambient temperature
-    assert top_oil_temp[0] == ambient_temp + onan_power_transformer.specs.amb_temp_surcharge
-    assert hot_spot_temp[0] == ambient_temp + onan_power_transformer.specs.amb_temp_surcharge
+    assert (
+        top_oil_temp[0]
+        == onan_power_sample_profile_dataframe.ambient_temperature[0] + onan_power_transformer.specs.amb_temp_surcharge
+    )
+    assert (
+        hot_spot_temp[0]
+        == onan_power_sample_profile_dataframe.ambient_temperature[0] + onan_power_transformer.specs.amb_temp_surcharge
+    )
 
     expected_results = np.array(
         [
@@ -624,3 +623,60 @@ def test_integration_three_winding_transformer():
     assert max(abs(results.hot_spot_temp_profile.low_voltage_side - validation_data.hotspot_ls)) < 0.05, (
         "Hot-spot temperature profile LV does not match validation data"
     )
+
+
+def test_top_oil_input(onan_power_transformer, onan_power_sample_profile_dataframe):
+    """Test if the temperature rise matches the expected one."""
+    thermal_model = Model(
+        temperature_profile=create_temp_sim_profile_from_df(onan_power_sample_profile_dataframe),
+        transformer=onan_power_transformer,
+    )
+    results = thermal_model.run()
+    onan_power_sample_profile_dataframe["top_oil_temperature_profile"] = results.top_oil_temp_profile.values
+    # Mess up the ambient temperature make sure we get an error if it is being used
+    onan_power_sample_profile_dataframe["ambient_temperature"] = (
+        onan_power_sample_profile_dataframe["ambient_temperature"] * 10
+    )
+
+    top_oil_thermal_model = Model(
+        temperature_profile=create_temp_sim_profile_from_df(onan_power_sample_profile_dataframe),
+        transformer=onan_power_transformer,
+    )
+    top_oil_results = top_oil_thermal_model.run()  # the top oil profile should be used as it was provided
+
+    assert sum(abs(top_oil_results.top_oil_temp_profile - results.top_oil_temp_profile)) < 1e-6
+    assert sum(abs(top_oil_results.hot_spot_temp_profile - results.hot_spot_temp_profile)) < 1e-6
+
+    # now run with the changed ambient temperature. The top oil and hot spot temperatures should be different now
+    top_oil_results = top_oil_thermal_model.run(force_use_ambient_temperature=True)
+
+    assert not sum(abs(top_oil_results.top_oil_temp_profile - results.top_oil_temp_profile)) < 1e-6
+    assert not sum(abs(top_oil_results.hot_spot_temp_profile - results.hot_spot_temp_profile)) < 1e-6
+
+
+def test_top_oil_input_three_winding(user_three_winding_transformer_specs, three_winding_input_profile):
+    """Test if the temperature rise matches the expected one for a three-winding transformer."""
+    transformer = ThreeWindingTransformer(user_specs=user_three_winding_transformer_specs, cooling_type=CoolerType.ONAF)
+    # Run the model to get the initial top oil temperature profile
+    model = Model(temperature_profile=three_winding_input_profile, transformer=transformer)
+    results = model.run()
+    # Add the calculated top oil temperature profile to the input profile
+    three_winding_input_profile.top_oil_temperature_profile = results.top_oil_temp_profile.values
+    # Mess up the ambient temperature to ensure it is not used if top oil is provided
+    three_winding_input_profile.ambient_temperature_profile = (
+        three_winding_input_profile.ambient_temperature_profile * 10
+    )
+
+    top_oil_model = Model(temperature_profile=three_winding_input_profile, transformer=transformer)
+    top_oil_results = top_oil_model.run()
+
+    assert sum(abs(top_oil_results.top_oil_temp_profile - results.top_oil_temp_profile)) < 1e-6
+    for side in ["high_voltage_side", "middle_voltage_side", "low_voltage_side"]:
+        assert sum(abs(top_oil_results.hot_spot_temp_profile[side] - results.hot_spot_temp_profile[side])) < 1e-6
+
+    # Now run with the changed ambient temperature. The top oil and hot spot temperatures should be different now
+    top_oil_results = top_oil_model.run(force_use_ambient_temperature=True)
+
+    assert not sum(abs(top_oil_results.top_oil_temp_profile - results.top_oil_temp_profile)) < 1e-6
+    for side in ["high_voltage_side", "middle_voltage_side", "low_voltage_side"]:
+        assert not sum(abs(top_oil_results.hot_spot_temp_profile[side] - results.hot_spot_temp_profile[side])) < 1e-6

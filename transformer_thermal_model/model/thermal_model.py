@@ -25,7 +25,7 @@ class Model:
         >>> from transformer_thermal_model.transformer import PowerTransformer
         >>> from transformer_thermal_model.model import Model
 
-        >>> # First, we necreate the input profile
+        >>> # First, we create the input profile
         >>> datetime_index = [
         ...     datetime(2023, 1, 1, 0, 0),
         ...     datetime(2023, 1, 1, 1, 0),
@@ -252,18 +252,31 @@ class Model:
         """Update the hot-spot temperature increase for a single time step."""
         return static_incr + (current_increase - static_incr) * f2
 
-    def run(self) -> OutputProfile:
+    def run(self, force_use_ambient_temperature: bool = False) -> OutputProfile:
         """Calculate the top-oil and hot-spot temperatures for the provided Transformer object.
 
         This method prepares the calculation inputs, calculates intermediate factors, and computes
         the top-oil and hot-spot temperature profiles for the transformer based on the provided
-        load and internal parameters.
+        load and internal parameters. If the top oil temperature is provided in the `temperature_profile` it gets
+        priority over the ambient temperature. The ambient temperature is then ignored. You can change this behaviour
+        using the `force_use_ambient_temperature` parameter.
+
+        Args:
+            force_use_ambient_temperature:
+                Use the ambient temperature to perform the calculation,
+                even if the top oil temperature is given (optional, False by default)
 
         Returns:
             OutputProfile: Object containing the top-oil and hot-spot temperature profiles.
 
         """
         logger.info("Running the thermal model.")
+
+        # decide if we use the top oil or ambient temperature as input and perform basic validation
+        use_top_oil = not force_use_ambient_temperature and self.data.top_oil_temperature_profile is not None
+        if use_top_oil and self.data.top_oil_temperature_profile is None:
+            raise ValueError("The top_oil_temperature_profile is missing.")
+
         dt = self._get_time_step()
         load = self.data.load_profile_array
         t_internal = self._get_internal_temp()
@@ -274,7 +287,10 @@ class Model:
         top_k = self.transformer._end_temperature_top_oil(load)
         static_hot_spot_incr = self._calculate_static_hot_spot_increase(load)
 
-        top_oil_temp_profile = self._calculate_top_oil_temp_profile(t_internal, f1, top_k)
+        if use_top_oil and self.data.top_oil_temperature_profile is not None:
+            top_oil_temp_profile = self.data.top_oil_temperature_profile
+        else:
+            top_oil_temp_profile = self._calculate_top_oil_temp_profile(t_internal, f1, top_k)
         hot_spot_temp_profile = self._calculate_hot_spot_temp_profile(
             load, top_oil_temp_profile, static_hot_spot_incr, f2_windings, f2_oil
         )
