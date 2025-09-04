@@ -219,7 +219,7 @@ class TransformerSpecifications(BaseTransformerSpecifications):
 class ThreeWindingTransformerSpecifications(BaseTransformerSpecifications):
     """The transformer specifications that are specific to a three-winding transformer.
 
-    For all three windings the specs should be provided. Note that we use the following abbreviaties:
+    For all three windings the specs should be provided. Note that we use the following abbreviations:
     *  Low voltage: lv
     *  Medium voltage: mv
     *  High voltage: hv
