@@ -151,6 +151,14 @@ from transformer_thermal_model.schemas.thermal_model.input_profile import InputP
             pytest.raises(ValueError),
             "Converting an integer to a NumPy datetime requires a specified unit",
         ),
+        (
+            np.array(["2021-01-01 00:00:00", "2021-01-01 00:15:00", "2021-01-01 00:25:00"], dtype="datetime64[s]"),
+            (2, 4, 5),
+            [2, 3, 4],
+            [2, 3, 4, 2, 3, 4],
+            pytest.raises(ValueError),
+            "The length of the top_oil_temperature_profile should match",
+        ),
     ],
 )
 def test_that_the_input_data_for_thermal_model_is_validated_properly(
