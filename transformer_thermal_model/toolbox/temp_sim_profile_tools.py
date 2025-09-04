@@ -23,6 +23,7 @@ def create_temp_sim_profile_from_df(profile_as_dataframe: pd.DataFrame) -> Input
         - timestamp: The timestamp of the profile.
         - load: The load profile.
         - ambient_temperature: The ambient temperature profile.
+        - top_oil_temperature: The top oil temperature profile (optional column).
 
 
     Example: Creating an input profile from a dataframe.
