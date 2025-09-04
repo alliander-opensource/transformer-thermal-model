@@ -159,16 +159,16 @@ def test_transformer_winding_losses():
     # Initialize the transformer model
     transformer = ThreeWindingTransformer(user_specs=user_specs_three_winding, cooling_type=CoolerType.ONAF)
 
-    Pms = transformer.specs._get_loss_mc()
-    Phs = transformer.specs._get_loss_hc()
-    Pls = transformer.specs._get_loss_lc()
+    power_ms = transformer.specs._get_loss_mc()
+    power_hs = transformer.specs._get_loss_hc()
+    power_ls = transformer.specs._get_loss_lc()
 
-    assert (transformer.specs._c1 * Phs + Pms) == transformer.specs.load_loss_hv_mv, (
+    assert (transformer.specs._c1 * power_hs + power_ms) == transformer.specs.load_loss_hv_mv, (
         "p_hs-ms does not match expected value"
     )
-    assert (transformer.specs._c2 * Pms + Pls) == transformer.specs.load_loss_mv_lv, (
+    assert (transformer.specs._c2 * power_ms + power_ls) == transformer.specs.load_loss_mv_lv, (
         "p_hs-ls does not match expected value"
     )
-    assert (transformer.specs._c1 * transformer.specs._c2 * Phs + Pls) == transformer.specs.load_loss_hv_lv, (
+    assert (transformer.specs._c1 * transformer.specs._c2 * power_hs + power_ls) == transformer.specs.load_loss_hv_lv, (
         "p_hs_ls does not match expected value"
     )

@@ -151,25 +151,27 @@ class BaseTransformerSpecifications(BaseModel):
     winding_exp_y: float
     end_temp_reduction: float
 
+    _NOT_IMPLEMENTED_MSG = "This method should be implemented in subclasses."
+
     @property
     def nominal_load_array(cls) -> np.ndarray:
         """Return the nominal loads as a numpy array."""
-        raise NotImplementedError("This method should be implemented in subclasses.")
+        raise NotImplementedError(cls._NOT_IMPLEMENTED_MSG)
 
     @property
     def winding_oil_gradient_array(cls) -> np.ndarray:
         """Return the winding oil gradient as a numpy array."""
-        raise NotImplementedError("This method should be implemented in subclasses.")
+        raise NotImplementedError(cls._NOT_IMPLEMENTED_MSG)
 
     @property
     def time_const_windings_array(cls) -> np.ndarray:
         """Return the winding time constant as a numpy array."""
-        raise NotImplementedError("This method should be implemented in subclasses.")
+        raise NotImplementedError(cls._NOT_IMPLEMENTED_MSG)
 
     @property
     def hot_spot_fac_array(cls) -> np.ndarray:
         """Return the hotspot factor as a numpy array."""
-        raise NotImplementedError("This method should be implemented in subclasses.")
+        raise NotImplementedError(cls._NOT_IMPLEMENTED_MSG)
 
 
 class TransformerSpecifications(BaseTransformerSpecifications):
