@@ -274,8 +274,6 @@ class Model:
 
         # decide if we use the top oil or ambient temperature as input and perform basic validation
         use_top_oil = not force_use_ambient_temperature and self.data.top_oil_temperature_profile is not None
-        if use_top_oil and self.data.top_oil_temperature_profile is None:
-            raise ValueError("The top_oil_temperature_profile is missing.")
 
         dt = self._get_time_step()
         load = self.data.load_profile_array

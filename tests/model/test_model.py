@@ -431,9 +431,9 @@ def test_three_winding_transformer(
     length = len(three_winding_input_profile.datetime_index)
 
     # With high load on high voltage side
-    three_winding_input_profile.load_profile_high_voltage_side = [2000] * length
-    three_winding_input_profile.load_profile_middle_voltage_side = [1000] * length
-    three_winding_input_profile.load_profile_low_voltage_side = [1000] * length
+    three_winding_input_profile.load_profile_high_voltage_side = np.array([2000] * length)
+    three_winding_input_profile.load_profile_middle_voltage_side = np.array([1000] * length)
+    three_winding_input_profile.load_profile_low_voltage_side = np.array([1000] * length)
     thermal_model = Model(temperature_profile=three_winding_input_profile, transformer=transformer)
     results = thermal_model.run()
     hot_spot_temp = results.hot_spot_temp_profile
@@ -441,9 +441,9 @@ def test_three_winding_transformer(
     assert hot_spot_temp["high_voltage_side"].sum() > hot_spot_temp["low_voltage_side"].sum()
 
     # with high load on middle voltage side
-    three_winding_input_profile.load_profile_high_voltage_side = [1000] * length
-    three_winding_input_profile.load_profile_middle_voltage_side = [2000] * length
-    three_winding_input_profile.load_profile_low_voltage_side = [1000] * length
+    three_winding_input_profile.load_profile_high_voltage_side = np.array([1000] * length)
+    three_winding_input_profile.load_profile_middle_voltage_side = np.array([2000] * length)
+    three_winding_input_profile.load_profile_low_voltage_side = np.array([1000] * length)
     thermal_model = Model(temperature_profile=three_winding_input_profile, transformer=transformer)
     results = thermal_model.run()
     hot_spot_temp = results.hot_spot_temp_profile
@@ -451,9 +451,9 @@ def test_three_winding_transformer(
     assert hot_spot_temp["middle_voltage_side"].sum() > hot_spot_temp["low_voltage_side"].sum()
 
     # with high load on low voltage side
-    three_winding_input_profile.load_profile_high_voltage_side = [1000] * length
-    three_winding_input_profile.load_profile_middle_voltage_side = [1000] * length
-    three_winding_input_profile.load_profile_low_voltage_side = [2000] * length
+    three_winding_input_profile.load_profile_high_voltage_side = np.array([1000] * length)
+    three_winding_input_profile.load_profile_middle_voltage_side = np.array([1000] * length)
+    three_winding_input_profile.load_profile_low_voltage_side = np.array([2000] * length)
     thermal_model = Model(temperature_profile=three_winding_input_profile, transformer=transformer)
     results = thermal_model.run()
     hot_spot_temp = results.hot_spot_temp_profile
@@ -650,8 +650,8 @@ def test_top_oil_input(onan_power_transformer, onan_power_sample_profile_datafra
     # now run with the changed ambient temperature. The top oil and hot spot temperatures should be different now
     top_oil_results = top_oil_thermal_model.run(force_use_ambient_temperature=True)
 
-    assert not sum(abs(top_oil_results.top_oil_temp_profile - results.top_oil_temp_profile)) < 1e-6
-    assert not sum(abs(top_oil_results.hot_spot_temp_profile - results.hot_spot_temp_profile)) < 1e-6
+    assert sum(abs(top_oil_results.top_oil_temp_profile - results.top_oil_temp_profile)) > 1
+    assert sum(abs(top_oil_results.hot_spot_temp_profile - results.hot_spot_temp_profile)) > 1
 
 
 def test_top_oil_input_three_winding(user_three_winding_transformer_specs, three_winding_input_profile):
@@ -677,6 +677,6 @@ def test_top_oil_input_three_winding(user_three_winding_transformer_specs, three
     # Now run with the changed ambient temperature. The top oil and hot spot temperatures should be different now
     top_oil_results = top_oil_model.run(force_use_ambient_temperature=True)
 
-    assert not sum(abs(top_oil_results.top_oil_temp_profile - results.top_oil_temp_profile)) < 1e-6
+    assert sum(abs(top_oil_results.top_oil_temp_profile - results.top_oil_temp_profile)) > 1
     for side in ["high_voltage_side", "middle_voltage_side", "low_voltage_side"]:
-        assert not sum(abs(top_oil_results.hot_spot_temp_profile[side] - results.hot_spot_temp_profile[side])) < 1e-6
+        assert sum(abs(top_oil_results.hot_spot_temp_profile[side] - results.hot_spot_temp_profile[side])) > 1
