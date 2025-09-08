@@ -384,12 +384,14 @@ profile_input = ThreeWindingInputProfile.create(
 user_specs = UserThreeWindingTransformerSpecifications(
     no_load_loss=20,
     amb_temp_surcharge=10,
-    lv_winding=WindingSpecifications(nom_load=1000, winding_oil_gradient=20, hot_spot_fac=1.2, 
-                                     time_const_winding=1, nom_power=1000),
-    mv_winding=WindingSpecifications(nom_load=1000, winding_oil_gradient=20, hot_spot_fac=1.2, 
-                                     time_const_winding=1, nom_power=1000),
-    hv_winding=WindingSpecifications(nom_load=1000, winding_oil_gradient=20, hot_spot_fac=1.2, 
-                                     time_const_winding=1000000, nom_power=1000
+    lv_winding=WindingSpecifications(
+        nom_load=1000, winding_oil_gradient=20, hot_spot_fac=1.2, time_const_winding=1, nom_power=1000
+    ),
+    mv_winding=WindingSpecifications(
+        nom_load=1000, winding_oil_gradient=20, hot_spot_fac=1.2, time_const_winding=1, nom_power=1000
+    ),
+    hv_winding=WindingSpecifications(
+        nom_load=2000, winding_oil_gradient=20, hot_spot_fac=1.2, time_const_winding=1, nom_power=2000
     ),
     load_loss_hv_lv=100,
     load_loss_hv_mv=100,
@@ -417,19 +419,19 @@ hot_spot_temp_profile = results.hot_spot_temp_profile
 ```text
 >>> top_oil_temp_profile.head()
 2020-01-01 00:00:00    31.000000
-2020-01-01 00:15:00    46.280847
-2020-01-01 00:30:00    59.527475
-2020-01-01 00:45:00    71.010685
-2020-01-01 01:00:00    80.965225
+2020-01-01 00:15:00    40.212693
+2020-01-01 00:30:00    48.198972
+2020-01-01 00:45:00    55.122101
+2020-01-01 01:00:00    61.123609
 
 ```text
 >>> hot_spot_temp_profile.head()
-           low_voltage_side  middle_voltage_side  high_voltage_side
-2020-01-01 00:00:00    31.000000           31.000000           31.000000
-2020-01-01 00:15:00    91.059368          122.136576           38.414892
-2020-01-01 00:30:00   101.562916          130.736369           44.842816
-2020-01-01 00:45:00   110.645222          138.152400           50.415159
-2020-01-01 01:00:00   118.518460          144.581172           55.245818
+                          low_voltage_side   middle_voltage_side   high_voltage_side
+2020-01-01 00:00:00           31.000000           31.000000           31.000000
+2020-01-01 00:15:00           84.991214          116.068422           84.991214
+2020-01-01 00:30:00           90.234413          119.407866           90.234413
+2020-01-01 00:45:00           94.756639          122.263816           94.756639
+2020-01-01 01:00:00           98.676844          124.739555           98.676844
 ```
 
 #### Using the top oil temperature as an input to the model
