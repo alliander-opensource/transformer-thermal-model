@@ -8,7 +8,7 @@ import pytest
 
 from transformer_thermal_model.cooler import CoolerType
 from transformer_thermal_model.schemas import (
-    DefaultTransformerSpecifications,
+    ThreeWindingTransformerDefaultSpecifications,
     ThreeWindingTransformerSpecifications,
     UserThreeWindingTransformerSpecifications,
     WindingSpecifications,
@@ -19,12 +19,9 @@ from transformer_thermal_model.transformer.threewinding import ThreeWindingTrans
 
 def test_three_winding_transformer(user_three_winding_transformer_specs):
     """Test the creation of a three-winding transformer specifications object."""
-    defaults = DefaultTransformerSpecifications(
+    defaults = ThreeWindingTransformerDefaultSpecifications(
         time_const_oil=180,
-        time_const_windings=4,
         top_oil_temp_rise=60,
-        winding_oil_gradient=23,
-        hot_spot_fac=1.2,
         oil_const_k11=1.0,
         winding_const_k21=1,
         winding_const_k22=2,

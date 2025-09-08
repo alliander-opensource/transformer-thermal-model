@@ -95,11 +95,6 @@ class Model:
         logger.info(f"Last timestamp: {temperature_profile.datetime_index[-1]}")
         logger.info(f"Amount of data points: {len(temperature_profile)}")
         logger.info(f"Max load: {np.max(temperature_profile.load_profile_array)}")
-        if transformer.specs.hot_spot_fac is None:
-            raise AttributeError(
-                "The given Transformer has no hot-spot factor specified. Please specify the hot-spot "
-                "factor or calibrate it using the calibrate_hotspot_factor function."
-            )
         self.transformer = transformer
         self.data = temperature_profile
         self.init_top_oil_temp = init_top_oil_temp

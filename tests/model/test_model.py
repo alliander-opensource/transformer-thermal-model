@@ -159,25 +159,6 @@ def test_good_result_with_large_time_steps(transformer: PowerTransformer):
     )
 
 
-def test_no_hotspot_factor(transformer):
-    """Test if the model raises an error when the hot-spot factor is not specified."""
-    transformer.specs.hot_spot_fac = None
-    profile = pd.DataFrame(
-        {
-            "timestamp": pd.to_datetime(["2021-01-01 00:00:00", "2021-02-01 00:00:00", "2021-03-01 00:00:00"]),
-            "load": [
-                transformer.specs.nom_load_sec_side,
-                transformer.specs.nom_load_sec_side,
-                transformer.specs.nom_load_sec_side,
-            ],
-            "ambient_temperature": [20, 20, 20],
-        }
-    )
-
-    with pytest.raises(AttributeError):
-        Model(temperature_profile=create_temp_sim_profile_from_df(profile), transformer=transformer)
-
-
 def test_expected_rise_distribution(distribution_transformer: DistributionTransformer):
     """Test if the temperature rise matches the expected one."""
     tau_time = distribution_transformer.specs.oil_const_k11 * distribution_transformer.specs.time_const_oil

@@ -8,8 +8,8 @@ import numpy as np
 
 from transformer_thermal_model.cooler import CoolerType
 from transformer_thermal_model.schemas import (
+    BaseDefaultTransformerSpecifications,
     BaseTransformerSpecifications,
-    DefaultTransformerSpecifications,
 )
 
 
@@ -45,7 +45,7 @@ class Transformer(ABC):
 
     @property
     @abstractmethod
-    def defaults(self) -> DefaultTransformerSpecifications:
+    def defaults(self) -> BaseDefaultTransformerSpecifications:
         """The default transformer specifications."""
         pass
 
@@ -61,13 +61,3 @@ class Transformer(ABC):
     @abstractmethod
     def _end_temperature_top_oil(self, load: np.ndarray) -> np.ndarray:
         pass
-
-    def _set_HS_fac(self, hot_spot_factor: float) -> None:
-        """Set hot-spot factor to specified value.
-
-        This function is (and should only be) used by hot-spot calibration.
-
-        Args:
-            hot_spot_factor (float): The new hot-spot factor resulting from calibration.
-        """
-        self.specs.hot_spot_fac = hot_spot_factor

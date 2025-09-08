@@ -45,10 +45,7 @@ class BaseUserTransformerSpecifications(BaseModel):
 
     # Cooler specific specs
     time_const_oil: float | None = Field(default=None, description="Time constant oil [min]", gt=0)
-    time_const_windings: float | None = Field(default=None, description="Time constant windings [min]", gt=0)
     top_oil_temp_rise: float | None = Field(default=None, description="Top-oil temperature rise [K]", ge=0)
-    winding_oil_gradient: float | None = Field(default=None, description="Winding oil gradient (worst case) [K]", ge=0)
-    hot_spot_fac: float | None = Field(default=None, description="Hot-spot factor [-]", ge=0)
 
     # Transformer specific specs
     oil_const_k11: float | None = Field(default=None, description="Oil constant k11 [-]", gt=0)
@@ -78,6 +75,9 @@ class UserTransformerSpecifications(BaseUserTransformerSpecifications):
     nom_load_sec_side: float = Field(
         ..., description="Transformer nominal current secondary side from the type plate [A]"
     )
+    winding_oil_gradient: float | None = Field(default=None, description="Winding oil gradient (worst case) [K]", ge=0)
+    hot_spot_fac: float | None = Field(default=None, description="Hot-spot factor [-]", ge=0)
+    time_const_windings: float | None = Field(default=None, description="Time constant windings [min]", gt=0)
 
 
 class UserThreeWindingTransformerSpecifications(BaseUserTransformerSpecifications):
@@ -112,7 +112,7 @@ class UserThreeWindingTransformerSpecifications(BaseUserTransformerSpecification
     load_loss_total: float | None = None
 
 
-class DefaultTransformerSpecifications(BaseModel):
+class BaseDefaultTransformerSpecifications(BaseModel):
     """The default transformer specifications that will be defined when the user does not provide them.
 
     Each `Transformer` object has a class variable `defaults` that contains the default transformer specifications.
@@ -120,10 +120,7 @@ class DefaultTransformerSpecifications(BaseModel):
 
     # Cooler specific specs
     time_const_oil: float
-    time_const_windings: float
     top_oil_temp_rise: float
-    winding_oil_gradient: float
-    hot_spot_fac: float
 
     # Transformer specific specs
     oil_const_k11: float
@@ -134,16 +131,30 @@ class DefaultTransformerSpecifications(BaseModel):
     end_temp_reduction: float
 
 
+class DefaultTransformerSpecifications(BaseDefaultTransformerSpecifications):
+    """The default specifications that are specific to a power or distribution transformer."""
+
+    time_const_windings: float
+    winding_oil_gradient: float
+    hot_spot_fac: float
+
+
+class ThreeWindingTransformerDefaultSpecifications(BaseDefaultTransformerSpecifications):
+    """The default specifications that are specific to a three-winding transformer.
+
+    For now this contains no additional elements, this is for future expansion.
+    """
+
+    pass
+
+
 class BaseTransformerSpecifications(BaseModel):
     """Base Class containing transformer specifications."""
 
     no_load_loss: float
     amb_temp_surcharge: float
     time_const_oil: float
-    time_const_windings: float
     top_oil_temp_rise: float
-    winding_oil_gradient: float
-    hot_spot_fac: float
     oil_const_k11: float
     winding_const_k21: int
     winding_const_k22: int
@@ -184,6 +195,9 @@ class TransformerSpecifications(BaseTransformerSpecifications):
 
     load_loss: float
     nom_load_sec_side: float
+    winding_oil_gradient: float
+    time_const_windings: float
+    hot_spot_fac: float
 
     @classmethod
     def create(
@@ -235,7 +249,7 @@ class ThreeWindingTransformerSpecifications(BaseTransformerSpecifications):
 
     @classmethod
     def create(
-        cls, defaults: DefaultTransformerSpecifications, user: UserThreeWindingTransformerSpecifications
+        cls, defaults: ThreeWindingTransformerDefaultSpecifications, user: UserThreeWindingTransformerSpecifications
     ) -> Self:
         """Create a ThreeWindingTransformerSpecifications instance by merging defaults with user specifications."""
         data = defaults.model_dump()

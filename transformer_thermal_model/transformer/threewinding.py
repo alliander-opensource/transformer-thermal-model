@@ -8,7 +8,7 @@ import numpy as np
 
 from transformer_thermal_model.cooler import CoolerType
 from transformer_thermal_model.schemas import (
-    DefaultTransformerSpecifications,
+    ThreeWindingTransformerDefaultSpecifications,
     ThreeWindingTransformerSpecifications,
     UserThreeWindingTransformerSpecifications,
 )
@@ -28,12 +28,9 @@ class ThreeWindingTransformer(Transformer):
             which are used to calculate the relative component capacities. Defaults to None.
     """
 
-    _onan_defaults = DefaultTransformerSpecifications(
+    _onan_defaults = ThreeWindingTransformerDefaultSpecifications(
         time_const_oil=210,
-        time_const_windings=10,
         top_oil_temp_rise=60,
-        winding_oil_gradient=17,
-        hot_spot_fac=1.3,
         oil_const_k11=0.5,
         winding_const_k21=2,
         winding_const_k22=2,
@@ -41,12 +38,9 @@ class ThreeWindingTransformer(Transformer):
         winding_exp_y=1.3,
         end_temp_reduction=0,
     )
-    _onaf_defaults = DefaultTransformerSpecifications(
+    _onaf_defaults = ThreeWindingTransformerDefaultSpecifications(
         time_const_oil=150,
-        time_const_windings=7,
         top_oil_temp_rise=60,
-        winding_oil_gradient=17,
-        hot_spot_fac=1.3,
         oil_const_k11=0.5,
         winding_const_k21=2,
         winding_const_k22=2,
@@ -69,11 +63,8 @@ class ThreeWindingTransformer(Transformer):
         logger.debug("Initialized ThreeWindingTransformer with specifications: %s", user_specs)
 
     @property
-    def defaults(self) -> DefaultTransformerSpecifications:
-        """The ClassVar for default TransformerSpecifications.
-
-        If PowerTransformer is not initialised, uses the ONAF specifications.
-        """
+    def defaults(self) -> ThreeWindingTransformerDefaultSpecifications:
+        """The ClassVar for default TransformerSpecifications."""
         if self.cooling_type == CoolerType.ONAN:
             return self._onan_defaults
         else:

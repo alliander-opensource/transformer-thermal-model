@@ -4,9 +4,11 @@
 
 
 from .specifications.transformer import (
+    BaseDefaultTransformerSpecifications,
     BaseTransformerSpecifications,
     BaseUserTransformerSpecifications,
     DefaultTransformerSpecifications,
+    ThreeWindingTransformerDefaultSpecifications,
     ThreeWindingTransformerSpecifications,
     TransformerSpecifications,
     UserThreeWindingTransformerSpecifications,
@@ -22,8 +24,10 @@ __all__ = [
     "TransformerSpecifications",
     "BaseTransformerSpecifications",
     "UserThreeWindingTransformerSpecifications",
+    "ThreeWindingTransformerDefaultSpecifications",
     "ThreeWindingTransformerSpecifications",
     "BaseUserTransformerSpecifications",
+    "BaseDefaultTransformerSpecifications",
     "TransformerComponentSpecifications",
     "WindingSpecifications",
     "InputProfile",
