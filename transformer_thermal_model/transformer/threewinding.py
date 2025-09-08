@@ -21,11 +21,37 @@ logger = logging.getLogger(__name__)
 class ThreeWindingTransformer(Transformer):
     """A three-winding transformer.
 
-    This class represents a power transformer. This class inherits from the Transformer class.
+    This class represents a Three winding transformer. This class inherits from the Transformer class.
 
-    Attributes:
-        internal_component_specs (TransformerComponentSpecifications | None): The internal component specifications
-            which are used to calculate the relative component capacities. Defaults to None.
+    Example: initialise a three winding transformer:
+    ```python
+    >>> from transformer_thermal_model.schemas import UserThreeWindingTransformerSpecifications, WindingSpecifications
+    >>> from transformer_thermal_model.transformer import ThreeWindingTransformer
+
+    >>> user_specs = UserThreeWindingTransformerSpecifications(
+    ...     no_load_loss=20,
+    ...     amb_temp_surcharge=10,
+    ...     lv_winding=WindingSpecifications(nom_load=1000, winding_oil_gradient=20, hot_spot_fac=1.2,
+    ...                                      time_const_winding=1, nom_power=1000),
+    ...     mv_winding=WindingSpecifications(nom_load=1000, winding_oil_gradient=20, hot_spot_fac=1.2,
+    ...                                      time_const_winding=1, nom_power=1000),
+    ...     hv_winding=WindingSpecifications(nom_load=1000, winding_oil_gradient=20, hot_spot_fac=1.2,
+    ...                                      time_const_winding=1000000, nom_power=1000),
+    ...     load_loss_hv_lv=100,
+    ...     load_loss_hv_mv=100,
+    ...     load_loss_mv_lv=100,
+    ... )
+    >>> transformer = ThreeWindingTransformer(user_specs=user_specs, cooling_type=CoolerType.ONAN)
+    >>> # the combination of the user specifications and the default specifications
+    >>> print(transformer.specs)
+    no_load_loss=20.0 amb_temp_surcharge=10.0 time_const_oil=210.0 top_oil_temp_rise=60.0
+    oil_const_k11=0.5 winding_const_k21=2 winding_const_k22=2 oil_exp_x=0.8 winding_exp_y=1.3
+    end_temp_reduction=0.0 lv_winding=WindingSpecifications(nom_load=1000.0,
+    winding_oil_gradient=20.0, time_const_winding=1.0, hot_spot_fac=1.2, nom_power=1000.0)
+    mv_winding=WindingSpecifications(nom_load=1000.0, winding_oil_gradient=20.0, time_const_winding=1.0,
+    hot_spot_fac=1.2, nom_power=1000.0) hv_winding=WindingSpecifications(nom_load=1000.0,
+    winding_oil_gradient=20.0, time_const_winding=1000000.0, hot_spot_fac=1.2, nom_power=1000.0)
+    load_loss_hv_lv=100.0 load_loss_hv_mv=100.0 load_loss_mv_lv=100.0 load_loss_total_user=None
     """
 
     _onan_defaults = ThreeWindingTransformerDefaultSpecifications(

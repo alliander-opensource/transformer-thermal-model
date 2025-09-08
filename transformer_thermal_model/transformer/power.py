@@ -76,9 +76,23 @@ class PowerTransformer(Transformer):
 
     This class represents a power transformer. This class inherits from the Transformer class.
 
-    Attributes:
-        internal_component_specs (TransformerComponentSpecifications | None): The internal component specifications
-            which are used to calculate the relative component capacities. Defaults to None.
+    Example: initialise a power transformer:
+    ```python
+    >>> from transformer_thermal_model.schemas import UserTransformerSpecifications
+    >>> from transformer_thermal_model.cooler import CoolerType
+    >>> from transformer_thermal_model.transformer import PowerTransformer
+
+    >>> user_specs = UserTransformerSpecifications(
+    ...     load_loss=1000,
+    ...     nom_load_sec_side=1500,
+    ...     no_load_loss=200,
+    ...     amb_temp_surcharge=20,
+    ... )
+    >>> cooling_type = CoolerType.ONAN
+    >>> transformer = PowerTransformer(
+    ...     user_specs=user_specs,
+    ...     cooling_type=cooling_type
+    ... )
     """
 
     specs: TransformerSpecifications
