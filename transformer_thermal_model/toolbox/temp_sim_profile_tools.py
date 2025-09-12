@@ -25,6 +25,7 @@ def create_temp_sim_profile_from_df(profile_as_dataframe: pd.DataFrame) -> Input
         - ambient_temperature: The ambient temperature profile.
         - top_oil_temperature: The top oil temperature profile (optional column).
 
+
     Example: Creating an input profile from a dataframe.
         ```python
         >>> import pandas as pd
@@ -47,13 +48,9 @@ def create_temp_sim_profile_from_df(profile_as_dataframe: pd.DataFrame) -> Input
         InputProfile: The temperature simulation profile.
 
     """
-    renamed_dataframe = profile_as_dataframe.rename(
-        columns={
-            "timestamp": "datetime_index",
-            "load": "load_profile",
-            "ambient_temperature": "ambient_temperature_profile",
-            "top_oil_temperature": "top_oil_temperature_profile",
-        },
-        inplace=False,
+    return InputProfile.create(
+        datetime_index=profile_as_dataframe["timestamp"],
+        load_profile=profile_as_dataframe["load"],
+        ambient_temperature_profile=profile_as_dataframe["ambient_temperature"],
+        top_oil_temperature_profile=profile_as_dataframe.get("top_oil_temperature_profile"),
     )
-    return InputProfile.from_dataframe(renamed_dataframe)

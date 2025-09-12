@@ -7,8 +7,9 @@ import logging
 import numpy as np
 import pandas as pd
 
-from transformer_thermal_model.schemas import InputProfile, OutputProfile
-from transformer_thermal_model.transformer import Transformer
+from transformer_thermal_model.schemas import OutputProfile
+from transformer_thermal_model.schemas.thermal_model.input_profile import BaseInputProfile
+from transformer_thermal_model.transformer import ThreeWindingTransformer, Transformer
 
 logger = logging.getLogger(__name__)
 
@@ -66,14 +67,14 @@ class Model:
     """
 
     transformer: Transformer
-    data: InputProfile
+    data: BaseInputProfile
     init_top_oil_temp: float | None
     hot_spot_temp_profile: pd.Series
     top_oil_temp_profile: pd.Series
 
     def __init__(
         self,
-        temperature_profile: InputProfile,
+        temperature_profile: BaseInputProfile,
         transformer: Transformer,
         init_top_oil_temp: float | None = None,
     ) -> None:
@@ -93,12 +94,7 @@ class Model:
         logger.info(f"First timestamp: {temperature_profile.datetime_index[0]}")
         logger.info(f"Last timestamp: {temperature_profile.datetime_index[-1]}")
         logger.info(f"Amount of data points: {len(temperature_profile)}")
-        logger.info(f"Max load: {np.max(temperature_profile.load_profile)}")
-        if transformer.specs.hot_spot_fac is None:
-            raise AttributeError(
-                "The given Transformer has no hot-spot factor specified. Please specify the hot-spot "
-                "factor or calibrate it using the calibrate_hotspot_factor function."
-            )
+        logger.info(f"Max load: {np.max(temperature_profile.load_profile_array)}")
         self.transformer = transformer
         self.data = temperature_profile
         self.init_top_oil_temp = init_top_oil_temp
@@ -137,7 +133,7 @@ class Model:
     def _calculate_f2_winding(self, dt: np.ndarray) -> np.ndarray:
         """Calculate the time delay constant f2 for the hot-spot temperature. due to the windings."""
         winding_delay = np.exp(
-            -dt / (self.transformer.specs.winding_const_k22 * self.transformer.specs.time_const_windings)
+            -dt / (self.transformer.specs.winding_const_k22 * self.transformer.specs.time_const_windings_array)
         )
         return winding_delay
 
@@ -149,75 +145,99 @@ class Model:
     def _calculate_static_hot_spot_increase(self, load: np.ndarray) -> np.ndarray:
         """Calculate the static hot-spot temperature increase using vectorized operations."""
         return (
-            self.transformer.specs.hot_spot_fac
-            * self.transformer.specs.winding_oil_gradient
-            * (load / self.transformer.specs.nom_load_sec_side) ** self.transformer.specs.winding_exp_y
+            self.transformer.specs.hot_spot_fac_array
+            * self.transformer.specs.winding_oil_gradient_array
+            * (load / self.transformer.specs.nominal_load_array) ** self.transformer.specs.winding_exp_y
         )
 
-    def _calculate_temperature_profiles(
+    def _calculate_top_oil_temp_profile(
         self,
-        load: np.ndarray,
         t_internal: np.ndarray,
         f1: np.ndarray,
+        top_k: np.ndarray,
+    ) -> np.ndarray:
+        """Calculate the top-oil temperature profile for the transformer.
+
+        Args:
+            t_internal (np.ndarray): Array of internal temperatures over time.
+            f1 (np.ndarray): Array of time constants for the top-oil temperature calculation.
+            top_k (np.ndarray): Array of end temperatures for the top-oil.
+
+        Returns:
+            np.ndarray: The computed top-oil temperature profile over time.
+        """
+        top_oil_temp_profile = np.zeros_like(t_internal, dtype=np.float64)
+        top_oil_temp_profile[0] = t_internal[0] if self.init_top_oil_temp is None else self.init_top_oil_temp
+
+        for i in range(1, len(t_internal)):
+            top_oil_temp_profile[i] = self._update_top_oil_temp(
+                top_oil_temp_profile[i - 1], t_internal[i], top_k[i], f1[i]
+            )
+
+        return top_oil_temp_profile
+
+    def _calculate_hot_spot_temp_profile(
+        self,
+        load: np.ndarray,
+        top_oil_temp_profile: np.ndarray,
+        static_hot_spot_incr: np.ndarray,
         f2_windings: np.ndarray,
         f2_oil: np.ndarray,
-        top_k: np.ndarray,
-        static_hot_spot_incr: np.ndarray,
-        use_top_oil: bool,
-    ) -> tuple[np.ndarray, np.ndarray]:
-        """Calculate the temperature profiles for the transformer's top-oil and hot-spot.
+    ) -> np.ndarray:
+        """Calculate the hot-spot temperature profile for the transformer.
 
         Args:
             load (np.ndarray): Array of load values over time.
-            t_internal (np.ndarray): Array of internal temperatures over time. Only used if `use_top_oil` is False.
-            f1 (np.ndarray): Array of time constants for the top-oil temperature calculation.
+            top_oil_temp_profile (np.ndarray): The computed top-oil temperature profile over time.
+            static_hot_spot_incr (np.ndarray): Array of static hot-spot temperature increases.
             f2_windings (np.ndarray): Array of time constants for the hot-spot temperature calculation due to windings.
             f2_oil (np.ndarray): Array of time constants for the hot-spot temperature calculation due to oil.
-            top_k (np.ndarray): Array of end temperatures for the top-oil.
-            static_hot_spot_incr (np.ndarray): Array of static hot-spot temperature increases.
-            use_top_oil: True if the top oil temperature from the `InputProfile` should be used.
 
         Returns:
-            tuple[np.ndarray, np.ndarray]: A tuple containing:
-            - top_oil_temp_profile (np.ndarray): The computed top-oil temperature profile over time.
-            - hot_spot_temp_profile (np.ndarray): The computed hot-spot temperature profile over time.
-
+            np.ndarray: The computed hot-spot temperature profile over time.
         """
-        # Split the static hot-spot increase into two parts for windings and oil
         static_hot_spot_incr_windings = static_hot_spot_incr * self.transformer.specs.winding_const_k21
         static_hot_spot_incr_oil = static_hot_spot_incr * (self.transformer.specs.winding_const_k21 - 1)
-
-        # Preallocate arrays for temperature profiles and initialize first values
-        if use_top_oil and self.data.top_oil_temperature_profile is not None:
-            top_oil_temp_profile = self.data.top_oil_temperature_profile
-        else:
-            top_oil_temp_profile = np.zeros_like(load, dtype=np.float64)
-            top_oil_temp_profile[0] = t_internal[0] if self.init_top_oil_temp is None else self.init_top_oil_temp
-
         hot_spot_temp_profile = np.zeros_like(load, dtype=np.float64)
-        hot_spot_temp_profile[0] = top_oil_temp_profile[0]
 
-        hot_spot_increase_windings = 0.0
-        hot_spot_increase_oil = 0.0
-
-        # Iteratively calculate profiles
-        for i in range(1, len(load)):
-            if not use_top_oil:
-                top_oil_temp_profile[i] = self._update_top_oil_temp(
-                    top_oil_temp_profile[i - 1], t_internal[i], top_k[i], f1[i]
+        # For a two winding transformer:
+        if load.ndim == 1:
+            hot_spot_temp_profile[0] = top_oil_temp_profile[0]
+            hot_spot_increase_windings = np.zeros_like(load)
+            hot_spot_increase_oil = np.zeros_like(load)
+            for i in range(1, len(load)):
+                hot_spot_increase_windings[i] = self._update_hot_spot_increase(
+                    hot_spot_increase_windings[i - 1], static_hot_spot_incr_windings[i], f2_windings[i]
                 )
-            # Calculate the hot-spot temperature based on formula 17 from IEC 2060076-7_2018.
-            # The hot-spot increase of the windings is based on from 15 from IEC 2060076-7_2018.
-            hot_spot_increase_windings = self._update_hot_spot_increase(
-                hot_spot_increase_windings, static_hot_spot_incr_windings[i], f2_windings[i]
-            )
-            # The hot-spot increase of the oil is based on from 16 from IEC 2060076-7_2018
-            hot_spot_increase_oil = self._update_hot_spot_increase(
-                hot_spot_increase_oil, static_hot_spot_incr_oil[i], f2_oil[i]
-            )
-            hot_spot_temp_profile[i] = top_oil_temp_profile[i] + hot_spot_increase_windings - hot_spot_increase_oil
+                hot_spot_increase_oil[i] = self._update_hot_spot_increase(
+                    hot_spot_increase_oil[i - 1], static_hot_spot_incr_oil[i], f2_oil[i]
+                )
+                hot_spot_temp_profile[i] = (
+                    top_oil_temp_profile[i] + hot_spot_increase_windings[i] - hot_spot_increase_oil[i]
+                )
 
-        return top_oil_temp_profile, hot_spot_temp_profile
+        # For a three winding transformer with multiple load profiles:
+        else:
+            hot_spot_temp_profile[:, 0] = top_oil_temp_profile[0]
+            n_profiles = load.shape[0]
+            n_steps = load.shape[1]
+            for profile in range(n_profiles):
+                hot_spot_increase_windings = np.zeros(n_steps)
+                hot_spot_increase_oil = np.zeros(n_steps)
+                for i in range(1, n_steps):
+                    hot_spot_increase_windings[i] = self._update_hot_spot_increase(
+                        hot_spot_increase_windings[i - 1],
+                        static_hot_spot_incr_windings[profile][i],
+                        f2_windings[profile][i],
+                    )
+                    hot_spot_increase_oil[i] = self._update_hot_spot_increase(
+                        hot_spot_increase_oil[i - 1], static_hot_spot_incr_oil[profile][i], f2_oil[i]
+                    )
+                    hot_spot_temp_profile[profile][i] = (
+                        top_oil_temp_profile[i] + hot_spot_increase_windings[i] - hot_spot_increase_oil[i]
+                    )
+
+        return hot_spot_temp_profile
 
     def _update_top_oil_temp(self, current_temp: float, t_internal: float, top_k: float, f1: float) -> float:
         """Update the top-oil temperature for a single time step."""
@@ -249,11 +269,9 @@ class Model:
 
         # decide if we use the top oil or ambient temperature as input and perform basic validation
         use_top_oil = not force_use_ambient_temperature and self.data.top_oil_temperature_profile is not None
-        if use_top_oil and self.data.top_oil_temperature_profile is None:
-            raise ValueError("The top_oil_temperature_profile is missing.")
 
         dt = self._get_time_step()
-        load = self.data.load_profile
+        load = self.data.load_profile_array
         t_internal = self._get_internal_temp()
 
         f1 = self._calculate_f1(dt)
@@ -262,14 +280,29 @@ class Model:
         top_k = self.transformer._end_temperature_top_oil(load)
         static_hot_spot_incr = self._calculate_static_hot_spot_increase(load)
 
-        top_oil_temp_profile, hot_spot_temp_profile = self._calculate_temperature_profiles(
-            load, t_internal, f1, f2_windings, f2_oil, top_k, static_hot_spot_incr, use_top_oil
+        if use_top_oil and self.data.top_oil_temperature_profile is not None:
+            top_oil_temp_profile = self.data.top_oil_temperature_profile
+        else:
+            top_oil_temp_profile = self._calculate_top_oil_temp_profile(t_internal, f1, top_k)
+        hot_spot_temp_profile = self._calculate_hot_spot_temp_profile(
+            load, top_oil_temp_profile, static_hot_spot_incr, f2_windings, f2_oil
         )
         logger.info("The calculation with the Thermal model is completed.")
-        logger.info(f"Max top-oil temperature: {max(top_oil_temp_profile)}")
-        logger.info(f"Max hot-spot temperature: {max(hot_spot_temp_profile)}")
+        logger.info(f"Max top-oil temperature: {np.max(top_oil_temp_profile)}")
+        logger.info(f"Max hot-spot temperature: {np.max(hot_spot_temp_profile)}")
 
-        return OutputProfile(
-            top_oil_temp_profile=pd.Series(top_oil_temp_profile, index=self.data.datetime_index),
-            hot_spot_temp_profile=pd.Series(hot_spot_temp_profile, index=self.data.datetime_index),
-        )
+        if type(self.transformer) is ThreeWindingTransformer:
+            return OutputProfile(
+                top_oil_temp_profile=pd.Series(top_oil_temp_profile, index=self.data.datetime_index),
+                hot_spot_temp_profile=pd.DataFrame(
+                    hot_spot_temp_profile.transpose(),
+                    columns=["low_voltage_side", "middle_voltage_side", "high_voltage_side"],
+                    index=self.data.datetime_index,
+                ),
+            )
+        else:
+            # For a two winding transformer, hot_spot_temp_profile is a Series
+            return OutputProfile(
+                top_oil_temp_profile=pd.Series(top_oil_temp_profile, index=self.data.datetime_index),
+                hot_spot_temp_profile=pd.Series(hot_spot_temp_profile, index=self.data.datetime_index),
+            )

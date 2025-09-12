@@ -16,7 +16,7 @@ class OutputProfile(BaseModel):
     """
 
     top_oil_temp_profile: pd.Series
-    hot_spot_temp_profile: pd.Series
+    hot_spot_temp_profile: pd.Series | pd.DataFrame
 
     def convert_to_dataframe(self) -> pd.DataFrame:
         """Process the two pandas Series and convert them to a single dataframe, linked by the timestamp."""

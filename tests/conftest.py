@@ -6,7 +6,13 @@ import pandas as pd
 import pytest
 
 from transformer_thermal_model.cooler import CoolerType
-from transformer_thermal_model.schemas import InputProfile, UserTransformerSpecifications
+from transformer_thermal_model.schemas import (
+    InputProfile,
+    ThreeWindingInputProfile,
+    UserThreeWindingTransformerSpecifications,
+    UserTransformerSpecifications,
+    WindingSpecifications,
+)
 from transformer_thermal_model.transformer import DistributionTransformer, PowerTransformer
 
 
@@ -97,6 +103,45 @@ def iec_load_profile():
     )
     input_profile = InputProfile.from_dataframe(df=profile)
     return input_profile
+
+
+@pytest.fixture(scope="function")
+def user_three_winding_transformer_specs() -> UserThreeWindingTransformerSpecifications:
+    """Create a three-winding transformer specifications object."""
+    return UserThreeWindingTransformerSpecifications(
+        no_load_loss=20,
+        amb_temp_surcharge=10,
+        lv_winding=WindingSpecifications(
+            nom_load=1000, winding_oil_gradient=20, hot_spot_fac=1.2, time_const_winding=10, nom_power=30
+        ),
+        mv_winding=WindingSpecifications(
+            nom_load=1000, winding_oil_gradient=20, hot_spot_fac=1.2, time_const_winding=10, nom_power=100
+        ),
+        hv_winding=WindingSpecifications(
+            nom_load=1000, winding_oil_gradient=20, hot_spot_fac=1.2, time_const_winding=10, nom_power=100
+        ),
+        load_loss_hv_lv=100,
+        load_loss_hv_mv=100,
+        load_loss_mv_lv=100,
+    )
+
+
+@pytest.fixture(scope="function")
+def three_winding_input_profile() -> ThreeWindingInputProfile:
+    """Create a three-winding input profile."""
+    data_points = 4 * 24 * 7
+    datetime_index = pd.date_range("2021-01-01 00:00:00", periods=data_points, freq="min")
+    load_profile_high_voltage_side = [1000] * data_points
+    load_profile_middle_voltage_side = [1000] * data_points
+    load_profile_low_voltage_side = [1000] * data_points
+    ambient_temperature_profile = [30] * data_points
+    return ThreeWindingInputProfile.create(
+        datetime_index=datetime_index,
+        ambient_temperature_profile=ambient_temperature_profile,
+        load_profile_high_voltage_side=load_profile_high_voltage_side,
+        load_profile_middle_voltage_side=load_profile_middle_voltage_side,
+        load_profile_low_voltage_side=load_profile_low_voltage_side,
+    )
 
 
 @pytest.fixture(scope="function")
