@@ -120,7 +120,7 @@ class InputProfile(BaseInputProfile):
             '2023-01-01T01:00:00.000000', '2023-01-01T02:00:00.000000'],
             dtype='datetime64[us]'), ambient_temperature_profile=array([25. , 24.5, 24. ]),
             top_oil_temperature_profile=None, load_profile=array([0.8, 0.9, 1. ]))
-            
+
             ```
         Example: Directly creating an InputProfile object using numpy arrays.
             ```python
@@ -145,7 +145,7 @@ class InputProfile(BaseInputProfile):
             '2023-01-01T01:00:00.000000', '2023-01-01T02:00:00.000000'],
             dtype='datetime64[us]'), ambient_temperature_profile=array([25. , 24.5, 24. ]),
             top_oil_temperature_profile=None, load_profile=array([0.8, 0.9, 1. ]))
-            
+
             ```
         Example: Creating an InputProfile including the top oil temperature.
             ```python
@@ -171,7 +171,7 @@ class InputProfile(BaseInputProfile):
             '2023-01-01T02:00:00.000000'], dtype='datetime64[us]'),
             ambient_temperature_profile=array([25. , 24.5, 24. ]),
             top_oil_temperature_profile=array([37. , 36.5, 36. ]), load_profile=array([0.8, 0.9, 1. ]))
-            
+
             ```
         """
         return cls(
@@ -311,7 +311,7 @@ class ThreeWindingInputProfile(BaseInputProfile):
             load_profile_high_voltage_side=array([0.8, 0.9, 1. ]),
             load_profile_middle_voltage_side=array([0.7, 0.8, 0.9]),
             load_profile_low_voltage_side=array([0.6, 0.7, 0.8]))
-            
+
             ```
         """
         return cls(
