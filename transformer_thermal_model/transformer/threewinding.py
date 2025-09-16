@@ -52,6 +52,8 @@ class ThreeWindingTransformer(Transformer):
     hot_spot_fac=1.2, nom_power=1000.0) hv_winding=WindingSpecifications(nom_load=1000.0,
     winding_oil_gradient=20.0, time_const_winding=1000000.0, hot_spot_fac=1.2, nom_power=1000.0)
     load_loss_hv_lv=100.0 load_loss_hv_mv=100.0 load_loss_mv_lv=100.0 load_loss_total_user=None
+    
+    ```
     """
 
     _onan_defaults = ThreeWindingTransformerDefaultSpecifications(
