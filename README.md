@@ -65,6 +65,8 @@ children, which will be elements used for the temperature calculation inside `Mo
   class.
 - `DistributionTransformer`: A distribution transformer class, also child of
   the `Transformer` class.
+- `ThreeWindingTransformer`: A three winding transformer, also child of
+  the `Transformer` class.
 - `TransformerType` (`Enum`): For easily checking all available types. Does not
    have any use in our code, but might be useful for your use-case.
 
