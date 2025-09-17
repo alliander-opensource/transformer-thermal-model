@@ -311,7 +311,7 @@ hot_spot_temp_profile = results.hot_spot_temp_profile
 >>> hot_spot_temp_profile.head(3)
 2020-01-01 00:00:00    41.000000
 2020-01-01 00:15:00    44.381177
-2020-01-01 00:30:00    46.443459
+2020-01-01 00:30:00    46.740013
 ```
 
 You can use the `Model` to run a calculation with either a `PowerTransformer` or
