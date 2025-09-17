@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.20">
     
     
       
@@ -30,7 +30,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.e53b48f4.min.css">
       
       
 
@@ -406,6 +406,30 @@
       Thermal modelling
     </span>
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#three-winding-transformer-modelling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Three winding Transformer modelling
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Three winding Transformer modelling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-the-top-oil-temperature-as-an-input-to-the-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using the top oil temperature as an input to the model
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -878,6 +902,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../../examples/three-winding-calculation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Thermal modelling of a three winding transformer
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../examples/hot-spot_calibration/" class="md-nav__link">
         
   
@@ -1227,6 +1274,30 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#three-winding-transformer-modelling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Three winding Transformer modelling
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Three winding Transformer modelling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-the-top-oil-temperature-as-an-input-to-the-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using the top oil temperature as an input to the model
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1329,6 +1400,8 @@ children, which will be elements used for the temperature calculation inside <co
 <li><code>PowerTransformer</code>: A power transformer class, child of the <code>Transformer</code>
   class.</li>
 <li><code>DistributionTransformer</code>: A distribution transformer class, also child of
+  the <code>Transformer</code> class.</li>
+<li><code>ThreeWindingTransformer</code>: A three winding transformer, also child of
   the <code>Transformer</code> class.</li>
 <li><code>TransformerType</code> (<code>Enum</code>): For easily checking all available types. Does not
    have any use in our code, but might be useful for your use-case.</li>
@@ -1549,7 +1622,7 @@ built as follows:</p>
 &gt;&gt;&gt; hot_spot_temp_profile.head(3)
 2020-01-01 00:00:00    41.000000
 2020-01-01 00:15:00    44.381177
-2020-01-01 00:30:00    46.443459
+2020-01-01 00:30:00    46.740013
 </code></pre></div>
 <p>You can use the <code>Model</code> to run a calculation with either a <code>PowerTransformer</code> or
 a <code>DistributionTransformer</code>. The model will return <code>results</code> with the
@@ -1560,6 +1633,157 @@ as output, is that the model uses the <code>index</code> of the series that you 
 calculation, which also creates the benefit for you that you can
 relate the result to your provided input for eventual
 cross-validation or analysis.</p>
+<h3 id="three-winding-transformer-modelling">Three winding Transformer modelling</h3>
+<p>The model also supports thermal modeling of three-winding transformers. To use this feature, provide both a
+<code>ThreeWindingTransformer</code> and a <code>ThreeWindingInputProfile</code> as input to the <code>Model</code>. The
+<code>ThreeWindingInputProfile</code> requires a separate load profile for each winding (high, medium, and low voltage sides),
+all sharing the same length and datetime index.</p>
+<p>With <code>UserThreeWindingTransformerSpecifications</code>, you can specify the nominal load and winding oil gradient for each
+winding, as well as the load losses between windings. The resulting hot-spot temperature profile is returned as a
+DataFrame with columns for each winding, making it easy to analyze the results for each part of the transformer.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">transformer_thermal_model.cooler</span><span class="w"> </span><span class="kn">import</span> <span class="n">CoolerType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">transformer_thermal_model.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">Model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">transformer_thermal_model.schemas</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ThreeWindingInputProfile</span><span class="p">,</span>
+    <span class="n">UserThreeWindingTransformerSpecifications</span><span class="p">,</span>
+    <span class="n">WindingSpecifications</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">transformer_thermal_model.transformer</span><span class="w"> </span><span class="kn">import</span> <span class="n">ThreeWindingTransformer</span>
+
+<span class="c1"># Define the time range for your simulation</span>
+<span class="n">one_week</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">7</span>
+<span class="n">datetime_index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="s2">&quot;2020-01-01&quot;</span><span class="p">,</span> <span class="n">periods</span><span class="o">=</span><span class="n">one_week</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s2">&quot;15min&quot;</span><span class="p">)</span>
+
+<span class="c1"># Create ambient temperature profile (can be a constant or a realistic profile)</span>
+<span class="n">ambient_temp</span> <span class="o">=</span> <span class="mi">21</span>
+<span class="n">temperature_points</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([</span><span class="n">ambient_temp</span><span class="p">]</span> <span class="o">*</span> <span class="n">one_week</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">datetime_index</span><span class="p">)</span>
+
+<span class="c1"># Create load profiles for each winding (high, medium, low voltage sides)</span>
+<span class="n">load_profile_high_voltage_side</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([</span><span class="mi">2000</span><span class="p">]</span> <span class="o">*</span> <span class="n">one_week</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">datetime_index</span><span class="p">)</span>
+<span class="n">load_profile_middle_voltage_side</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([</span><span class="mi">1500</span><span class="p">]</span> <span class="o">*</span> <span class="n">one_week</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">datetime_index</span><span class="p">)</span>
+<span class="n">load_profile_low_voltage_side</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([</span><span class="mi">1000</span><span class="p">]</span> <span class="o">*</span> <span class="n">one_week</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">datetime_index</span><span class="p">)</span>
+
+<span class="c1"># Create the input profile for the three-winding transformer</span>
+<span class="n">profile_input</span> <span class="o">=</span> <span class="n">ThreeWindingInputProfile</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">datetime_index</span><span class="o">=</span><span class="n">datetime_index</span><span class="p">,</span>
+    <span class="n">ambient_temperature_profile</span><span class="o">=</span><span class="n">temperature_points</span><span class="p">,</span>
+    <span class="n">load_profile_high_voltage_side</span><span class="o">=</span><span class="n">load_profile_high_voltage_side</span><span class="p">,</span>
+    <span class="n">load_profile_middle_voltage_side</span><span class="o">=</span><span class="n">load_profile_middle_voltage_side</span><span class="p">,</span>
+    <span class="n">load_profile_low_voltage_side</span><span class="o">=</span><span class="n">load_profile_low_voltage_side</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Define the transformer specifications for each winding</span>
+<span class="n">user_specs</span> <span class="o">=</span> <span class="n">UserThreeWindingTransformerSpecifications</span><span class="p">(</span>
+    <span class="n">no_load_loss</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">amb_temp_surcharge</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">lv_winding</span><span class="o">=</span><span class="n">WindingSpecifications</span><span class="p">(</span>
+        <span class="n">nom_load</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">winding_oil_gradient</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">hot_spot_fac</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span> <span class="n">time_const_winding</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nom_power</span><span class="o">=</span><span class="mi">1000</span>
+    <span class="p">),</span>
+    <span class="n">mv_winding</span><span class="o">=</span><span class="n">WindingSpecifications</span><span class="p">(</span>
+        <span class="n">nom_load</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">winding_oil_gradient</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">hot_spot_fac</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span> <span class="n">time_const_winding</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nom_power</span><span class="o">=</span><span class="mi">1000</span>
+    <span class="p">),</span>
+    <span class="n">hv_winding</span><span class="o">=</span><span class="n">WindingSpecifications</span><span class="p">(</span>
+        <span class="n">nom_load</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">winding_oil_gradient</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">hot_spot_fac</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span> <span class="n">time_const_winding</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nom_power</span><span class="o">=</span><span class="mi">2000</span>
+    <span class="p">),</span>
+    <span class="n">load_loss_hv_lv</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">load_loss_hv_mv</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">load_loss_mv_lv</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Create the transformer object</span>
+<span class="n">transformer</span> <span class="o">=</span> <span class="n">ThreeWindingTransformer</span><span class="p">(</span><span class="n">user_specs</span><span class="o">=</span><span class="n">user_specs</span><span class="p">,</span> <span class="n">cooling_type</span><span class="o">=</span><span class="n">CoolerType</span><span class="o">.</span><span class="n">ONAN</span><span class="p">)</span>
+
+<span class="c1"># Run the thermal model</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span>
+    <span class="n">temperature_profile</span><span class="o">=</span><span class="n">profile_input</span><span class="p">,</span>
+    <span class="n">transformer</span><span class="o">=</span><span class="n">transformer</span>
+<span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+<span class="c1"># The results are returned as pandas Series/DataFrame, indexed by your datetime_index</span>
+<span class="n">top_oil_temp_profile</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">top_oil_temp_profile</span>
+<span class="n">hot_spot_temp_profile</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">hot_spot_temp_profile</span>
+
+<span class="n">top_oil_temp_profile</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">top_oil_temp_profile</span>
+<span class="n">hot_spot_temp_profile</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">hot_spot_temp_profile</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>&gt;&gt;&gt; top_oil_temp_profile.head()
+2020-01-01 00:00:00    31.000000
+2020-01-01 00:15:00    40.212693
+2020-01-01 00:30:00    48.198972
+2020-01-01 00:45:00    55.122101
+2020-01-01 01:00:00    61.123609
+
+```text
+&gt;&gt;&gt; hot_spot_temp_profile.head()
+                          low_voltage_side   middle_voltage_side   high_voltage_side
+2020-01-01 00:00:00           31.000000           31.000000           31.000000
+2020-01-01 00:15:00           84.991214          116.068422           84.991214
+2020-01-01 00:30:00           90.234413          119.407866           90.234413
+2020-01-01 00:45:00           94.756639          122.263816           94.756639
+2020-01-01 01:00:00           98.676844          124.739555           98.676844
+</code></pre></div>
+<h4 id="using-the-top-oil-temperature-as-an-input-to-the-model">Using the top oil temperature as an input to the model</h4>
+<p>Optionally, you can provide the top oil temperature as an input parameter to the <code>InputProfile</code>
+to use it in place of the ambient temperature as an input to the model:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">transformer_thermal_model.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">Model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">transformer_thermal_model.cooler</span><span class="w"> </span><span class="kn">import</span> <span class="n">CoolerType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">transformer_thermal_model.schemas</span><span class="w"> </span><span class="kn">import</span> <span class="n">UserTransformerSpecifications</span><span class="p">,</span> <span class="n">InputProfile</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">transformer_thermal_model.transformer</span><span class="w"> </span><span class="kn">import</span> <span class="n">PowerTransformer</span>
+
+<span class="n">one_week</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="mi">24</span><span class="o">*</span><span class="mi">7</span>
+<span class="n">datetime_index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="s2">&quot;2020-01-01&quot;</span><span class="p">,</span> <span class="n">periods</span><span class="o">=</span><span class="n">one_week</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s2">&quot;15min&quot;</span><span class="p">)</span>
+
+<span class="n">nominal_load</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">load_points</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([</span><span class="n">nominal_load</span><span class="p">]</span> <span class="o">*</span> <span class="n">one_week</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">datetime_index</span><span class="p">)</span>
+<span class="n">ambient_temp</span> <span class="o">=</span> <span class="mi">21</span>
+<span class="n">temperature_points</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([</span><span class="n">ambient_temp</span><span class="p">]</span> <span class="o">*</span> <span class="n">one_week</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">datetime_index</span><span class="p">)</span>
+<span class="n">top_oil_temp</span> <span class="o">=</span> <span class="mi">42</span>
+<span class="n">top_oil_points</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([</span><span class="n">top_oil_temp</span><span class="p">]</span> <span class="o">*</span> <span class="n">one_week</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">datetime_index</span><span class="p">)</span>
+
+<span class="n">profile_input</span> <span class="o">=</span> <span class="n">InputProfile</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+   <span class="n">datetime_index</span> <span class="o">=</span> <span class="n">datetime_index</span><span class="p">,</span>
+   <span class="n">load_profile</span> <span class="o">=</span> <span class="n">load_points</span><span class="p">,</span>
+   <span class="n">ambient_temperature_profile</span> <span class="o">=</span> <span class="n">temperature_points</span><span class="p">,</span>
+   <span class="c1"># Here is where we add the top oil temperature as an input. It has the same shape as the ambient temperature.</span>
+   <span class="n">top_oil_temperature_profile</span> <span class="o">=</span> <span class="n">top_oil_points</span>
+<span class="p">)</span>
+
+<span class="n">tr_specs</span> <span class="o">=</span> <span class="n">UserTransformerSpecifications</span><span class="p">(</span>
+   <span class="n">load_loss</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>  <span class="c1"># Transformer load loss [W]</span>
+   <span class="n">nom_load_sec_side</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span>  <span class="c1"># Transformer nominal current secondary side [A]</span>
+   <span class="n">no_load_loss</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>  <span class="c1"># Transformer no-load loss [W]</span>
+   <span class="n">amb_temp_surcharge</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>  <span class="c1"># Ambient temperature surcharge [K]</span>
+<span class="p">)</span>
+<span class="n">transformer</span> <span class="o">=</span> <span class="n">PowerTransformer</span><span class="p">(</span><span class="n">user_specs</span><span class="o">=</span><span class="n">tr_specs</span><span class="p">,</span> <span class="n">cooling_type</span><span class="o">=</span><span class="n">CoolerType</span><span class="o">.</span><span class="n">ONAF</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span>
+   <span class="n">temperature_profile</span> <span class="o">=</span> <span class="n">profile_input</span><span class="p">,</span>
+   <span class="n">transformer</span> <span class="o">=</span> <span class="n">transformer</span>
+<span class="p">)</span>
+
+<span class="c1"># As we have provided the top oil temperature as an input, this is now being used in place of the ambient temperature.</span>
+<span class="c1"># If you still want to use the top oil temperature you can do so using model.run(force_use_ambient_temperature=True)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+<span class="n">top_oil_temp_profile</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">top_oil_temp_profile</span>
+<span class="n">hot_spot_temp_profile</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">hot_spot_temp_profile</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>&gt;&gt;&gt; top_oil_temp_profile.head(3)
+2020-01-01 00:00:00    42.0
+2020-01-01 00:15:00    42.0
+2020-01-01 00:30:00    42.0
+
+&gt;&gt;&gt; hot_spot_temp_profile.head(3)
+2020-01-01 00:00:00    42.000000
+2020-01-01 00:15:00    42.741258
+2020-01-01 00:30:00    42.938711
+</code></pre></div>
+<p>Note, how the top oil temperature we receive as the output <code>results.top_oil_temp_profile</code> exactly matches
+the top oil temperature we provided as the input.</p>
 <h2 id="license">License</h2>
 <p>This project is licensed under the Mozilla Public License, version 2.0 - see
 <a href="https://github.com/alliander-opensource/transformer-thermal-model/blob/main/LICENSE">LICENSE</a> for details.</p>
@@ -1627,10 +1851,10 @@ connect and get into contact with the Transformer Thermal Model project.</p>
     
     
       
-      <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
       
         <script src="../../javascripts/katex.js"></script>
       

@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.20">
     
     
       
@@ -30,7 +30,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.e53b48f4.min.css">
       
       
 
@@ -761,6 +761,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../../examples/three-winding-calculation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Thermal modelling of a three winding transformer
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../examples/hot-spot_calibration/" class="md-nav__link">
         
   
@@ -1078,7 +1101,7 @@ SPDX-License-Identifier: MPL-2.0
 <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">transformer_thermal_model.transformer</span><span class="w"> </span><span class="kn">import</span> <span class="n">PowerTransformer</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">transformer_thermal_model.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">Model</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="c1"># First, we necreate the input profile</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="c1"># First, we create the input profile</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">datetime_index</span> <span class="o">=</span> <span class="p">[</span>
 <span class="o">...</span>     <span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
 <span class="o">...</span>     <span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
@@ -1148,18 +1171,7 @@ SPDX-License-Identifier: MPL-2.0
               <div class="doc-md-description">
                 <p>The initial top-oil temperature. Defaults to None. If this is provided,
 will start the calculation with this temperature. If not provided, will start the calculation
-with the first value of the ambient temperature profile.</p>
-              </div>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td><code><span title="transformer_thermal_model.model.thermal_model.Model.init_hot_spot_temp">init_hot_spot_temp</span></code></td>
-            <td>
-                  <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a> | None</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>The initial hot-spot temperature. Defaults to None. If this is provided,
+with the first value of the ambient temperature profile.
 will start the calculation with this temperature. If not provided, will start the calculation
 with the first value of the ambient temperature profile.</p>
               </div>
@@ -1208,7 +1220,7 @@ with the first value of the ambient temperature profile.</p>
                 <code>temperature_profile</code>
             </td>
             <td>
-                  <code><a class="autorefs autorefs-internal" title="InputProfile (transformer_thermal_model.schemas.InputProfile)" href="../model_input_output/#transformer_thermal_model.schemas.thermal_model.InputProfile">InputProfile</a></code>
+                  <code><span title="InputProfile">InputProfile</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1246,23 +1258,7 @@ with the first value of the ambient temperature profile.</p>
               <div class="doc-md-description">
                 <p>The initial top-oil temperature. Defaults to None. If this is provided,
 will start the calculation with this temperature. If not provided, will start the calculation
-with the first value of the ambient temperature profile.</p>
-              </div>
-            </td>
-            <td>
-                  <code>None</code>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>init_hot_spot_temp</code>
-            </td>
-            <td>
-                  <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a> | None</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>The initial hot-spot temperature. Defaults to None. If this is provided,
+with the first value of the ambient temperature profile.
 will start the calculation with this temperature. If not provided, will start the calculation
 with the first value of the ambient temperature profile.</p>
               </div>
@@ -1280,9 +1276,11 @@ with the first value of the ambient temperature profile.</p>
 
 
 
+
                   <details class="quote">
                     <summary>Source code in <code>transformer_thermal_model/model/thermal_model.py</code></summary>
-                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 76</span>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 75</span>
+<span class="normal"> 76</span>
 <span class="normal"> 77</span>
 <span class="normal"> 78</span>
 <span class="normal"> 79</span>
@@ -1306,21 +1304,11 @@ with the first value of the ambient temperature profile.</p>
 <span class="normal"> 97</span>
 <span class="normal"> 98</span>
 <span class="normal"> 99</span>
-<span class="normal">100</span>
-<span class="normal">101</span>
-<span class="normal">102</span>
-<span class="normal">103</span>
-<span class="normal">104</span>
-<span class="normal">105</span>
-<span class="normal">106</span>
-<span class="normal">107</span>
-<span class="normal">108</span>
-<span class="normal">109</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">100</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
-    <span class="n">temperature_profile</span><span class="p">:</span> <span class="n">InputProfile</span><span class="p">,</span>
+    <span class="n">temperature_profile</span><span class="p">:</span> <span class="n">BaseInputProfile</span><span class="p">,</span>
     <span class="n">transformer</span><span class="p">:</span> <span class="n">Transformer</span><span class="p">,</span>
     <span class="n">init_top_oil_temp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">init_hot_spot_temp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the thermal model.</span>
 
@@ -1330,7 +1318,6 @@ with the first value of the ambient temperature profile.</p>
 <span class="sd">        init_top_oil_temp (float | None): The initial top-oil temperature. Defaults to None. If this is provided,</span>
 <span class="sd">            will start the calculation with this temperature. If not provided, will start the calculation</span>
 <span class="sd">            with the first value of the ambient temperature profile.</span>
-<span class="sd">        init_hot_spot_temp (float | None): The initial hot-spot temperature. Defaults to None. If this is provided,</span>
 <span class="sd">            will start the calculation with this temperature. If not provided, will start the calculation</span>
 <span class="sd">            with the first value of the ambient temperature profile.</span>
 
@@ -1339,22 +1326,17 @@ with the first value of the ambient temperature profile.</p>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;First timestamp: </span><span class="si">{</span><span class="n">temperature_profile</span><span class="o">.</span><span class="n">datetime_index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Last timestamp: </span><span class="si">{</span><span class="n">temperature_profile</span><span class="o">.</span><span class="n">datetime_index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Amount of data points: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">temperature_profile</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max load: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">temperature_profile</span><span class="o">.</span><span class="n">load_profile</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">transformer</span><span class="o">.</span><span class="n">specs</span><span class="o">.</span><span class="n">hot_spot_fac</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-            <span class="s2">&quot;The given Transformer has no hot-spot factor specified. Please specify the hot-spot &quot;</span>
-            <span class="s2">&quot;factor or calibrate it using the calibrate_hotspot_factor function.&quot;</span>
-        <span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max load: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">temperature_profile</span><span class="o">.</span><span class="n">load_profile_array</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span> <span class="o">=</span> <span class="n">transformer</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">temperature_profile</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">init_top_oil_temp</span> <span class="o">=</span> <span class="n">init_top_oil_temp</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">init_hot_spot_temp</span> <span class="o">=</span> <span class="n">init_hot_spot_temp</span>
 </code></pre></div></td></tr></table></div>
                   </details>
 
 
 
   <div class="doc doc-children">
+
 
 
 
@@ -1372,7 +1354,9 @@ with the first value of the ambient temperature profile.</p>
 
 
 </h2>
-<div class="doc-signature highlight"><pre><span></span><code><span class="nf">run</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="OutputProfile (transformer_thermal_model.schemas.OutputProfile)" href="../model_input_output/#transformer_thermal_model.schemas.thermal_model.OutputProfile">OutputProfile</a></span>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">run</span><span class="p">(</span>
+    <span class="n">force_use_ambient_temperature</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="OutputProfile (transformer_thermal_model.schemas.OutputProfile)" href="../model_input_output/#transformer_thermal_model.schemas.thermal_model.OutputProfile">OutputProfile</a></span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -1380,7 +1364,41 @@ with the first value of the ambient temperature profile.</p>
         <p>Calculate the top-oil and hot-spot temperatures for the provided Transformer object.</p>
 <p>This method prepares the calculation inputs, calculates intermediate factors, and computes
 the top-oil and hot-spot temperature profiles for the transformer based on the provided
-load and internal parameters.</p>
+load and internal parameters. If the top oil temperature is provided in the <code>temperature_profile</code> it gets
+priority over the ambient temperature. The ambient temperature is then ignored. You can change this behaviour
+using the <code>force_use_ambient_temperature</code> parameter.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>force_use_ambient_temperature</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Use the ambient temperature to perform the calculation,
+even if the top oil temperature is given (optional, False by default)</p>
+              </div>
+            </td>
+            <td>
+                  <code>False</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
     <p><span class="doc-section-title">Returns:</span></p>
@@ -1408,69 +1426,123 @@ load and internal parameters.</p>
 
             <details class="quote">
               <summary>Source code in <code>transformer_thermal_model/model/thermal_model.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">212</span>
-<span class="normal">213</span>
-<span class="normal">214</span>
-<span class="normal">215</span>
-<span class="normal">216</span>
-<span class="normal">217</span>
-<span class="normal">218</span>
-<span class="normal">219</span>
-<span class="normal">220</span>
-<span class="normal">221</span>
-<span class="normal">222</span>
-<span class="normal">223</span>
-<span class="normal">224</span>
-<span class="normal">225</span>
-<span class="normal">226</span>
-<span class="normal">227</span>
-<span class="normal">228</span>
-<span class="normal">229</span>
-<span class="normal">230</span>
-<span class="normal">231</span>
-<span class="normal">232</span>
-<span class="normal">233</span>
-<span class="normal">234</span>
-<span class="normal">235</span>
-<span class="normal">236</span>
-<span class="normal">237</span>
-<span class="normal">238</span>
-<span class="normal">239</span>
-<span class="normal">240</span>
-<span class="normal">241</span>
-<span class="normal">242</span>
-<span class="normal">243</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OutputProfile</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force_use_ambient_temperature</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OutputProfile</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate the top-oil and hot-spot temperatures for the provided Transformer object.</span>
 
 <span class="sd">    This method prepares the calculation inputs, calculates intermediate factors, and computes</span>
 <span class="sd">    the top-oil and hot-spot temperature profiles for the transformer based on the provided</span>
-<span class="sd">    load and internal parameters.</span>
+<span class="sd">    load and internal parameters. If the top oil temperature is provided in the `temperature_profile` it gets</span>
+<span class="sd">    priority over the ambient temperature. The ambient temperature is then ignored. You can change this behaviour</span>
+<span class="sd">    using the `force_use_ambient_temperature` parameter.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        force_use_ambient_temperature:</span>
+<span class="sd">            Use the ambient temperature to perform the calculation,</span>
+<span class="sd">            even if the top oil temperature is given (optional, False by default)</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        OutputProfile: Object containing the top-oil and hot-spot temperature profiles.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Running the thermal model.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># decide if we use the top oil or ambient temperature as input and perform basic validation</span>
+    <span class="n">use_top_oil</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">force_use_ambient_temperature</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">top_oil_temperature_profile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
     <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_time_step</span><span class="p">()</span>
-    <span class="n">load</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">load_profile</span>
+    <span class="n">load</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">load_profile_array</span>
     <span class="n">t_internal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_internal_temp</span><span class="p">()</span>
 
     <span class="n">f1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_f1</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
-    <span class="n">f2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_f2</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+    <span class="n">f2_windings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_f2_winding</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+    <span class="n">f2_oil</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_f2_oil</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
     <span class="n">top_k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span><span class="o">.</span><span class="n">_end_temperature_top_oil</span><span class="p">(</span><span class="n">load</span><span class="p">)</span>
     <span class="n">static_hot_spot_incr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_static_hot_spot_increase</span><span class="p">(</span><span class="n">load</span><span class="p">)</span>
 
-    <span class="n">top_oil_temp_profile</span><span class="p">,</span> <span class="n">hot_spot_temp_profile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_temperature_profiles</span><span class="p">(</span>
-        <span class="n">load</span><span class="p">,</span> <span class="n">t_internal</span><span class="p">,</span> <span class="n">f1</span><span class="p">,</span> <span class="n">f2</span><span class="p">,</span> <span class="n">top_k</span><span class="p">,</span> <span class="n">static_hot_spot_incr</span>
+    <span class="k">if</span> <span class="n">use_top_oil</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">top_oil_temperature_profile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">top_oil_temp_profile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">top_oil_temperature_profile</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">top_oil_temp_profile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_top_oil_temp_profile</span><span class="p">(</span><span class="n">t_internal</span><span class="p">,</span> <span class="n">f1</span><span class="p">,</span> <span class="n">top_k</span><span class="p">)</span>
+    <span class="n">hot_spot_temp_profile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_hot_spot_temp_profile</span><span class="p">(</span>
+        <span class="n">load</span><span class="p">,</span> <span class="n">top_oil_temp_profile</span><span class="p">,</span> <span class="n">static_hot_spot_incr</span><span class="p">,</span> <span class="n">f2_windings</span><span class="p">,</span> <span class="n">f2_oil</span>
     <span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;The calculation with the Thermal model is completed.&quot;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max top-oil temperature: </span><span class="si">{</span><span class="nb">max</span><span class="p">(</span><span class="n">top_oil_temp_profile</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max hot-spot temperature: </span><span class="si">{</span><span class="nb">max</span><span class="p">(</span><span class="n">hot_spot_temp_profile</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max top-oil temperature: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">top_oil_temp_profile</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max hot-spot temperature: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">hot_spot_temp_profile</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">OutputProfile</span><span class="p">(</span>
-        <span class="n">top_oil_temp_profile</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">top_oil_temp_profile</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">datetime_index</span><span class="p">),</span>
-        <span class="n">hot_spot_temp_profile</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">hot_spot_temp_profile</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">datetime_index</span><span class="p">),</span>
-    <span class="p">)</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transformer</span><span class="p">)</span> <span class="ow">is</span> <span class="n">ThreeWindingTransformer</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">OutputProfile</span><span class="p">(</span>
+            <span class="n">top_oil_temp_profile</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">top_oil_temp_profile</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">datetime_index</span><span class="p">),</span>
+            <span class="n">hot_spot_temp_profile</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                <span class="n">hot_spot_temp_profile</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span>
+                <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;low_voltage_side&quot;</span><span class="p">,</span> <span class="s2">&quot;middle_voltage_side&quot;</span><span class="p">,</span> <span class="s2">&quot;high_voltage_side&quot;</span><span class="p">],</span>
+                <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">datetime_index</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># For a two winding transformer, hot_spot_temp_profile is a Series</span>
+        <span class="k">return</span> <span class="n">OutputProfile</span><span class="p">(</span>
+            <span class="n">top_oil_temp_profile</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">top_oil_temp_profile</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">datetime_index</span><span class="p">),</span>
+            <span class="n">hot_spot_temp_profile</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">hot_spot_temp_profile</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">datetime_index</span><span class="p">),</span>
+        <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1532,10 +1604,10 @@ load and internal parameters.</p>
     
     
       
-      <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
       
         <script src="../../javascripts/katex.js"></script>
       

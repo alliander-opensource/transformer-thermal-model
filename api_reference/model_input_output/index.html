@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.20">
     
     
       
@@ -30,7 +30,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.e53b48f4.min.css">
       
       
 
@@ -495,6 +495,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#transformer_thermal_model.schemas.thermal_model.InputProfile.load_profile_array" class="md-nav__link">
+    <span class="md-ellipsis">
+      load_profile_array
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#transformer_thermal_model.schemas.thermal_model.InputProfile.create" class="md-nav__link">
     <span class="md-ellipsis">
       create
@@ -507,6 +516,39 @@
   <a href="#transformer_thermal_model.schemas.thermal_model.InputProfile.from_dataframe" class="md-nav__link">
     <span class="md-ellipsis">
       from_dataframe
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#transformer_thermal_model.schemas.thermal_model.ThreeWindingInputProfile" class="md-nav__link">
+    <span class="md-ellipsis">
+      ThreeWindingInputProfile
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ThreeWindingInputProfile">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#transformer_thermal_model.schemas.thermal_model.ThreeWindingInputProfile.load_profile_array" class="md-nav__link">
+    <span class="md-ellipsis">
+      load_profile_array
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transformer_thermal_model.schemas.thermal_model.ThreeWindingInputProfile.create" class="md-nav__link">
+    <span class="md-ellipsis">
+      create
     </span>
   </a>
   
@@ -809,6 +851,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../../examples/three-winding-calculation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Thermal modelling of a three winding transformer
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../examples/hot-spot_calibration/" class="md-nav__link">
         
   
@@ -1084,6 +1149,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#transformer_thermal_model.schemas.thermal_model.InputProfile.load_profile_array" class="md-nav__link">
+    <span class="md-ellipsis">
+      load_profile_array
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#transformer_thermal_model.schemas.thermal_model.InputProfile.create" class="md-nav__link">
     <span class="md-ellipsis">
       create
@@ -1096,6 +1170,39 @@
   <a href="#transformer_thermal_model.schemas.thermal_model.InputProfile.from_dataframe" class="md-nav__link">
     <span class="md-ellipsis">
       from_dataframe
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#transformer_thermal_model.schemas.thermal_model.ThreeWindingInputProfile" class="md-nav__link">
+    <span class="md-ellipsis">
+      ThreeWindingInputProfile
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ThreeWindingInputProfile">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#transformer_thermal_model.schemas.thermal_model.ThreeWindingInputProfile.load_profile_array" class="md-nav__link">
+    <span class="md-ellipsis">
+      load_profile_array
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transformer_thermal_model.schemas.thermal_model.ThreeWindingInputProfile.create" class="md-nav__link">
+    <span class="md-ellipsis">
+      create
     </span>
   </a>
   
@@ -1198,6 +1305,8 @@ SPDX-License-Identifier: MPL-2.0
 
 
 
+
+
 <p><span class="doc-section-title">Classes:</span></p>
     <table>
       <thead>
@@ -1211,7 +1320,15 @@ SPDX-License-Identifier: MPL-2.0
             <td><code><a class="autorefs autorefs-internal" title="InputProfile (transformer_thermal_model.schemas.thermal_model.InputProfile)" href="#transformer_thermal_model.schemas.thermal_model.InputProfile">InputProfile</a></code></td>
             <td>
               <div class="doc-md-description">
-                <p>Class containing the temperature and load profiles for the thermal model <code>Model()</code>.</p>
+                <p>Class containing the temperature and load profiles of two winding transformers for the thermal model <code>Model()</code>.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><a class="autorefs autorefs-internal" title="ThreeWindingInputProfile (transformer_thermal_model.schemas.thermal_model.ThreeWindingInputProfile)" href="#transformer_thermal_model.schemas.thermal_model.ThreeWindingInputProfile">ThreeWindingInputProfile</a></code></td>
+            <td>
+              <div class="doc-md-description">
+                <p>Class for three-winding transformer input profiles.</p>
               </div>
             </td>
           </tr>
@@ -1241,6 +1358,7 @@ SPDX-License-Identifier: MPL-2.0
 
 
 
+
 <div class="doc doc-object doc-class">
 
 
@@ -1254,10 +1372,10 @@ SPDX-License-Identifier: MPL-2.0
 
     <div class="doc doc-contents ">
             <p class="doc doc-class-bases">
-              Bases: <code><span title="pydantic.BaseModel">BaseModel</span></code></p>
+              Bases: <code><span title="transformer_thermal_model.schemas.thermal_model.input_profile.BaseInputProfile">BaseInputProfile</span></code></p>
 
 
-        <p>Class containing the temperature and load profiles for the thermal model <code>Model()</code>.</p>
+        <p>Class containing the temperature and load profiles of two winding transformers for the thermal model <code>Model()</code>.</p>
 <p>This class is also capable of converting the results to a single dataframe with the timestamp as the index
 for convenience.</p>
 
@@ -1279,7 +1397,7 @@ for convenience.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The datetime index for the profiles.</p>
+                <p>A 1d array with the datetime index for the profiles.</p>
               </div>
             </td>
           </tr>
@@ -1290,7 +1408,7 @@ for convenience.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The load profile for the transformer.</p>
+                <p>A 1d array with the load profile for the transformer.</p>
               </div>
             </td>
           </tr>
@@ -1301,12 +1419,14 @@ for convenience.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The ambient temperature profile for the transformer.</p>
+                <p>A 1d array with the ambient temperature profile for the transformer.</p>
               </div>
             </td>
           </tr>
       </tbody>
     </table>
+
+
 
 
 
@@ -1335,7 +1455,7 @@ for convenience.</p>
    (transformer_thermal_model.schemas.thermal_model.InputProfile.create)" href="#transformer_thermal_model.schemas.thermal_model.InputProfile.create">create</a></code></td>
               <td>
                 <div class="doc-md-description">
-                  <p>Create an InputProfile from datetime index, load profile, and ambient temperature profile.</p>
+                  <p>Create an InputProfile.</p>
                 </div>
               </td>
             </tr>
@@ -1368,6 +1488,31 @@ for convenience.</p>
 
 
 
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="transformer_thermal_model.schemas.thermal_model.InputProfile.load_profile_array" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">load_profile_array</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">load_profile_array</span><span class="p">:</span> <span class="n"><span title="numpy.typing.NDArray">NDArray</span></span><span class="p">[</span><span class="n"><span title="numpy.float64">float64</span></span><span class="p">]</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return the single load profile for the transformer.</p>
+
+    </div>
+
+</div>
+
+
 
 
 <div class="doc doc-object doc-function">
@@ -1386,12 +1531,14 @@ for convenience.</p>
     <span class="n">datetime_index</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="collections.abc.Collection" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection">Collection</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" title="datetime.datetime" href="https://docs.python.org/3/library/datetime.html#datetime.datetime">datetime</a></span><span class="p">],</span>
     <span class="n">load_profile</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="collections.abc.Collection" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection">Collection</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span><span class="p">],</span>
     <span class="n">ambient_temperature_profile</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="collections.abc.Collection" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection">Collection</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span><span class="p">],</span>
+    <span class="n">top_oil_temperature_profile</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="collections.abc.Collection" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection">Collection</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span><span class="p">]</span>
+    <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Self" href="https://docs.python.org/3/library/typing.html#typing.Self">Self</a></span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
 
-        <p>Create an InputProfile from datetime index, load profile, and ambient temperature profile.</p>
+        <p>Create an InputProfile.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -1453,6 +1600,22 @@ for convenience.</p>
                 <em>required</em>
             </td>
           </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>top_oil_temperature_profile</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-external" title="collections.abc.Collection" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection">Collection</a>[<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a>] | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The top oil temperature profile for the transformer (optional).</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
       </tbody>
     </table>
 
@@ -1500,14 +1663,11 @@ for convenience.</p>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">input_profile</span>
 <span class="n">InputProfile</span><span class="p">(</span><span class="n">datetime_index</span><span class="o">=</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;2023-01-01T00:00:00.000000&#39;</span><span class="p">,</span>
 <span class="s1">&#39;2023-01-01T01:00:00.000000&#39;</span><span class="p">,</span> <span class="s1">&#39;2023-01-01T02:00:00.000000&#39;</span><span class="p">],</span>
-<span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;datetime64[us]&#39;</span><span class="p">),</span> <span class="n">load_profile</span><span class="o">=</span><span class="n">array</span><span class="p">([</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.</span> <span class="p">]),</span>
-<span class="n">ambient_temperature_profile</span><span class="o">=</span><span class="n">array</span><span class="p">([</span><span class="mf">25.</span> <span class="p">,</span> <span class="mf">24.5</span><span class="p">,</span> <span class="mf">24.</span> <span class="p">]))</span>
+<span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;datetime64[us]&#39;</span><span class="p">),</span> <span class="n">ambient_temperature_profile</span><span class="o">=</span><span class="n">array</span><span class="p">([</span><span class="mf">25.</span> <span class="p">,</span> <span class="mf">24.5</span><span class="p">,</span> <span class="mf">24.</span> <span class="p">]),</span>
+<span class="n">top_oil_temperature_profile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">load_profile</span><span class="o">=</span><span class="n">array</span><span class="p">([</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.</span> <span class="p">]))</span>
 </code></pre></div>
-</details>
-
-<details class="example" open>
-  <summary>Directly creating an InputProfile object using numpy arrays.</summary>
-  <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</details>        <p>Example: Directly creating an InputProfile object using numpy arrays.
+    <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">transformer_thermal_model.schemas</span><span class="w"> </span><span class="kn">import</span> <span class="n">InputProfile</span>
 
@@ -1521,67 +1681,43 @@ for convenience.</p>
 <span class="o">...</span>         <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">,</span>
 <span class="o">...</span>     <span class="p">),</span>
 <span class="o">...</span>     <span class="n">load_profile</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">),</span>
-<span class="o">...</span>     <span class="n">ambient_temperature_profile</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">25.0</span><span class="p">,</span> <span class="mf">24.5</span><span class="p">,</span> <span class="mf">24.0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">),</span>
+<span class="o">...</span>     <span class="n">ambient_temperature_profile</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">25.0</span><span class="p">,</span> <span class="mf">24.5</span><span class="p">,</span> <span class="mf">24.0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
 <span class="o">...</span> <span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">input_profile</span>
 <span class="n">InputProfile</span><span class="p">(</span><span class="n">datetime_index</span><span class="o">=</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;2023-01-01T00:00:00.000000&#39;</span><span class="p">,</span>
 <span class="s1">&#39;2023-01-01T01:00:00.000000&#39;</span><span class="p">,</span> <span class="s1">&#39;2023-01-01T02:00:00.000000&#39;</span><span class="p">],</span>
-<span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;datetime64[us]&#39;</span><span class="p">),</span> <span class="n">load_profile</span><span class="o">=</span><span class="n">array</span><span class="p">([</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.</span> <span class="p">]),</span>
-<span class="n">ambient_temperature_profile</span><span class="o">=</span><span class="n">array</span><span class="p">([</span><span class="mf">25.</span> <span class="p">,</span> <span class="mf">24.5</span><span class="p">,</span> <span class="mf">24.</span> <span class="p">]))</span>
+<span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;datetime64[us]&#39;</span><span class="p">),</span> <span class="n">ambient_temperature_profile</span><span class="o">=</span><span class="n">array</span><span class="p">([</span><span class="mf">25.</span> <span class="p">,</span> <span class="mf">24.5</span><span class="p">,</span> <span class="mf">24.</span> <span class="p">]),</span>
+<span class="n">top_oil_temperature_profile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">load_profile</span><span class="o">=</span><span class="n">array</span><span class="p">([</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.</span> <span class="p">]))</span>
 </code></pre></div>
-</details>
+Example: Creating an InputProfile including the top oil temperature.
+    <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">transformer_thermal_model.schemas</span><span class="w"> </span><span class="kn">import</span> <span class="n">InputProfile</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">datetime_index</span> <span class="o">=</span> <span class="p">[</span>
+<span class="o">...</span>     <span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+<span class="o">...</span>     <span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+<span class="o">...</span>     <span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+<span class="o">...</span> <span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">load_profile</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">ambient_temperature_profile</span> <span class="o">=</span> <span class="p">[</span><span class="mf">25.0</span><span class="p">,</span> <span class="mf">24.5</span><span class="p">,</span> <span class="mf">24.0</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">top_oil_temperature</span> <span class="o">=</span> <span class="p">[</span><span class="mf">37.0</span><span class="p">,</span> <span class="mf">36.5</span><span class="p">,</span> <span class="mf">36.0</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">input_profile</span> <span class="o">=</span> <span class="n">InputProfile</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+<span class="o">...</span>     <span class="n">datetime_index</span><span class="o">=</span><span class="n">datetime_index</span><span class="p">,</span>
+<span class="o">...</span>     <span class="n">load_profile</span><span class="o">=</span><span class="n">load_profile</span><span class="p">,</span>
+<span class="o">...</span>     <span class="n">ambient_temperature_profile</span><span class="o">=</span><span class="n">ambient_temperature_profile</span><span class="p">,</span>
+<span class="o">...</span>     <span class="n">top_oil_temperature_profile</span><span class="o">=</span><span class="n">top_oil_temperature</span><span class="p">,</span>
+<span class="o">...</span> <span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">input_profile</span>
+<span class="n">InputProfile</span><span class="p">(</span><span class="n">datetime_index</span><span class="o">=</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;2023-01-01T00:00:00.000000&#39;</span><span class="p">,</span> <span class="s1">&#39;2023-01-01T01:00:00.000000&#39;</span><span class="p">,</span>
+<span class="s1">&#39;2023-01-01T02:00:00.000000&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;datetime64[us]&#39;</span><span class="p">),</span>
+<span class="n">ambient_temperature_profile</span><span class="o">=</span><span class="n">array</span><span class="p">([</span><span class="mf">25.</span> <span class="p">,</span> <span class="mf">24.5</span><span class="p">,</span> <span class="mf">24.</span> <span class="p">]),</span>
+<span class="n">top_oil_temperature_profile</span><span class="o">=</span><span class="n">array</span><span class="p">([</span><span class="mf">37.</span> <span class="p">,</span> <span class="mf">36.5</span><span class="p">,</span> <span class="mf">36.</span> <span class="p">]),</span> <span class="n">load_profile</span><span class="o">=</span><span class="n">array</span><span class="p">([</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.</span> <span class="p">]))</span>
+</code></pre></div></p>
+
 
             <details class="quote">
               <summary>Source code in <code>transformer_thermal_model/schemas/thermal_model/input_profile.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 34</span>
-<span class="normal"> 35</span>
-<span class="normal"> 36</span>
-<span class="normal"> 37</span>
-<span class="normal"> 38</span>
-<span class="normal"> 39</span>
-<span class="normal"> 40</span>
-<span class="normal"> 41</span>
-<span class="normal"> 42</span>
-<span class="normal"> 43</span>
-<span class="normal"> 44</span>
-<span class="normal"> 45</span>
-<span class="normal"> 46</span>
-<span class="normal"> 47</span>
-<span class="normal"> 48</span>
-<span class="normal"> 49</span>
-<span class="normal"> 50</span>
-<span class="normal"> 51</span>
-<span class="normal"> 52</span>
-<span class="normal"> 53</span>
-<span class="normal"> 54</span>
-<span class="normal"> 55</span>
-<span class="normal"> 56</span>
-<span class="normal"> 57</span>
-<span class="normal"> 58</span>
-<span class="normal"> 59</span>
-<span class="normal"> 60</span>
-<span class="normal"> 61</span>
-<span class="normal"> 62</span>
-<span class="normal"> 63</span>
-<span class="normal"> 64</span>
-<span class="normal"> 65</span>
-<span class="normal"> 66</span>
-<span class="normal"> 67</span>
-<span class="normal"> 68</span>
-<span class="normal"> 69</span>
-<span class="normal"> 70</span>
-<span class="normal"> 71</span>
-<span class="normal"> 72</span>
-<span class="normal"> 73</span>
-<span class="normal"> 74</span>
-<span class="normal"> 75</span>
-<span class="normal"> 76</span>
-<span class="normal"> 77</span>
-<span class="normal"> 78</span>
-<span class="normal"> 79</span>
-<span class="normal"> 80</span>
-<span class="normal"> 81</span>
-<span class="normal"> 82</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 82</span>
 <span class="normal"> 83</span>
 <span class="normal"> 84</span>
 <span class="normal"> 85</span>
@@ -1605,19 +1741,99 @@ for convenience.</p>
 <span class="normal">103</span>
 <span class="normal">104</span>
 <span class="normal">105</span>
-<span class="normal">106</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">create</span><span class="p">(</span>
     <span class="bp">cls</span><span class="p">,</span>
     <span class="n">datetime_index</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="n">datetime</span><span class="p">],</span>
     <span class="n">load_profile</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
     <span class="n">ambient_temperature_profile</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+    <span class="n">top_oil_temperature_profile</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create an InputProfile from datetime index, load profile, and ambient temperature profile.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create an InputProfile.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        datetime_index: The datetime index for the profiles.</span>
 <span class="sd">        load_profile: The load profile for the transformer.</span>
 <span class="sd">        ambient_temperature_profile: The ambient temperature profile for the transformer.</span>
+<span class="sd">        top_oil_temperature_profile: The top oil temperature profile for the transformer (optional).</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        An InputProfile object.</span>
@@ -1642,11 +1858,10 @@ for convenience.</p>
 <span class="sd">        &gt;&gt;&gt; input_profile</span>
 <span class="sd">        InputProfile(datetime_index=array([&#39;2023-01-01T00:00:00.000000&#39;,</span>
 <span class="sd">        &#39;2023-01-01T01:00:00.000000&#39;, &#39;2023-01-01T02:00:00.000000&#39;],</span>
-<span class="sd">        dtype=&#39;datetime64[us]&#39;), load_profile=array([0.8, 0.9, 1. ]),</span>
-<span class="sd">        ambient_temperature_profile=array([25. , 24.5, 24. ]))</span>
+<span class="sd">        dtype=&#39;datetime64[us]&#39;), ambient_temperature_profile=array([25. , 24.5, 24. ]),</span>
+<span class="sd">        top_oil_temperature_profile=None, load_profile=array([0.8, 0.9, 1. ]))</span>
 
 <span class="sd">        ```</span>
-
 <span class="sd">    Example: Directly creating an InputProfile object using numpy arrays.</span>
 <span class="sd">        ```python</span>
 <span class="sd">        &gt;&gt;&gt; import numpy as np</span>
@@ -1663,13 +1878,39 @@ for convenience.</p>
 <span class="sd">        ...         dtype=np.datetime64,</span>
 <span class="sd">        ...     ),</span>
 <span class="sd">        ...     load_profile=np.array([0.8, 0.9, 1.0], dtype=float),</span>
-<span class="sd">        ...     ambient_temperature_profile=np.array([25.0, 24.5, 24.0], dtype=float),</span>
+<span class="sd">        ...     ambient_temperature_profile=np.array([25.0, 24.5, 24.0], dtype=float)</span>
 <span class="sd">        ... )</span>
 <span class="sd">        &gt;&gt;&gt; input_profile</span>
 <span class="sd">        InputProfile(datetime_index=array([&#39;2023-01-01T00:00:00.000000&#39;,</span>
 <span class="sd">        &#39;2023-01-01T01:00:00.000000&#39;, &#39;2023-01-01T02:00:00.000000&#39;],</span>
-<span class="sd">        dtype=&#39;datetime64[us]&#39;), load_profile=array([0.8, 0.9, 1. ]),</span>
-<span class="sd">        ambient_temperature_profile=array([25. , 24.5, 24. ]))</span>
+<span class="sd">        dtype=&#39;datetime64[us]&#39;), ambient_temperature_profile=array([25. , 24.5, 24. ]),</span>
+<span class="sd">        top_oil_temperature_profile=None, load_profile=array([0.8, 0.9, 1. ]))</span>
+
+<span class="sd">        ```</span>
+<span class="sd">    Example: Creating an InputProfile including the top oil temperature.</span>
+<span class="sd">        ```python</span>
+<span class="sd">        &gt;&gt;&gt; from datetime import datetime</span>
+<span class="sd">        &gt;&gt;&gt; from transformer_thermal_model.schemas import InputProfile</span>
+
+<span class="sd">        &gt;&gt;&gt; datetime_index = [</span>
+<span class="sd">        ...     datetime(2023, 1, 1, 0, 0),</span>
+<span class="sd">        ...     datetime(2023, 1, 1, 1, 0),</span>
+<span class="sd">        ...     datetime(2023, 1, 1, 2, 0),</span>
+<span class="sd">        ... ]</span>
+<span class="sd">        &gt;&gt;&gt; load_profile = [0.8, 0.9, 1.0]</span>
+<span class="sd">        &gt;&gt;&gt; ambient_temperature_profile = [25.0, 24.5, 24.0]</span>
+<span class="sd">        &gt;&gt;&gt; top_oil_temperature = [37.0, 36.5, 36.0]</span>
+<span class="sd">        &gt;&gt;&gt; input_profile = InputProfile.create(</span>
+<span class="sd">        ...     datetime_index=datetime_index,</span>
+<span class="sd">        ...     load_profile=load_profile,</span>
+<span class="sd">        ...     ambient_temperature_profile=ambient_temperature_profile,</span>
+<span class="sd">        ...     top_oil_temperature_profile=top_oil_temperature,</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; input_profile</span>
+<span class="sd">        InputProfile(datetime_index=array([&#39;2023-01-01T00:00:00.000000&#39;, &#39;2023-01-01T01:00:00.000000&#39;,</span>
+<span class="sd">        &#39;2023-01-01T02:00:00.000000&#39;], dtype=&#39;datetime64[us]&#39;),</span>
+<span class="sd">        ambient_temperature_profile=array([25. , 24.5, 24. ]),</span>
+<span class="sd">        top_oil_temperature_profile=array([37. , 36.5, 36. ]), load_profile=array([0.8, 0.9, 1. ]))</span>
 
 <span class="sd">        ```</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1677,6 +1918,9 @@ for convenience.</p>
         <span class="n">datetime_index</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">datetime_index</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">),</span>
         <span class="n">load_profile</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">load_profile</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">),</span>
         <span class="n">ambient_temperature_profile</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ambient_temperature_profile</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">),</span>
+        <span class="n">top_oil_temperature_profile</span><span class="o">=</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">top_oil_temperature_profile</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span> <span class="k">if</span> <span class="n">top_oil_temperature_profile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="p">),</span>
     <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -1763,29 +2007,33 @@ for convenience.</p>
 
             <details class="quote">
               <summary>Source code in <code>transformer_thermal_model/schemas/thermal_model/input_profile.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">139</span>
-<span class="normal">140</span>
-<span class="normal">141</span>
-<span class="normal">142</span>
-<span class="normal">143</span>
-<span class="normal">144</span>
-<span class="normal">145</span>
-<span class="normal">146</span>
-<span class="normal">147</span>
-<span class="normal">148</span>
-<span class="normal">149</span>
-<span class="normal">150</span>
-<span class="normal">151</span>
-<span class="normal">152</span>
-<span class="normal">153</span>
-<span class="normal">154</span>
-<span class="normal">155</span>
-<span class="normal">156</span>
-<span class="normal">157</span>
-<span class="normal">158</span>
-<span class="normal">159</span>
-<span class="normal">160</span>
-<span class="normal">161</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">from_dataframe</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create an InputProfile from a dataframe.</span>
 
@@ -1797,6 +2045,7 @@ for convenience.</p>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        An InputProfile object.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">required_columns</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;datetime_index&quot;</span><span class="p">,</span> <span class="s2">&quot;load_profile&quot;</span><span class="p">,</span> <span class="s2">&quot;ambient_temperature_profile&quot;</span><span class="p">}</span>
     <span class="n">missing_columns</span> <span class="o">=</span> <span class="n">required_columns</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
@@ -1807,6 +2056,471 @@ for convenience.</p>
         <span class="n">datetime_index</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;datetime_index&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span>
         <span class="n">load_profile</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;load_profile&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span>
         <span class="n">ambient_temperature_profile</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;ambient_temperature_profile&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span>
+        <span class="n">top_oil_temperature_profile</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;top_oil_temperature_profile&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s2">&quot;top_oil_temperature_profile&quot;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span>
+        <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="transformer_thermal_model.schemas.thermal_model.ThreeWindingInputProfile" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">ThreeWindingInputProfile</span>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="transformer_thermal_model.schemas.thermal_model.input_profile.BaseInputProfile">BaseInputProfile</span></code></p>
+
+
+        <p>Class for three-winding transformer input profiles.</p>
+<p>This class extends InputProfile to include three load profiles for three-winding transformers.
+It ensures that all three load profiles are provided and have the same length as the ambient temperature profile.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+<p><span class="doc-section-title">Methods:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="create
+
+
+  
+      classmethod
+   (transformer_thermal_model.schemas.thermal_model.ThreeWindingInputProfile.create)" href="#transformer_thermal_model.schemas.thermal_model.ThreeWindingInputProfile.create">create</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>Create a ThreeWindingInputProfile from datetime index, ambient temperature profile, and three load profiles.</p>
+                </div>
+              </td>
+            </tr>
+      </tbody>
+    </table>
+
+
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code><a class="autorefs autorefs-internal" title="load_profile_array
+
+
+  
+      property
+   (transformer_thermal_model.schemas.thermal_model.ThreeWindingInputProfile.load_profile_array)" href="#transformer_thermal_model.schemas.thermal_model.ThreeWindingInputProfile.load_profile_array">load_profile_array</a></code></td>
+            <td>
+                  <code><span title="numpy.typing.NDArray">NDArray</span>[<span title="numpy.float64">float64</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Return an array with shape (3,n) of the three load profiles (high, middle, low voltage sides).</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="transformer_thermal_model.schemas.thermal_model.ThreeWindingInputProfile.load_profile_array" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">load_profile_array</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">load_profile_array</span><span class="p">:</span> <span class="n"><span title="numpy.typing.NDArray">NDArray</span></span><span class="p">[</span><span class="n"><span title="numpy.float64">float64</span></span><span class="p">]</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return an array with shape (3,n) of the three load profiles (high, middle, low voltage sides).</p>
+
+    </div>
+
+</div>
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="transformer_thermal_model.schemas.thermal_model.ThreeWindingInputProfile.create" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">create</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
+  </span>
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">create</span><span class="p">(</span>
+    <span class="n">datetime_index</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="collections.abc.Collection" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection">Collection</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" title="datetime.datetime" href="https://docs.python.org/3/library/datetime.html#datetime.datetime">datetime</a></span><span class="p">],</span>
+    <span class="n">ambient_temperature_profile</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="collections.abc.Collection" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection">Collection</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span><span class="p">],</span>
+    <span class="n">load_profile_high_voltage_side</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="collections.abc.Collection" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection">Collection</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span><span class="p">],</span>
+    <span class="n">load_profile_middle_voltage_side</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="collections.abc.Collection" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection">Collection</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span><span class="p">],</span>
+    <span class="n">load_profile_low_voltage_side</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="collections.abc.Collection" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection">Collection</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span><span class="p">],</span>
+    <span class="n">top_oil_temperature_profile</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="collections.abc.Collection" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection">Collection</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span><span class="p">]</span>
+    <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Self" href="https://docs.python.org/3/library/typing.html#typing.Self">Self</a></span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Create a ThreeWindingInputProfile from datetime index, ambient temperature profile, and three load profiles.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>datetime_index</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-external" title="collections.abc.Collection" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection">Collection</a>[<a class="autorefs autorefs-external" title="datetime.datetime" href="https://docs.python.org/3/library/datetime.html#datetime.datetime">datetime</a>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The datetime index for the profiles.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>ambient_temperature_profile</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-external" title="collections.abc.Collection" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection">Collection</a>[<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The ambient temperature profile for the transformer.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>load_profile_high_voltage_side</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-external" title="collections.abc.Collection" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection">Collection</a>[<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Load profile for the high voltage side.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>load_profile_middle_voltage_side</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-external" title="collections.abc.Collection" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection">Collection</a>[<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Load profile for the middle voltage side.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>load_profile_low_voltage_side</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-external" title="collections.abc.Collection" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection">Collection</a>[<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Load profile for the low voltage side.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>top_oil_temperature_profile</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-external" title="collections.abc.Collection" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection">Collection</a>[<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a>] | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The top oil temperature profile for the transformer (optional).</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-external" title="typing.Self" href="https://docs.python.org/3/library/typing.html#typing.Self">Self</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A ThreeWindingInputProfile object.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<details class="example" open>
+  <summary>Creating a ThreeWindingInputProfile from collections.</summary>
+  <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">transformer_thermal_model.schemas</span><span class="w"> </span><span class="kn">import</span> <span class="n">ThreeWindingInputProfile</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">input_profile</span> <span class="o">=</span> <span class="n">ThreeWindingInputProfile</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+<span class="o">...</span>     <span class="n">datetime_index</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+<span class="o">...</span>         <span class="p">[</span>
+<span class="o">...</span>             <span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+<span class="o">...</span>             <span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+<span class="o">...</span>             <span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="o">...</span>         <span class="p">],</span>
+<span class="o">...</span>         <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">,</span>
+<span class="o">...</span>     <span class="p">),</span>
+<span class="o">...</span>     <span class="n">load_profile_high_voltage_side</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">),</span>
+<span class="o">...</span>     <span class="n">load_profile_middle_voltage_side</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">),</span>
+<span class="o">...</span>     <span class="n">load_profile_low_voltage_side</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">),</span>
+<span class="o">...</span>     <span class="n">ambient_temperature_profile</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">25.0</span><span class="p">,</span> <span class="mf">24.5</span><span class="p">,</span> <span class="mf">24.0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+<span class="o">...</span> <span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">input_profile</span>
+<span class="n">ThreeWindingInputProfile</span><span class="p">(</span><span class="n">datetime_index</span><span class="o">=</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;2023-01-01T00:00:00.000000&#39;</span><span class="p">,</span> <span class="s1">&#39;2023-01-01T01:00:00.000000&#39;</span><span class="p">,</span>
+<span class="s1">&#39;2023-01-01T02:00:00.000000&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;datetime64[us]&#39;</span><span class="p">),</span>
+<span class="n">ambient_temperature_profile</span><span class="o">=</span><span class="n">array</span><span class="p">([</span><span class="mf">25.</span> <span class="p">,</span> <span class="mf">24.5</span><span class="p">,</span> <span class="mf">24.</span> <span class="p">]),</span>
+<span class="n">top_oil_temperature_profile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="n">load_profile_high_voltage_side</span><span class="o">=</span><span class="n">array</span><span class="p">([</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.</span> <span class="p">]),</span>
+<span class="n">load_profile_middle_voltage_side</span><span class="o">=</span><span class="n">array</span><span class="p">([</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">]),</span>
+<span class="n">load_profile_low_voltage_side</span><span class="o">=</span><span class="n">array</span><span class="p">([</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]))</span>
+</code></pre></div>
+</details>
+
+            <details class="quote">
+              <summary>Source code in <code>transformer_thermal_model/schemas/thermal_model/input_profile.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span>
+<span class="normal">324</span>
+<span class="normal">325</span>
+<span class="normal">326</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create</span><span class="p">(</span>
+    <span class="bp">cls</span><span class="p">,</span>
+    <span class="n">datetime_index</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="n">datetime</span><span class="p">],</span>
+    <span class="n">ambient_temperature_profile</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+    <span class="n">load_profile_high_voltage_side</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+    <span class="n">load_profile_middle_voltage_side</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+    <span class="n">load_profile_low_voltage_side</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+    <span class="n">top_oil_temperature_profile</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a ThreeWindingInputProfile from datetime index, ambient temperature profile, and three load profiles.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        datetime_index: The datetime index for the profiles.</span>
+<span class="sd">        ambient_temperature_profile: The ambient temperature profile for the transformer.</span>
+<span class="sd">        load_profile_high_voltage_side: Load profile for the high voltage side.</span>
+<span class="sd">        load_profile_middle_voltage_side: Load profile for the middle voltage side.</span>
+<span class="sd">        load_profile_low_voltage_side: Load profile for the low voltage side.</span>
+<span class="sd">        top_oil_temperature_profile: The top oil temperature profile for the transformer (optional).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A ThreeWindingInputProfile object.</span>
+
+<span class="sd">    Example: Creating a ThreeWindingInputProfile from collections.</span>
+<span class="sd">        ```python</span>
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">        &gt;&gt;&gt; from datetime import datetime</span>
+<span class="sd">        &gt;&gt;&gt; from transformer_thermal_model.schemas import ThreeWindingInputProfile</span>
+
+<span class="sd">        &gt;&gt;&gt; input_profile = ThreeWindingInputProfile.create(</span>
+<span class="sd">        ...     datetime_index=np.array(</span>
+<span class="sd">        ...         [</span>
+<span class="sd">        ...             datetime(2023, 1, 1, 0, 0),</span>
+<span class="sd">        ...             datetime(2023, 1, 1, 1, 0),</span>
+<span class="sd">        ...             datetime(2023, 1, 1, 2, 0)</span>
+<span class="sd">        ...         ],</span>
+<span class="sd">        ...         dtype=np.datetime64,</span>
+<span class="sd">        ...     ),</span>
+<span class="sd">        ...     load_profile_high_voltage_side=np.array([0.8, 0.9, 1.0], dtype=float),</span>
+<span class="sd">        ...     load_profile_middle_voltage_side=np.array([0.7, 0.8, 0.9], dtype=float),</span>
+<span class="sd">        ...     load_profile_low_voltage_side=np.array([0.6, 0.7, 0.8], dtype=float),</span>
+<span class="sd">        ...     ambient_temperature_profile=np.array([25.0, 24.5, 24.0], dtype=float)</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; input_profile</span>
+<span class="sd">        ThreeWindingInputProfile(datetime_index=array([&#39;2023-01-01T00:00:00.000000&#39;, &#39;2023-01-01T01:00:00.000000&#39;,</span>
+<span class="sd">        &#39;2023-01-01T02:00:00.000000&#39;], dtype=&#39;datetime64[us]&#39;),</span>
+<span class="sd">        ambient_temperature_profile=array([25. , 24.5, 24. ]),</span>
+<span class="sd">        top_oil_temperature_profile=None,</span>
+<span class="sd">        load_profile_high_voltage_side=array([0.8, 0.9, 1. ]),</span>
+<span class="sd">        load_profile_middle_voltage_side=array([0.7, 0.8, 0.9]),</span>
+<span class="sd">        load_profile_low_voltage_side=array([0.6, 0.7, 0.8]))</span>
+
+<span class="sd">        ```</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+        <span class="n">datetime_index</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">datetime_index</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">),</span>
+        <span class="n">ambient_temperature_profile</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ambient_temperature_profile</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">),</span>
+        <span class="n">load_profile_high_voltage_side</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">load_profile_high_voltage_side</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">),</span>
+        <span class="n">load_profile_middle_voltage_side</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">load_profile_middle_voltage_side</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">),</span>
+        <span class="n">load_profile_low_voltage_side</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">load_profile_low_voltage_side</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">),</span>
+        <span class="n">top_oil_temperature_profile</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">top_oil_temperature_profile</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">top_oil_temperature_profile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -1852,6 +2566,8 @@ that link both of these series together.</p>
 
 
 
+
+
 <p><span class="doc-section-title">Methods:</span></p>
     <table>
       <thead>
@@ -1878,6 +2594,7 @@ that link both of these series together.</p>
 
 
   <div class="doc doc-children">
+
 
 
 
@@ -1994,10 +2711,10 @@ that link both of these series together.</p>
     
     
       
-      <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
       
         <script src="../../javascripts/katex.js"></script>
       

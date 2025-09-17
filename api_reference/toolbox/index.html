@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.20">
     
     
       
@@ -30,7 +30,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.e53b48f4.min.css">
       
       
 
@@ -761,6 +761,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../../examples/three-winding-calculation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Thermal modelling of a three winding transformer
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../examples/hot-spot_calibration/" class="md-nav__link">
         
   
@@ -1098,6 +1121,8 @@ the Transformer Thermal Model.a</p>
 
 
 
+
+
 <p><span class="doc-section-title">Functions:</span></p>
     <table>
       <thead>
@@ -1123,6 +1148,7 @@ the Transformer Thermal Model.a</p>
 
 
   <div class="doc doc-children">
+
 
 
 
@@ -1168,6 +1194,7 @@ method directly.</p>
 <li>timestamp: The timestamp of the profile.</li>
 <li>load: The load profile.</li>
 <li>ambient_temperature: The ambient temperature profile.</li>
+<li>top_oil_temperature: The top oil temperature profile (optional column).</li>
 </ul>
 </details>
 
@@ -1285,7 +1312,10 @@ method directly.</p>
 <span class="normal">50</span>
 <span class="normal">51</span>
 <span class="normal">52</span>
-<span class="normal">53</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">create_temp_sim_profile_from_df</span><span class="p">(</span><span class="n">profile_as_dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">InputProfile</span><span class="p">:</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">create_temp_sim_profile_from_df</span><span class="p">(</span><span class="n">profile_as_dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">InputProfile</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create an InputProfile from a dataframe.</span>
 
 <span class="sd">    This function is added as support for the transformer thermal model. It is</span>
@@ -1301,6 +1331,8 @@ method directly.</p>
 <span class="sd">        - timestamp: The timestamp of the profile.</span>
 <span class="sd">        - load: The load profile.</span>
 <span class="sd">        - ambient_temperature: The ambient temperature profile.</span>
+<span class="sd">        - top_oil_temperature: The top oil temperature profile (optional column).</span>
+
 
 <span class="sd">    Example: Creating an input profile from a dataframe.</span>
 <span class="sd">        ```python</span>
@@ -1328,6 +1360,7 @@ method directly.</p>
         <span class="n">datetime_index</span><span class="o">=</span><span class="n">profile_as_dataframe</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">],</span>
         <span class="n">load_profile</span><span class="o">=</span><span class="n">profile_as_dataframe</span><span class="p">[</span><span class="s2">&quot;load&quot;</span><span class="p">],</span>
         <span class="n">ambient_temperature_profile</span><span class="o">=</span><span class="n">profile_as_dataframe</span><span class="p">[</span><span class="s2">&quot;ambient_temperature&quot;</span><span class="p">],</span>
+        <span class="n">top_oil_temperature_profile</span><span class="o">=</span><span class="n">profile_as_dataframe</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;top_oil_temperature_profile&quot;</span><span class="p">),</span>
     <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -1390,10 +1423,10 @@ method directly.</p>
     
     
       
-      <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
       
         <script src="../../javascripts/katex.js"></script>
       

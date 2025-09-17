@@ -9,11 +9,11 @@
 <meta content="Contributors to the Transformer Thermal Model project" name="author"/>
 <link href="https://github.com/alliander-opensource/transformer-thermal-model/examples/power_transformer_example/" rel="canonical"/>
 <link href="../simple_thermal_profile_example_distribution/" rel="prev"/>
-<link href="../hot-spot_calibration/" rel="next"/>
+<link href="../three-winding-calculation/" rel="next"/>
 <link href="../../img/favicon.ico" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.6.14" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.6.20" name="generator"/>
 <title>Thermal modelling based on a dynamic profile and a power transformer - Transformer Thermal Model</title>
-<link href="../../assets/stylesheets/main.342714a4.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.e53b48f4.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
 <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
@@ -326,6 +326,14 @@
 </li>
 </ul>
 </nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../three-winding-calculation/">
+<span class="md-ellipsis">
+    Thermal modelling of a three winding transformer
+    
+  </span>
+</a>
 </li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="../hot-spot_calibration/">
@@ -1075,7 +1083,7 @@ my_profile_input = InputProfile.create(
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-4">
@@ -1147,7 +1155,7 @@ my_transformer = PowerTransformer(user_specs=my_transformer_specifications, cool
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-5">
@@ -1189,7 +1197,7 @@ results = my_model.run()</div>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [13]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
 <clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-6">
@@ -1227,9 +1235,9 @@ print(results.top_oil_temp_profile.head())</div>
 <pre>The first values of the hot-spot temperature profile are:
 2025-01-01 00:00:00    30.000000
 2025-01-01 00:15:00    42.410763
-2025-01-01 00:30:00    46.262654
-2025-01-01 00:45:00    50.691503
-2025-01-01 01:00:00    54.556084
+2025-01-01 00:30:00    49.499406
+2025-01-01 00:45:00    54.502872
+2025-01-01 01:00:00    58.550306
 dtype: float64
 And the first values of the top-oil temperature profile are:
 2025-01-01 00:00:00    30.000000
@@ -1520,8 +1528,8 @@ ax.set_title(
 <div class="md-dialog" data-md-component="dialog">
 <div class="md-dialog__inner md-typeset"></div>
 </div>
-<script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.13a4f30d.min.js"></script>
+<script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
 <script src="../../javascripts/katex.js"></script>
 <script src="https://unpkg.com/katex@0/dist/katex.min.js"></script>
 <script src="https://unpkg.com/katex@0/dist/contrib/auto-render.min.js"></script>
