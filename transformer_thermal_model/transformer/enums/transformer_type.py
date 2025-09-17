@@ -18,3 +18,4 @@ class TransformerType(StrEnum):
 
     POWER = "power"
     DISTRIBUTION = "distribution"
+    THREE_WINDING = "three_winding"
