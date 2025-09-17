@@ -98,7 +98,7 @@ the hot-spot factor can be much higher. This is due to the use of solid wire, wh
 regions of the windings are higher than with modern CTC wire (= continuously transposed conductor).
 
 - **Hot-spot factor calibration**: The hot-spot factor can be calibrated using the model. For more information, see
-[Hot-spot factor calibration](hotspot_calibration.md).
+[Hot-spot factor calibration](../theoretical_documentation/hotspot_calibration.md).
 
 ### Cooling type
 

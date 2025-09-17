@@ -93,6 +93,8 @@ class PowerTransformer(Transformer):
     ...     user_specs=user_specs,
     ...     cooling_type=cooling_type
     ... )
+
+    ```
     """
 
     specs: TransformerSpecifications

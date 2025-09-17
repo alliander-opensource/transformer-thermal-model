@@ -62,6 +62,7 @@ nav:
     - Quick start: examples/quickstart.ipynb
     - A distribution transformer with a dynamic profile: examples/simple_thermal_profile_example_distribution.ipynb
     - A power transformer with a dynamic profile: examples/power_transformer_example.ipynb
+    - A three winding transformer: examples/three-winding-calculation.ipynb
     - Hot-spot factor calibration: examples/hot-spot_calibration.ipynb
     - Modelling with an initial state: examples/example_initial_state.ipynb
   - Theoretical Documentation:

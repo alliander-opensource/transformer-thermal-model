@@ -21,3 +21,7 @@ our thermal model.
 ::: transformer_thermal_model.transformer.DistributionTransformer
     options:
         show_root_heading: true
+
+::: transformer_thermal_model.transformer.ThreeWindingTransformer
+    options:
+        show_root_heading: true
