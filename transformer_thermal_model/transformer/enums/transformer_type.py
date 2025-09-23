@@ -14,6 +14,7 @@ class TransformerType(StrEnum):
     Attributes:
         POWER (str): Power transformer.
         DISTRIBUTION (str): Distribution transformer.
+        THREE_WINDING (str): Three winding transformer.
     """
 
     POWER = "power"
