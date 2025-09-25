@@ -125,3 +125,10 @@ class DistributionTransformer(Transformer):
 
         """
         return ambient_temperature
+    
+    def time_const_oil(self, top_oil_temp: float) -> float:
+        """Calculate the temperature dependent time constant for the oil.
+
+        Distribution transformers do not have a temperature dependent time constant for the oil.
+        """
+        return self.specs.time_const_oil

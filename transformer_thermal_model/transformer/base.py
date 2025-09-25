@@ -61,3 +61,15 @@ class Transformer(ABC):
     @abstractmethod
     def _end_temperature_top_oil(self, load: np.ndarray) -> np.ndarray:
         pass
+
+    @abstractmethod
+    def time_const_oil(self, top_oil_temp: float) -> float:
+        """Calculate the temperature dependent time constant for the oil.
+
+        Args:
+            top_oil_temp (float): The top-oil temperature in degrees Celsius.
+        
+        Returns:
+            float: The temperature dependent time constant for the oil in minutes.
+        """
+        pass

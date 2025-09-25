@@ -163,6 +163,7 @@ class PowerTransformer(Transformer):
             cooling_type=cooling_type,
         )
         self.specs = TransformerSpecifications.create(self.defaults, user_specs)
+        self.ONAF_switch = ONAF_switch
 
     @property
     def defaults(self) -> DefaultTransformerSpecifications:
@@ -316,3 +317,35 @@ class PowerTransformer(Transformer):
             hot_spot_factor (float): The new hot-spot factor resulting from calibration.
         """
         self.specs.hot_spot_fac = hot_spot_factor
+
+    def time_const_oil(self, top_oil_temp: float) -> float:
+        """Calculate the temperature dependent time constant for the oil.
+
+        Args:
+            top_oil_temp (float): The top-oil temperature in degrees Celsius.
+
+        Returns:
+            float: The temperature dependent time constant for the oil in minutes.
+        """
+        if not self.ONAF_switch or not self.ONAF_switch.temperature_threshold:
+            return self.specs.time_const_oil
+
+        if top_oil_temp >= self.ONAF_switch.temperature_threshold:
+            return self.ONAF_switch.time_const_oil_ONAF
+        return self.specs.time_const_oil
+
+    def time_const_windings(self, hot_spot_temp: float) -> float:
+        """Calculate the temperature dependent time constant for the windings.
+
+        Args:
+            hot_spot_temp (float): The hot-spot temperature in degrees Celsius.
+
+        Returns:
+            float: The temperature dependent time constant for the windings in minutes.
+        """
+        if not self.ONAF_switch or not self.ONAF_switch.temperature_threshold:
+            return self.specs.time_const_windings
+
+        if hot_spot_temp >= self.ONAF_switch.temperature_threshold:
+            return self.ONAF_switch.time_const_windings_ONAF
+        return self.specs.time_const_windings

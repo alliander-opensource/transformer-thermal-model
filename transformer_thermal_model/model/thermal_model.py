@@ -108,7 +108,9 @@ class Model:
         """
         time_deltas = (
             np.diff(self.data.datetime_index, prepend=self.data.datetime_index[0])
-            .astype("timedelta64[s]").astype(float) / 60
+            .astype("timedelta64[s]")
+            .astype(float)
+            / 60
         )
         return time_deltas
 
@@ -165,7 +167,7 @@ class Model:
         top_oil_temp_profile[0] = t_internal[0] if self.init_top_oil_temp is None else self.init_top_oil_temp
 
         for i in range(1, len(t_internal)):
-            f1 = self._calculate_f1(dt[i], self.transformer.specs.time_const_oil)
+            f1 = self._calculate_f1(dt[i], self.transformer.time_const_oil(top_oil_temp_profile[i - 1]))
             top_oil_temp_profile[i] = self._update_top_oil_temp(
                 top_oil_temp_profile[i - 1], t_internal[i], top_k[i], f1
             )
