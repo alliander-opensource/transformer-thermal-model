@@ -100,18 +100,15 @@ class Model:
         self.init_top_oil_temp = init_top_oil_temp
 
     def _get_time_step(self) -> np.ndarray:
-        """Get the time step between the data points.
+        """Get the time step between the data points in minutes.
 
         Returns:
             np.ndarray: The time step between the data points in minutes.
 
         """
-        # Calculate time steps in minutes
         time_deltas = (
             np.diff(self.data.datetime_index, prepend=self.data.datetime_index[0])
-            .astype("timedelta64[s]")
-            .astype(float)
-            / 60
+            .astype("timedelta64[s]").astype(float) / 60
         )
         return time_deltas
 
@@ -231,7 +228,7 @@ class Model:
                     hot_spot_increase_windings[i] = self._update_hot_spot_increase(
                         hot_spot_increase_windings[i - 1],
                         static_hot_spot_incr_windings[profile][i],
-                        f2_windings[profile],
+                        f2_windings[profile].item(),
                     )
                     hot_spot_increase_oil[i] = self._update_hot_spot_increase(
                         hot_spot_increase_oil[i - 1], static_hot_spot_incr_oil[profile][i], f2_oil

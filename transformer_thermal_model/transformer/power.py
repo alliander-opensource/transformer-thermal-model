@@ -15,6 +15,7 @@ from transformer_thermal_model.schemas import (
     TransformerSpecifications,
     UserTransformerSpecifications,
 )
+from transformer_thermal_model.schemas.thermal_model import ONAFSwitch
 
 from .base import Transformer
 
@@ -133,6 +134,7 @@ class PowerTransformer(Transformer):
         user_specs: UserTransformerSpecifications,
         cooling_type: CoolerType,
         internal_component_specs: TransformerComponentSpecifications | None = None,
+        ONAF_switch: ONAFSwitch | None = None,
     ):
         """Initialize the transformer object.
 
@@ -143,11 +145,15 @@ class PowerTransformer(Transformer):
             cooling_type (CoolerType): The cooling type. Can be ONAN or ONAF.
             internal_component_specs (TransformerComponentSpecifications, optional): The internal component
                 specifications, which are used to calculate the limiting component. Defaults to None.
+            ONAF_switch (ONAFSwitch, optional): The ONAF switch settings. Only used when the cooling type is ONAN.
 
         """
         logger.info("Creating a power transformer object.")
         logger.info("User transformer specifications: %s", user_specs)
         logger.info("Cooling type: %s", cooling_type)
+
+        if cooling_type == CoolerType.ONAN and ONAF_switch is not None:
+            raise ValueError("ONAF switch only works when the cooling type is ONAN.")
 
         if internal_component_specs is not None:
             logger.info("Internal component specifications: %s", internal_component_specs)

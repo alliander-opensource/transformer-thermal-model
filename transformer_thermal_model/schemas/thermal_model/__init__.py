@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: MPL-2.0
 
 from .input_profile import InputProfile, ThreeWindingInputProfile
+from .onaf_switch import ONAFSwitch
 from .output_profile import OutputProfile
 
-__all__ = ["InputProfile", "OutputProfile", "ThreeWindingInputProfile"]
+__all__ = ["InputProfile", "OutputProfile", "ThreeWindingInputProfile", "ONAFSwitch"]
