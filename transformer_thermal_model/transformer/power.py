@@ -152,7 +152,7 @@ class PowerTransformer(Transformer):
         logger.info("User transformer specifications: %s", user_specs)
         logger.info("Cooling type: %s", cooling_type)
 
-        if cooling_type == CoolerType.ONAN and ONAF_switch is not None:
+        if cooling_type == CoolerType.ONAF and ONAF_switch is not None:
             raise ValueError("ONAF switch only works when the cooling type is ONAN.")
 
         if internal_component_specs is not None:
@@ -283,7 +283,7 @@ class PowerTransformer(Transformer):
 
             return ct_load / nominal_load
 
-    def _end_temperature_top_oil(self, load: np.ndarray) -> np.ndarray:
+    def _end_temperature_top_oil(self, load: float) -> float:
         """Calculate the end temperature of the top-oil."""
         load_ratio = np.power(load / self.specs.nom_load_sec_side, 2)
         total_loss_ratio = (self.specs.no_load_loss + self.specs.load_loss * load_ratio) / (
@@ -318,34 +318,15 @@ class PowerTransformer(Transformer):
         """
         self.specs.hot_spot_fac = hot_spot_factor
 
-    def time_const_oil(self, top_oil_temp: float) -> float:
-        """Calculate the temperature dependent time constant for the oil.
+    def switch_ONAN_parameters_to_ONAF(self) -> None:
+        """Switch the transformer parameters from ONAN to ONAF.
 
-        Args:
-            top_oil_temp (float): The top-oil temperature in degrees Celsius.
-
-        Returns:
-            float: The temperature dependent time constant for the oil in minutes.
+        This function is used when the cooling type is switched from ONAN to ONAF.
         """
-        if not self.ONAF_switch or not self.ONAF_switch.temperature_threshold:
-            return self.specs.time_const_oil
+        if not self.ONAF_switch:
+            raise ValueError("Please provide the ONAF switch settings to switch to ONAF parameters.")
 
-        if top_oil_temp >= self.ONAF_switch.temperature_threshold:
-            return self.ONAF_switch.time_const_oil_ONAF
-        return self.specs.time_const_oil
-
-    def time_const_windings(self, hot_spot_temp: float) -> float:
-        """Calculate the temperature dependent time constant for the windings.
-
-        Args:
-            hot_spot_temp (float): The hot-spot temperature in degrees Celsius.
-
-        Returns:
-            float: The temperature dependent time constant for the windings in minutes.
-        """
-        if not self.ONAF_switch or not self.ONAF_switch.temperature_threshold:
-            return self.specs.time_const_windings
-
-        if hot_spot_temp >= self.ONAF_switch.temperature_threshold:
-            return self.ONAF_switch.time_const_windings_ONAF
-        return self.specs.time_const_windings
+        self.specs.nom_load_sec_side = self.ONAF_switch.nom_load_sec_side_ONAF
+        self.specs.top_oil_temp_rise = self.ONAF_switch.top_oil_temp_rise_ONAF
+        self.specs.winding_oil_gradient = self.ONAF_switch.winding_oil_gradient_ONAF
+        self.specs.hot_spot_fac = self.ONAF_switch.hot_spot_fac_ONAF

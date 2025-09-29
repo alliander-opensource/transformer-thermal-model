@@ -16,12 +16,11 @@ class ONAFSwitch(BaseModel):
     temperature_threshold: float | None = Field(
         None, description="Temperature threshold for activating the ONAF cooling switch."
     )
-    time_const_oil_ONAF: float = Field(
-        description="Time constant for the oil temperature rise when ONAF cooling is ON."
-    )
-    time_const_windings_ONAF: float = Field(
-        description=("Time constant for the winding temperature rise when ONAF cooling is ON."),
-    )
+
+    nom_load_sec_side_ONAF: float
+    top_oil_temp_rise_ONAF: float
+    winding_oil_gradient_ONAF: float
+    hot_spot_fac_ONAF: float
 
     @model_validator(mode="after")
     def check_consistency(self) -> Self:

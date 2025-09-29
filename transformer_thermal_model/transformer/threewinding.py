@@ -115,10 +115,3 @@ class ThreeWindingTransformer(Transformer):
         total_loss_ratio = (self.specs.no_load_loss + hv_rise + mv_rise + lv_rise) / self.specs.load_loss_total
 
         return self._pre_factor * np.power(total_loss_ratio, self.specs.oil_exp_x)
-    
-    def time_const_oil(self, top_oil_temp: float) -> float:
-        """Calculate the temperature dependent time constant for the oil.
-
-        For three-winding transformers, this is currently not temperature dependent.
-        """
-        return self.specs.time_const_oil

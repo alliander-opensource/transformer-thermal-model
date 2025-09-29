@@ -151,14 +151,14 @@ class Model:
         self,
         t_internal: np.ndarray,
         dt: np.ndarray,
-        top_k: np.ndarray,
+        load: np.ndarray,
     ) -> np.ndarray:
         """Calculate the top-oil temperature profile for the transformer.
 
         Args:
             t_internal (np.ndarray): Array of internal temperatures over time.
             dt (np.ndarray): Array of time steps in minutes.
-            top_k (np.ndarray): Array of end temperatures for the top-oil.
+            load (np.ndarray): Array of load values over time.
 
         Returns:
             np.ndarray: The computed top-oil temperature profile over time.
@@ -167,10 +167,9 @@ class Model:
         top_oil_temp_profile[0] = t_internal[0] if self.init_top_oil_temp is None else self.init_top_oil_temp
 
         for i in range(1, len(t_internal)):
-            f1 = self._calculate_f1(dt[i], self.transformer.time_const_oil(top_oil_temp_profile[i - 1]))
-            top_oil_temp_profile[i] = self._update_top_oil_temp(
-                top_oil_temp_profile[i - 1], t_internal[i], top_k[i], f1
-            )
+            f1 = self._calculate_f1(dt[i], self.transformer.specs.time_const_oil)
+            top_k = self.transformer._end_temperature_top_oil(load[i])
+            top_oil_temp_profile[i] = self._update_top_oil_temp(top_oil_temp_profile[i - 1], t_internal[i], top_k, f1)
 
         return top_oil_temp_profile
 
@@ -276,13 +275,12 @@ class Model:
         load = self.data.load_profile_array
         t_internal = self._get_internal_temp()
 
-        top_k = self.transformer._end_temperature_top_oil(load)
         static_hot_spot_incr = self._calculate_static_hot_spot_increase(load)
 
         if use_top_oil and self.data.top_oil_temperature_profile is not None:
             top_oil_temp_profile = self.data.top_oil_temperature_profile
         else:
-            top_oil_temp_profile = self._calculate_top_oil_temp_profile(t_internal, dt, top_k)
+            top_oil_temp_profile = self._calculate_top_oil_temp_profile(t_internal, dt, load)
         hot_spot_temp_profile = self._calculate_hot_spot_temp_profile(
             load, top_oil_temp_profile, static_hot_spot_incr, dt
         )
