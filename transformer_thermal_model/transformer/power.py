@@ -152,18 +152,19 @@ class PowerTransformer(Transformer):
         logger.info("User transformer specifications: %s", user_specs)
         logger.info("Cooling type: %s", cooling_type)
 
-        if cooling_type == CoolerType.ONAF and ONAF_switch is not None:
-            raise ValueError("ONAF switch only works when the cooling type is ONAN.")
-
         if internal_component_specs is not None:
             logger.info("Internal component specifications: %s", internal_component_specs)
             self.internal_component_specs = internal_component_specs
 
         super().__init__(
             cooling_type=cooling_type,
+            ONAF_switch=ONAF_switch,
         )
         self.specs = TransformerSpecifications.create(self.defaults, user_specs)
-        self.ONAF_switch = ONAF_switch
+
+        if ONAF_switch is not None:
+            logger.info("ONAF switch settings: %s", ONAF_switch)
+            self.ONAN_specs = self.specs.model_copy()
 
     @property
     def defaults(self) -> DefaultTransformerSpecifications:
@@ -317,3 +318,14 @@ class PowerTransformer(Transformer):
             hot_spot_factor (float): The new hot-spot factor resulting from calibration.
         """
         self.specs.hot_spot_fac = hot_spot_factor
+
+    def _switch_cooling(self, to_onaf: bool) -> None:
+        """Switch the cooling type from ONAN to ONAF."""
+        if self.ONAF_switch is None:
+            raise ValueError("ONAF switch settings are not provided.")
+
+        if to_onaf:
+            self.specs.nom_load_sec_side = self.ONAF_switch.nom_load_sec_side_ONAF
+
+        else:
+            self.specs = self.ONAN_specs.model_copy()

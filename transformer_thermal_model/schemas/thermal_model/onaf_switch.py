@@ -7,13 +7,27 @@ from typing import Self
 from pydantic import BaseModel, Field, model_validator
 
 
+class FanSwitchConfig(BaseModel):
+    """Class representing the fan switch configuration for ONAF cooling."""
+
+    activation_temp: float = Field(..., description="Temperature at which the fan cooling activates.")
+    deactivation_temp: float = Field(..., description="Temperature at which the fan cooling deactivates.")
+
+    @model_validator(mode="after")
+    def check_temperatures(self) -> Self:
+        """Check that the activation temperature is higher than the deactivation temperature."""
+        if self.activation_temp <= self.deactivation_temp:
+            raise ValueError("Activation temperature must be higher than deactivation temperature.")
+        return self
+
+
 class ONAFSwitch(BaseModel):
     """Class representing the ONAF (Oil Natural Air Forced) cooling switch status."""
 
     is_on: list[bool] | None = Field(
         None, description="List indicating the ONAF cooling switch status at each time step."
     )
-    temperature_threshold: float | None = Field(
+    temperature_threshold: FanSwitchConfig | None = Field(
         None, description="Temperature threshold for activating the ONAF cooling switch."
     )
 

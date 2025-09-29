@@ -11,6 +11,7 @@ from transformer_thermal_model.schemas import (
     BaseDefaultTransformerSpecifications,
     BaseTransformerSpecifications,
 )
+from transformer_thermal_model.schemas.thermal_model.onaf_switch import ONAFSwitch
 
 
 class Transformer(ABC):
@@ -29,10 +30,7 @@ class Transformer(ABC):
     cooling_type: CoolerType
     specs: BaseTransformerSpecifications
 
-    def __init__(
-        self,
-        cooling_type: CoolerType,
-    ):
+    def __init__(self, cooling_type: CoolerType, ONAF_switch: ONAFSwitch | None = None):
         """Initialize the Transformer object.
 
         Args:
@@ -40,8 +38,12 @@ class Transformer(ABC):
                 provide to build the transformer. Any optional specifications not provided will be taken from the
                 default specifications.
             cooling_type (CoolerType): The cooling type. Can be ONAN, ONAF.
+            ONAF_switch (ONAFSwitch, optional): The ONAF switch settings. Only used when the cooling type is ONAN.
         """
         self.cooling_type: CoolerType = cooling_type
+        if cooling_type == CoolerType.ONAF and ONAF_switch is not None:
+            raise ValueError("ONAF switch only works when the cooling type is ONAN.")
+        self.ONAF_switch = ONAF_switch
 
     @property
     @abstractmethod
@@ -60,4 +62,9 @@ class Transformer(ABC):
 
     @abstractmethod
     def _end_temperature_top_oil(self, load: np.ndarray) -> float:
+        pass
+
+    @abstractmethod
+    def _switch_cooling(self, to_onaf: bool) -> None:
+        """Switch the cooling type from ONAN to ONAF."""
         pass

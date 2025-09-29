@@ -72,6 +72,7 @@ class DistributionTransformer(Transformer):
 
         super().__init__(
             cooling_type=CoolerType.ONAN,
+            ONAF_switch=None,
         )
         self.specs = TransformerSpecifications.create(self.defaults, user_specs)
 
@@ -125,3 +126,11 @@ class DistributionTransformer(Transformer):
 
         """
         return ambient_temperature
+
+    def _switch_cooling(self, to_onaf: bool) -> None:
+        """Switch the cooling type from ONAN to ONAF.
+
+        This method is not applicable for DistributionTransformer as it only supports ONAN cooling.
+        Attempting to switch cooling will raise a NotImplementedError.
+        """
+        raise NotImplementedError("DistributionTransformer only supports ONAN cooling and cannot switch to ONAF.")
