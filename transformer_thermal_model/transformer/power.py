@@ -283,9 +283,9 @@ class PowerTransformer(Transformer):
 
             return ct_load / nominal_load
 
-    def _end_temperature_top_oil(self, load: float) -> float:
+    def _end_temperature_top_oil(self, load: np.ndarray) -> float:
         """Calculate the end temperature of the top-oil."""
-        load_ratio = np.power(load / self.specs.nom_load_sec_side, 2)
+        load_ratio = np.power(load[0] / self.specs.nom_load_sec_side, 2)
         total_loss_ratio = (self.specs.no_load_loss + self.specs.load_loss * load_ratio) / (
             self.specs.no_load_loss + self.specs.load_loss
         )
@@ -317,16 +317,3 @@ class PowerTransformer(Transformer):
             hot_spot_factor (float): The new hot-spot factor resulting from calibration.
         """
         self.specs.hot_spot_fac = hot_spot_factor
-
-    def switch_ONAN_parameters_to_ONAF(self) -> None:
-        """Switch the transformer parameters from ONAN to ONAF.
-
-        This function is used when the cooling type is switched from ONAN to ONAF.
-        """
-        if not self.ONAF_switch:
-            raise ValueError("Please provide the ONAF switch settings to switch to ONAF parameters.")
-
-        self.specs.nom_load_sec_side = self.ONAF_switch.nom_load_sec_side_ONAF
-        self.specs.top_oil_temp_rise = self.ONAF_switch.top_oil_temp_rise_ONAF
-        self.specs.winding_oil_gradient = self.ONAF_switch.winding_oil_gradient_ONAF
-        self.specs.hot_spot_fac = self.ONAF_switch.hot_spot_fac_ONAF

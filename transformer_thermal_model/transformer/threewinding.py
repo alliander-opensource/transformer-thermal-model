@@ -90,6 +90,7 @@ class ThreeWindingTransformer(Transformer):
         self.specs = ThreeWindingTransformerSpecifications.create(self.defaults, user_specs)
         logger.debug("Initialized ThreeWindingTransformer with specifications: %s", user_specs)
 
+
     @property
     def defaults(self) -> ThreeWindingTransformerDefaultSpecifications:
         """The ClassVar for default TransformerSpecifications."""
@@ -106,7 +107,7 @@ class ThreeWindingTransformer(Transformer):
         """Calculate the internal temperature of the transformer."""
         return ambient_temperature + self.specs.amb_temp_surcharge
 
-    def _end_temperature_top_oil(self, load_profile: np.ndarray) -> np.ndarray:
+    def _end_temperature_top_oil(self, load_profile: np.ndarray) -> float:
         """Calculate the end temperature of the top-oil."""
         lv_rise = self.specs._get_loss_lc() * np.power(load_profile[0] / self.specs.lv_winding.nom_load, 2)
         mv_rise = self.specs._get_loss_mc() * np.power(load_profile[1] / self.specs.mv_winding.nom_load, 2)

@@ -59,5 +59,5 @@ class Transformer(ABC):
         pass
 
     @abstractmethod
-    def _end_temperature_top_oil(self, load: float) -> float:
+    def _end_temperature_top_oil(self, load: np.ndarray) -> float:
         pass

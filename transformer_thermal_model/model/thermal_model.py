@@ -166,9 +166,13 @@ class Model:
         top_oil_temp_profile = np.zeros_like(t_internal, dtype=np.float64)
         top_oil_temp_profile[0] = t_internal[0] if self.init_top_oil_temp is None else self.init_top_oil_temp
 
+        # Handle both 1D (two-winding) and 2D (three-winding) load arrays
         for i in range(1, len(t_internal)):
             f1 = self._calculate_f1(dt[i], self.transformer.specs.time_const_oil)
-            top_k = self.transformer._end_temperature_top_oil(load[i])
+            if load.ndim == 1:
+                top_k = self.transformer._end_temperature_top_oil(np.array([load[i]]))
+            else:
+                top_k = self.transformer._end_temperature_top_oil(load[:, i])
             top_oil_temp_profile[i] = self._update_top_oil_temp(top_oil_temp_profile[i - 1], t_internal[i], top_k, f1)
 
         return top_oil_temp_profile
