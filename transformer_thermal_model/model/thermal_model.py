@@ -99,6 +99,16 @@ class Model:
         self.data = temperature_profile
         self.init_top_oil_temp = init_top_oil_temp
 
+        if (
+            transformer.ONAF_switch
+            and transformer.ONAF_switch.fans_status
+            and len(transformer.ONAF_switch.fans_status) != len(temperature_profile)
+        ):
+            raise ValueError(
+                "The length of the fans_status list in the ONAF_switch must be equal to the length of the "
+                "temperature profile."
+            )
+
     def _get_time_step(self) -> np.ndarray:
         """Get the time step between the data points in minutes.
 
@@ -189,7 +199,6 @@ class Model:
         Args:
             load (np.ndarray): Array of load values over time.
             top_oil_temp_profile (np.ndarray): The computed top-oil temperature profile over time.
-            static_hot_spot_incr (np.ndarray): Array of static hot-spot temperature increases.
             dt (np.ndarray): Array of time steps in minutes.
 
         Returns:

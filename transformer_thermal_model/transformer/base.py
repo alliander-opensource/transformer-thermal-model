@@ -38,7 +38,7 @@ class Transformer(ABC):
                 provide to build the transformer. Any optional specifications not provided will be taken from the
                 default specifications.
             cooling_type (CoolerType): The cooling type. Can be ONAN, ONAF.
-            ONAF_switch (ONAFSwitch, optional): The ONAF switch settings. Only used when the cooling type is ONAN.
+            ONAF_switch (ONAFSwitch, optional): The ONAF switch settings. Only used when the cooling type is ONA.
         """
         self.cooling_type: CoolerType = cooling_type
         if cooling_type == CoolerType.ONAN and ONAF_switch is not None:
