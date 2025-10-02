@@ -100,14 +100,6 @@ class Model:
         self.data = temperature_profile
         self.init_top_oil_temp = init_top_oil_temp
 
-    def onaf_onan_switch(self) -> bool:
-        """Check if the transformer has an temperature based ONAF/ONAN switch.
-
-        Returns:
-            bool: True if the transformer has an ONAF/ONAN switch, False otherwise.
-
-        """
-        return self.transformer.cooling_type == CoolerType.ONAF and self.transformer.ONAF_switch is not None
 
     def _get_time_step(self) -> np.ndarray:
         """Get the time step between the data points in minutes.
@@ -157,25 +149,6 @@ class Model:
             * (load / self.transformer.specs.nominal_load_array) ** self.transformer.specs.winding_exp_y
         )
 
-    def check_onaf_switch(self, top_oil_temp: int, previous_top_oil_temp: int) -> None:
-        """Check and handle the ONAF/ONAN switch based on the top-oil temperature and the switch settings."""
-        if (
-            not self.onaf_onan_switch()
-            or self.transformer.ONAF_switch is None
-            or self.transformer.ONAF_switch.temperature_threshold is None
-        ):
-            return
-
-        if (
-            top_oil_temp > self.transformer.ONAF_switch.temperature_threshold.activation_temp
-            and previous_top_oil_temp < self.transformer.ONAF_switch.temperature_threshold.activation_temp
-        ):
-            self.transformer._switch_cooling(to_onaf=True)
-        elif (
-            top_oil_temp < self.transformer.ONAF_switch.temperature_threshold.deactivation_temp
-            and previous_top_oil_temp > self.transformer.ONAF_switch.temperature_threshold.deactivation_temp
-        ):
-            self.transformer._switch_cooling(to_onaf=False)
 
     def _calculate_top_oil_temp_profile(
         self,
@@ -204,7 +177,7 @@ class Model:
             else:
                 top_k = self.transformer._end_temperature_top_oil(load[:, i])
             top_oil_temp_profile[i] = self._update_top_oil_temp(top_oil_temp_profile[i - 1], t_internal[i], top_k, f1)
-            self.check_onaf_switch(top_oil_temp_profile[i], top_oil_temp_profile[i - 1])
+            self.transformer.check_onaf_switch(top_oil_temp_profile[i], top_oil_temp_profile[i - 1], i)
 
         return top_oil_temp_profile
 
