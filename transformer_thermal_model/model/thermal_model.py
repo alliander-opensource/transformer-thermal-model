@@ -7,7 +7,6 @@ import logging
 import numpy as np
 import pandas as pd
 
-from transformer_thermal_model.cooler.cooler_type import CoolerType
 from transformer_thermal_model.schemas import OutputProfile
 from transformer_thermal_model.schemas.thermal_model.input_profile import BaseInputProfile
 from transformer_thermal_model.transformer import ThreeWindingTransformer, Transformer
@@ -100,7 +99,6 @@ class Model:
         self.data = temperature_profile
         self.init_top_oil_temp = init_top_oil_temp
 
-
     def _get_time_step(self) -> np.ndarray:
         """Get the time step between the data points in minutes.
 
@@ -149,7 +147,6 @@ class Model:
             * (load / self.transformer.specs.nominal_load_array) ** self.transformer.specs.winding_exp_y
         )
 
-
     def _calculate_top_oil_temp_profile(
         self,
         t_internal: np.ndarray,
@@ -185,7 +182,6 @@ class Model:
         self,
         load: np.ndarray,
         top_oil_temp_profile: np.ndarray,
-        static_hot_spot_incr: np.ndarray,
         dt: np.ndarray,
     ) -> np.ndarray:
         """Calculate the hot-spot temperature profile for the transformer.
@@ -199,8 +195,6 @@ class Model:
         Returns:
             np.ndarray: The computed hot-spot temperature profile over time.
         """
-        static_hot_spot_incr_windings = static_hot_spot_incr * self.transformer.specs.winding_const_k21
-        static_hot_spot_incr_oil = static_hot_spot_incr * (self.transformer.specs.winding_const_k21 - 1)
         hot_spot_temp_profile = np.zeros_like(load, dtype=np.float64)
 
         # For a two winding transformer:
@@ -209,14 +203,18 @@ class Model:
             hot_spot_increase_windings = np.zeros_like(load)
             hot_spot_increase_oil = np.zeros_like(load)
             for i in range(1, len(load)):
+                static_hot_spot_incr = self._calculate_static_hot_spot_increase(np.array(load[i]))[0]
+                static_hot_spot_incr_windings = static_hot_spot_incr * self.transformer.specs.winding_const_k21
+                static_hot_spot_incr_oil = static_hot_spot_incr * (self.transformer.specs.winding_const_k21 - 1)
+
                 f2_windings = self._calculate_f2_winding(dt[i], self.transformer.specs.time_const_windings_array)
                 f2_oil = self._calculate_f2_oil(dt[i], self.transformer.specs.time_const_oil)
 
                 hot_spot_increase_windings[i] = self._update_hot_spot_increase(
-                    hot_spot_increase_windings[i - 1], static_hot_spot_incr_windings[i], f2_windings[0]
+                    hot_spot_increase_windings[i - 1], static_hot_spot_incr_windings, f2_windings[0]
                 )
                 hot_spot_increase_oil[i] = self._update_hot_spot_increase(
-                    hot_spot_increase_oil[i - 1], static_hot_spot_incr_oil[i], f2_oil
+                    hot_spot_increase_oil[i - 1], static_hot_spot_incr_oil, f2_oil
                 )
                 hot_spot_temp_profile[i] = (
                     top_oil_temp_profile[i] + hot_spot_increase_windings[i] - hot_spot_increase_oil[i]
@@ -231,16 +229,20 @@ class Model:
                 hot_spot_increase_windings = np.zeros(n_steps)
                 hot_spot_increase_oil = np.zeros(n_steps)
                 for i in range(1, n_steps):
+                    static_hot_spot_incr = self._calculate_static_hot_spot_increase(np.array(load[:, i]))
+                    static_hot_spot_incr_windings = static_hot_spot_incr * self.transformer.specs.winding_const_k21
+                    static_hot_spot_incr_oil = static_hot_spot_incr * (self.transformer.specs.winding_const_k21 - 1)
+
                     f2_windings = self._calculate_f2_winding(dt[i], self.transformer.specs.time_const_windings_array)
                     f2_oil = self._calculate_f2_oil(dt[i], self.transformer.specs.time_const_oil)
 
                     hot_spot_increase_windings[i] = self._update_hot_spot_increase(
                         hot_spot_increase_windings[i - 1],
-                        static_hot_spot_incr_windings[profile][i],
+                        static_hot_spot_incr_windings[profile],
                         f2_windings[profile].item(),
                     )
                     hot_spot_increase_oil[i] = self._update_hot_spot_increase(
-                        hot_spot_increase_oil[i - 1], static_hot_spot_incr_oil[profile][i], f2_oil
+                        hot_spot_increase_oil[i - 1], static_hot_spot_incr_oil[profile], f2_oil
                     )
                     hot_spot_temp_profile[profile][i] = (
                         top_oil_temp_profile[i] + hot_spot_increase_windings[i] - hot_spot_increase_oil[i]
@@ -283,15 +285,11 @@ class Model:
         load = self.data.load_profile_array
         t_internal = self._get_internal_temp()
 
-        static_hot_spot_incr = self._calculate_static_hot_spot_increase(load)
-
         if use_top_oil and self.data.top_oil_temperature_profile is not None:
             top_oil_temp_profile = self.data.top_oil_temperature_profile
         else:
             top_oil_temp_profile = self._calculate_top_oil_temp_profile(t_internal, dt, load)
-        hot_spot_temp_profile = self._calculate_hot_spot_temp_profile(
-            load, top_oil_temp_profile, static_hot_spot_incr, dt
-        )
+        hot_spot_temp_profile = self._calculate_hot_spot_temp_profile(load, top_oil_temp_profile, dt)
         logger.info("The calculation with the Thermal model is completed.")
         logger.info(f"Max top-oil temperature: {np.max(top_oil_temp_profile)}")
         logger.info(f"Max hot-spot temperature: {np.max(hot_spot_temp_profile)}")

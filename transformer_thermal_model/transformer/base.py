@@ -71,7 +71,7 @@ class Transformer(ABC):
             if previous_top_oil_temp < act <= top_oil_temp:
                 self._switch_cooling(to_onaf=True)
             elif previous_top_oil_temp > deact >= top_oil_temp:
-                self._switch_cooling(to_onaf=False)    
+                self._switch_cooling(to_onaf=False)
 
     @property
     @abstractmethod

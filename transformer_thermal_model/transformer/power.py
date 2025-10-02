@@ -164,7 +164,7 @@ class PowerTransformer(Transformer):
 
         if ONAF_switch is not None:
             self.initial_specs = self.specs.model_copy()
-            self.set_ONAN_ONAF_first_timestamp()    
+            self.set_ONAN_ONAF_first_timestamp()
 
     @property
     def defaults(self) -> DefaultTransformerSpecifications:
