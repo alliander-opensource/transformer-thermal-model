@@ -164,7 +164,10 @@ class PowerTransformer(Transformer):
 
         if ONAF_switch is not None:
             logger.info("ONAF switch settings: %s", ONAF_switch)
-            self.ONAN_specs = self.specs.model_copy()
+            self.ONAF_specs = self.specs.model_copy()
+
+            # Start with ONAN specifications
+            self._switch_cooling(to_onaf=False)
 
     @property
     def defaults(self) -> DefaultTransformerSpecifications:
@@ -319,13 +322,17 @@ class PowerTransformer(Transformer):
         """
         self.specs.hot_spot_fac = hot_spot_factor
 
+
     def _switch_cooling(self, to_onaf: bool) -> None:
         """Switch the cooling type from ONAN to ONAF."""
         if self.ONAF_switch is None:
             raise ValueError("ONAF switch settings are not provided.")
 
         if to_onaf:
-            self.specs.nom_load_sec_side = self.ONAF_switch.nom_load_sec_side_ONAF
+            self.specs = self.ONAF_specs.model_copy()
 
         else:
-            self.specs = self.ONAN_specs.model_copy()
+            self.specs.nom_load_sec_side = self.ONAF_switch.nom_load_sec_side_ONAN
+            self.specs.top_oil_temp_rise = self.ONAF_switch.top_oil_temp_rise_ONAN
+            self.specs.winding_oil_gradient = self.ONAF_switch.winding_oil_gradient_ONAN
+            self.specs.hot_spot_fac = self.ONAF_switch.hot_spot_fac_ONAN

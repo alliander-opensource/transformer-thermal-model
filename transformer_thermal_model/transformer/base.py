@@ -41,8 +41,8 @@ class Transformer(ABC):
             ONAF_switch (ONAFSwitch, optional): The ONAF switch settings. Only used when the cooling type is ONAN.
         """
         self.cooling_type: CoolerType = cooling_type
-        if cooling_type == CoolerType.ONAF and ONAF_switch is not None:
-            raise ValueError("ONAF switch only works when the cooling type is ONAN.")
+        if cooling_type == CoolerType.ONAN and ONAF_switch is not None:
+            raise ValueError("ONAF switch only works when the cooling type is ONAF.")
         self.ONAF_switch = ONAF_switch
 
     @property

@@ -31,10 +31,11 @@ class ONAFSwitch(BaseModel):
         None, description="Temperature threshold for activating the ONAF cooling switch."
     )
 
-    nom_load_sec_side_ONAF: float
-    top_oil_temp_rise_ONAF: float
-    winding_oil_gradient_ONAF: float
-    hot_spot_fac_ONAF: float
+    nom_load_sec_side_ONAN: float
+    top_oil_temp_rise_ONAN: float
+    winding_oil_gradient_ONAN: float
+    hot_spot_fac_ONAN: float
+    
 
     @model_validator(mode="after")
     def check_consistency(self) -> Self:

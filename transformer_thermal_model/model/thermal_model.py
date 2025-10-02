@@ -107,7 +107,7 @@ class Model:
             bool: True if the transformer has an ONAF/ONAN switch, False otherwise.
 
         """
-        return self.transformer.cooling_type == CoolerType.ONAN and self.transformer.ONAF_switch is not None
+        return self.transformer.cooling_type == CoolerType.ONAF and self.transformer.ONAF_switch is not None
 
     def _get_time_step(self) -> np.ndarray:
         """Get the time step between the data points in minutes.
