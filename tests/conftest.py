@@ -158,3 +158,31 @@ def onan_power_sample_profile_dataframe(onan_power_transformer):
         }
     )
     return profile
+
+
+@pytest.fixture(scope="function")
+def constant_load_profile():
+    """Create a constant load profile for testing."""
+    data_points = 4 * 24 * 7
+    datetime_index = pd.date_range("2021-01-01 00:00:00", periods=data_points, freq="h")
+    load_profile = [1000] * data_points
+    ambient_temperature_profile = [30] * data_points
+    return InputProfile.create(
+        datetime_index=datetime_index,
+        ambient_temperature_profile=ambient_temperature_profile,
+        load_profile=load_profile,
+    )
+
+
+@pytest.fixture(scope="function")
+def constant_load_profile_minutes():
+    """Create a constant load profile for testing."""
+    data_points = 4 * 60 * 24 * 7
+    datetime_index = pd.date_range("2021-01-01 00:00:00", periods=data_points, freq="min")
+    load_profile = [1000] * data_points
+    ambient_temperature_profile = [30] * data_points
+    return InputProfile.create(
+        datetime_index=datetime_index,
+        ambient_temperature_profile=ambient_temperature_profile,
+        load_profile=load_profile,
+    )
