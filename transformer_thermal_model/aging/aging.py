@@ -5,6 +5,7 @@
 import logging
 import math
 from collections.abc import Callable
+from typing import assert_never
 
 import pandas as pd
 
@@ -16,7 +17,6 @@ logger = logging.getLogger(__name__)
 def aging_rate_profile(hot_spot_profile: pd.Series, insulation_type: PaperInsulationType) -> pd.Series:
     """The aging rate profile of the provided paper insulation material.
 
-    Given a hot-spot temperature profile, calculate the days aged for each time step in the profile.
     Given a hot-spot temperature profile, calculate the days aged for each time step in the profile.
 
     Args:
@@ -103,12 +103,11 @@ def _thermal_upgraded_paper_aging_rate(hot_spot_temp: float) -> float:
     return math.exp(part_1 - part_2)
 
 
-def _aging_rate_method(insulation_type: PaperInsulationType) -> Callable:
-    if insulation_type == PaperInsulationType.NORMAL:
-        return _normal_paper_aging_rate
-    elif insulation_type == PaperInsulationType.THERMAL_UPGRADED:
-        return _thermal_upgraded_paper_aging_rate
-    else:
-        raise ValueError(
-            f"Unknown insulation type: {insulation_type}. Must be one of {PaperInsulationType.__members__}."
-        )
+def _aging_rate_method(insulation_type: PaperInsulationType) -> Callable[[float], float]:
+    match insulation_type:
+        case PaperInsulationType.NORMAL:
+            return _normal_paper_aging_rate
+        case PaperInsulationType.THERMAL_UPGRADED:
+            return _thermal_upgraded_paper_aging_rate
+        case _:
+            assert_never(insulation_type)
