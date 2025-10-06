@@ -64,6 +64,9 @@ coverage.xml
 .pytest_cache/
 cover/
 
+# Mutants from mutmut
+mutants/
+
 # Translations
 *.mo
 *.pot
