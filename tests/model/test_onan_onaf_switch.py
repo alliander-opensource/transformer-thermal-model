@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: MPL-2.0
 
+import math
+
 import pytest
 
 from transformer_thermal_model.cooler import CoolerType
@@ -144,9 +146,16 @@ def test_complete_onan_onaf_switch_fans_status(
         user_specs=default_user_trafo_specs, cooling_type=CoolerType.ONAF, onaf_switch=onaf_switch
     )
     model = Model(transformer=transformer, temperature_profile=constant_load_profile)
-    output = model.run()
-    assert output.top_oil_temp_profile.iloc[45] > output.top_oil_temp_profile.iloc[55]
-    assert output.top_oil_temp_profile.iloc[75] < output.top_oil_temp_profile.iloc[85]
+    output_2 = model.run()
+    assert output_2.top_oil_temp_profile.iloc[45] > output_2.top_oil_temp_profile.iloc[55]
+    assert output_2.top_oil_temp_profile.iloc[75] < output_2.top_oil_temp_profile.iloc[85]
+
+    # Check that an onan onaf switch with long periods of onaf reaches the same steady state as a constant onaf
+    onaf_transformer = PowerTransformer(user_specs=default_user_trafo_specs, cooling_type=CoolerType.ONAF)
+    onaf_model = Model(transformer=onaf_transformer, temperature_profile=constant_load_profile)
+    onaf_output = onaf_model.run()
+    assert math.isclose(onaf_output.top_oil_temp_profile.iloc[-1], output.top_oil_temp_profile.iloc[-1], rel_tol=1e-2)
+    assert math.isclose(onaf_output.hot_spot_temp_profile.iloc[-1], output.hot_spot_temp_profile.iloc[-1], rel_tol=1e-2)
 
 
 def test_complete_onan_onaf_switch_temp_threshold(

@@ -161,7 +161,7 @@ class PowerTransformer(Transformer):
 
         self.specs = TransformerSpecifications.create(self.defaults, user_specs)
 
-        # Use CoolingSwitchController if ONAF_switch is provided
+        # Use CoolingSwitchController if onaf_switch is provided
         self.cooling_controller = (
             CoolingSwitchController(onaf_switch=onaf_switch, specs=self.specs) if onaf_switch else None
         )

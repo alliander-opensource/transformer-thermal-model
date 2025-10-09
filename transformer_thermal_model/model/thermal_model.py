@@ -107,14 +107,17 @@ class Model:
         self.check_config()
 
     def check_config(self) -> None:
-        """Check if the configuration is valid."""
+        """Check if the configuration is valid.
+
+        If the transformer is a ThreeWindingTransformer, the input profile must be a ThreeWindingInputProfile.
+        """
         if isinstance(self.transformer, ThreeWindingTransformer) and not isinstance(
             self.data, ThreeWindingInputProfile
         ):
             raise ValueError("A ThreeWindingTransformer requires a ThreeWindingInputProfile.")
-        if isinstance(self.transformer, PowerTransformer) and not isinstance(self.data, InputProfile):
+        elif isinstance(self.transformer, PowerTransformer) and not isinstance(self.data, InputProfile):
             raise ValueError("A PowerTransformer requires an InputProfile.")
-        if isinstance(self.transformer, DistributionTransformer) and not isinstance(self.data, InputProfile):
+        elif isinstance(self.transformer, DistributionTransformer) and not isinstance(self.data, InputProfile):
             raise ValueError("A DistributionTransformer requires an InputProfile.")
         if (
             self.transformer.cooling_controller
@@ -249,6 +252,11 @@ class Model:
                 hot_spot_temp_profile[i] = (
                     top_oil_temp_profile[i] + hot_spot_increase_windings[i] - hot_spot_increase_oil[i]
                 )
+                new_specs = self.transformer.check_switch_and_get_new_specs(
+                    top_oil_temp_profile[i], top_oil_temp_profile[i - 1], i
+                )
+                if new_specs:
+                    self.transformer.specs = new_specs
 
         # For a three winding transformer with multiple load profiles:
         else:
@@ -277,6 +285,11 @@ class Model:
                     hot_spot_temp_profile[profile][i] = (
                         top_oil_temp_profile[i] + hot_spot_increase_windings[i] - hot_spot_increase_oil[i]
                     )
+                    new_specs = self.transformer.check_switch_and_get_new_specs(
+                        top_oil_temp_profile[i], top_oil_temp_profile[i - 1], i
+                    )
+                    if new_specs:
+                        self.transformer.specs = new_specs
 
         return hot_spot_temp_profile
 
@@ -319,6 +332,7 @@ class Model:
             top_oil_temp_profile = self.data.top_oil_temperature_profile
         else:
             top_oil_temp_profile = self._calculate_top_oil_temp_profile(t_internal, dt, load)
+        self.transformer.set_ONAN_ONAF_first_timestamp()
         hot_spot_temp_profile = self._calculate_hot_spot_temp_profile(load, top_oil_temp_profile, dt)
         logger.info("The calculation with the Thermal model is completed.")
         logger.info(f"Max top-oil temperature: {np.max(top_oil_temp_profile)}")
