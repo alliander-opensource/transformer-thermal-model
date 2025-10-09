@@ -3,7 +3,14 @@
 # SPDX-License-Identifier: MPL-2.0
 
 from .input_profile import InputProfile, ThreeWindingInputProfile
-from .onaf_switch import FanSwitchConfig, ONAFSwitch
+from .onaf_switch import FanSwitchConfig, ONAFSwitch, ONANParameters
 from .output_profile import OutputProfile
 
-__all__ = ["InputProfile", "OutputProfile", "ThreeWindingInputProfile", "FanSwitchConfig", "ONAFSwitch"]
+__all__ = [
+    "InputProfile",
+    "OutputProfile",
+    "ThreeWindingInputProfile",
+    "FanSwitchConfig",
+    "ONAFSwitch",
+    "ONANParameters",
+]

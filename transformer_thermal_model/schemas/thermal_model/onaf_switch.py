@@ -21,7 +21,47 @@ class FanSwitchConfig(BaseModel):
         return self
 
 
-class ONAFSwitch(BaseModel):
+class BaseONANParameters(BaseModel):
+    """Base class representing common ONAN (Oil Natural Air Natural) cooling parameters.
+
+    THis is used when an ONAF transformer switches to ONAN cooling.
+    """
+
+    top_oil_temp_rise: float
+    time_const_oil: float
+
+
+class ONANParameters(BaseONANParameters):
+    """Class representing ONAN (Oil Natural Air Natural) cooling parameters."""
+
+    time_const_windings: float
+    load_loss: float
+    nom_load_sec_side: float
+    winding_oil_gradient: float
+    hot_spot_fac: float
+
+
+class ONANWindingParameters(BaseModel):
+    """Class representing ONAN (Oil Natural Air Natural) cooling parameters for a single winding."""
+
+    time_const_winding: float
+    nom_load: float
+    winding_oil_gradient: float
+    hot_spot_fac: float
+
+
+class ThreeWindingONANParameters(BaseONANParameters):
+    """Class representing ONAN (Oil Natural Air Natural) cooling parameters for three-winding transformers."""
+
+    onan_lv_winding: ONANWindingParameters = Field(..., description="ONAN parameters for the LV winding.")
+    onan_mv_winding: ONANWindingParameters = Field(..., description="ONAN parameters for the MV winding.")
+    onan_hv_winding: ONANWindingParameters = Field(..., description="ONAN parameters for the HV winding.")
+    load_loss_mv_lv: float
+    load_loss_hv_lv: float
+    load_loss_hv_mv: float
+
+
+class ONAFSwitchBase(BaseModel):
     """Class representing the ONAF (Oil Natural Air Forced) cooling switch status."""
 
     fans_status: list[bool] | None = Field(
@@ -30,11 +70,6 @@ class ONAFSwitch(BaseModel):
     temperature_threshold: FanSwitchConfig | None = Field(
         None, description="Temperature threshold for activating the ONAF cooling switch."
     )
-
-    nom_load_sec_side_ONAN: float
-    top_oil_temp_rise_ONAN: float
-    winding_oil_gradient_ONAN: float
-    hot_spot_fac_ONAN: float
 
     @model_validator(mode="after")
     def check_consistency(self) -> Self:
@@ -50,3 +85,25 @@ class ONAFSwitch(BaseModel):
         if self.fans_status is None and self.temperature_threshold is None:
             raise ValueError("Either 'fans_status' or 'temperature_threshold' must be provided.")
         return self
+
+
+class ONAFSwitch(ONAFSwitchBase):
+    """Class representing the ONAF (Oil Natural Air Forced) cooling switch settings.
+
+    This class includes the ONAN parameters to be used when the transformer switches to ONAN cooling.
+    """
+
+    onan_parameters: ONANParameters = Field(
+        ..., description="ONAN parameters to be used when the transformer switches to ONAN cooling."
+    )
+
+
+class ThreeWindingONAFSwitch(ONAFSwitchBase):
+    """Class representing the ONAF (Oil Natural Air Forced) cooling switch settings for three-winding transformers.
+
+    This class includes the ONAN parameters to be used when the transformer switches to ONAN cooling.
+    """
+
+    onan_parameters: ThreeWindingONANParameters = Field(
+        ..., description="ONAN parameters to be used when the transformer switches to ONAN cooling."
+    )

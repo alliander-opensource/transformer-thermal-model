@@ -8,8 +8,14 @@ import numpy as np
 import pandas as pd
 
 from transformer_thermal_model.schemas import OutputProfile
-from transformer_thermal_model.schemas.thermal_model.input_profile import BaseInputProfile
+from transformer_thermal_model.schemas.thermal_model.input_profile import (
+    BaseInputProfile,
+    InputProfile,
+    ThreeWindingInputProfile,
+)
 from transformer_thermal_model.transformer import ThreeWindingTransformer, Transformer
+from transformer_thermal_model.transformer.distribution import DistributionTransformer
+from transformer_thermal_model.transformer.power import PowerTransformer
 
 logger = logging.getLogger(__name__)
 
@@ -98,11 +104,22 @@ class Model:
         self.transformer = transformer
         self.data = temperature_profile
         self.init_top_oil_temp = init_top_oil_temp
+        self.check_config()
 
+    def check_config(self) -> None:
+        """Check if the configuration is valid."""
+        if isinstance(self.transformer, ThreeWindingTransformer) and not isinstance(
+            self.data, ThreeWindingInputProfile
+        ):
+            raise ValueError("A ThreeWindingTransformer requires a ThreeWindingInputProfile.")
+        if isinstance(self.transformer, PowerTransformer) and not isinstance(self.data, InputProfile):
+            raise ValueError("A PowerTransformer requires an InputProfile.")
+        if isinstance(self.transformer, DistributionTransformer) and not isinstance(self.data, InputProfile):
+            raise ValueError("A DistributionTransformer requires an InputProfile.")
         if (
-            transformer.ONAF_switch
-            and transformer.ONAF_switch.fans_status
-            and len(transformer.ONAF_switch.fans_status) != len(temperature_profile)
+            self.transformer.cooling_controller
+            and self.transformer.cooling_controller.onaf_switch.fans_status
+            and len(self.transformer.cooling_controller.onaf_switch.fans_status) != len(self.data)
         ):
             raise ValueError(
                 "The length of the fans_status list in the ONAF_switch must be equal to the length of the "
@@ -184,7 +201,11 @@ class Model:
             else:
                 top_k = self.transformer._end_temperature_top_oil(load[:, i])
             top_oil_temp_profile[i] = self._update_top_oil_temp(top_oil_temp_profile[i - 1], t_internal[i], top_k, f1)
-            self.transformer.check_onaf_switch(top_oil_temp_profile[i], top_oil_temp_profile[i - 1], i)
+            new_specs = self.transformer.check_switch_and_get_new_specs(
+                top_oil_temp_profile[i], top_oil_temp_profile[i - 1], i
+            )
+            if new_specs:
+                self.transformer.specs = new_specs
 
         return top_oil_temp_profile
 

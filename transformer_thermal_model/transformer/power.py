@@ -16,6 +16,7 @@ from transformer_thermal_model.schemas import (
     UserTransformerSpecifications,
 )
 from transformer_thermal_model.schemas.thermal_model import ONAFSwitch
+from transformer_thermal_model.transformer.cooling_switch_controller import CoolingSwitchController
 
 from .base import Transformer
 
@@ -145,26 +146,27 @@ class PowerTransformer(Transformer):
             cooling_type (CoolerType): The cooling type. Can be ONAN or ONAF.
             internal_component_specs (TransformerComponentSpecifications, optional): The internal component
                 specifications, which are used to calculate the limiting component. Defaults to None.
-            ONAF_switch (ONAFSwitch, optional): The ONAF switch settings. Only used when the cooling type is ONAN.
+            ONAF_switch (ONAFSwitch, optional): The ONAF switch settings. Only used when the cooling type is ONAF.
 
         """
         logger.info("Creating a power transformer object.")
         logger.info("User transformer specifications: %s", user_specs)
         logger.info("Cooling type: %s", cooling_type)
 
+        self.cooling_type: CoolerType = cooling_type
+
         if internal_component_specs is not None:
             logger.info("Internal component specifications: %s", internal_component_specs)
             self.internal_component_specs = internal_component_specs
 
-        super().__init__(
-            cooling_type=cooling_type,
-            ONAF_switch=ONAF_switch,
-        )
         self.specs = TransformerSpecifications.create(self.defaults, user_specs)
 
-        if ONAF_switch is not None:
-            self.initial_specs = self.specs.model_copy()
-            self.set_ONAN_ONAF_first_timestamp()
+        # Use CoolingSwitchController if ONAF_switch is provided
+        self.cooling_controller = (
+            CoolingSwitchController(onaf_switch=ONAF_switch, specs=self.specs) if ONAF_switch else None
+        )
+
+        super().__init__(cooling_type=cooling_type, cooling_controller=self.cooling_controller)
 
     @property
     def defaults(self) -> DefaultTransformerSpecifications:
@@ -318,18 +320,3 @@ class PowerTransformer(Transformer):
             hot_spot_factor (float): The new hot-spot factor resulting from calibration.
         """
         self.specs.hot_spot_fac = hot_spot_factor
-
-    def _switch_cooling(self, to_onaf: bool) -> None:
-        """Switch the cooling type from ONAN to ONAF."""
-        if self.ONAF_switch is None:
-            raise ValueError("ONAF switch settings are not provided.")
-
-        if to_onaf:
-            self.specs = self.initial_specs.model_copy()
-
-        else:
-            print("Switching to ONAN specifications.")
-            self.specs.nom_load_sec_side = self.ONAF_switch.nom_load_sec_side_ONAN
-            self.specs.top_oil_temp_rise = self.ONAF_switch.top_oil_temp_rise_ONAN
-            self.specs.winding_oil_gradient = self.ONAF_switch.winding_oil_gradient_ONAN
-            self.specs.hot_spot_fac = self.ONAF_switch.hot_spot_fac_ONAN

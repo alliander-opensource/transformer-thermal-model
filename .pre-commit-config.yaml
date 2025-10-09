@@ -12,13 +12,13 @@ repos:
     -   id: pre-commit-update
 
 -   repo: https://github.com/fsfe/reuse-tool
-    rev: v5.1.1
+    rev: v6.1.2
     hooks:
     -   id: reuse
 
 -   repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.
-    rev: v0.13.3
+    rev: v0.14.0
     hooks:
       # Run the linter.
     -   id: ruff

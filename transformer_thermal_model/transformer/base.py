@@ -10,8 +10,10 @@ from transformer_thermal_model.cooler import CoolerType
 from transformer_thermal_model.schemas import (
     BaseDefaultTransformerSpecifications,
     BaseTransformerSpecifications,
+    ThreeWindingTransformerSpecifications,
+    TransformerSpecifications,
 )
-from transformer_thermal_model.schemas.thermal_model.onaf_switch import ONAFSwitch
+from transformer_thermal_model.transformer.cooling_switch_controller import CoolingSwitchController
 
 
 class Transformer(ABC):
@@ -30,48 +32,32 @@ class Transformer(ABC):
     cooling_type: CoolerType
     specs: BaseTransformerSpecifications
 
-    def __init__(self, cooling_type: CoolerType, ONAF_switch: ONAFSwitch | None = None):
+    def __init__(self, cooling_type: CoolerType, cooling_controller: CoolingSwitchController | None = None):
         """Initialize the Transformer object.
 
         Args:
-            user_specs (UserTransformerSpecifications): The transformer specifications that you need to
-                provide to build the transformer. Any optional specifications not provided will be taken from the
-                default specifications.
             cooling_type (CoolerType): The cooling type. Can be ONAN, ONAF.
-            ONAF_switch (ONAFSwitch, optional): The ONAF switch settings. Only used when the cooling type is ONA.
+            cooling_controller (CoolingSwitchController): The cooling switch controller.
+            ONAF_switch (ONAFSwitch, optional): The ONAF switch settings. Only used when the cooling type is ONAF.
         """
         self.cooling_type: CoolerType = cooling_type
-        if cooling_type == CoolerType.ONAN and ONAF_switch is not None:
+        if cooling_type == CoolerType.ONAN and cooling_controller is not None:
             raise ValueError("ONAF switch only works when the cooling type is ONAF.")
-        self.ONAF_switch = ONAF_switch
+        self.cooling_controller = cooling_controller
+        self.set_ONAN_ONAF_first_timestamp()
 
     def set_ONAN_ONAF_first_timestamp(self) -> None:
-        """Set the initial cooling type based on the ONAF switch settings."""
-        if self.ONAF_switch is not None:
-            if self.ONAF_switch.fans_status is not None:
-                if not self.ONAF_switch.fans_status[0]:
-                    self._switch_cooling(to_onaf=False)
-            elif self.ONAF_switch.temperature_threshold is not None:
-                self._switch_cooling(to_onaf=False)
+        """Delegate initial cooling type logic to CoolingSwitchController."""
+        if self.cooling_controller:
+            self.specs = self.cooling_controller.get_starting_specs()
 
-    def check_onaf_switch(self, top_oil_temp: int, previous_top_oil_temp: int, index: int) -> None:
-        """Check and handle the ONAF/ONAN switch based on the top-oil temperature and the switch settings."""
-        if self.ONAF_switch is None:
-            return
-
-        fans_status = self.ONAF_switch.fans_status
-        temp_threshold = self.ONAF_switch.temperature_threshold
-
-        if fans_status is not None and index < len(fans_status) - 1:
-            prev, curr = fans_status[index], fans_status[index + 1]
-            if prev != curr:
-                self._switch_cooling(to_onaf=curr)
-        elif temp_threshold is not None:
-            act, deact = temp_threshold.activation_temp, temp_threshold.deactivation_temp
-            if previous_top_oil_temp < act <= top_oil_temp:
-                self._switch_cooling(to_onaf=True)
-            elif previous_top_oil_temp > deact >= top_oil_temp:
-                self._switch_cooling(to_onaf=False)
+    def check_switch_and_get_new_specs(
+        self, top_oil_temp: int, previous_top_oil_temp: int, index: int
+    ) -> TransformerSpecifications | ThreeWindingTransformerSpecifications | None:
+        """Delegate ONAN/ONAF switch logic to CoolingSwitchController."""
+        if self.cooling_controller:
+            return self.cooling_controller.check_switch_and_get_new_specs(top_oil_temp, previous_top_oil_temp, index)
+        return None
 
     @property
     @abstractmethod
@@ -90,9 +76,4 @@ class Transformer(ABC):
 
     @abstractmethod
     def _end_temperature_top_oil(self, load: np.ndarray) -> float:
-        pass
-
-    @abstractmethod
-    def _switch_cooling(self, to_onaf: bool) -> None:
-        """Switch the cooling type from ONAN to ONAF."""
         pass
