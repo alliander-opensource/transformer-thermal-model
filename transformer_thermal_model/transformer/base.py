@@ -37,8 +37,8 @@ class Transformer(ABC):
 
         Args:
             cooling_type (CoolerType): The cooling type. Can be ONAN, ONAF.
-            cooling_controller (CoolingSwitchController): The cooling switch controller.
-            ONAF_switch (ONAFSwitch, optional): The ONAF switch settings. Only used when the cooling type is ONAF.
+            cooling_controller (CoolingSwitchController | None): The cooling controller that handles the ONAN/ONAF
+                switching logic.
         """
         self.cooling_type: CoolerType = cooling_type
         if cooling_type == CoolerType.ONAN and cooling_controller is not None:

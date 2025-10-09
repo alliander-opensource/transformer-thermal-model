@@ -122,7 +122,7 @@ class Model:
             and len(self.transformer.cooling_controller.onaf_switch.fans_status) != len(self.data)
         ):
             raise ValueError(
-                "The length of the fans_status list in the ONAF_switch must be equal to the length of the "
+                "The length of the fans_status list in the onaf_switch must be equal to the length of the "
                 "temperature profile."
             )
 

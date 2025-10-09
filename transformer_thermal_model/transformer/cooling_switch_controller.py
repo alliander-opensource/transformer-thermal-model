@@ -23,7 +23,7 @@ class CoolingSwitchController:
     ):
         """Initialize the controller with the given ONAF switch settings and transformer specifications."""
         self.onaf_switch = onaf_switch
-        self.original_ONAF_specs = specs.model_copy()
+        self.original_onaf_specs = specs.model_copy()
 
     def get_starting_specs(self) -> TransformerSpecifications | ThreeWindingTransformerSpecifications:
         """Get the initial specifications based on the ONAF switch settings.
@@ -36,14 +36,14 @@ class CoolingSwitchController:
                 return self.get_onan_specs()
         elif self.onaf_switch.temperature_threshold is not None:
             return self.get_onan_specs()
-        return self.original_ONAF_specs
+        return self.original_onaf_specs
 
     def get_onan_specs(self) -> TransformerSpecifications | ThreeWindingTransformerSpecifications:
         """Function that returns the onan specs for a transformer.
 
         It decides, based on the specs whether to use the three winding specs or not.
         """
-        specs = self.original_ONAF_specs.model_copy()
+        specs = self.original_onaf_specs.model_copy()
         specs.top_oil_temp_rise = self.onaf_switch.onan_parameters.top_oil_temp_rise
         specs.time_const_oil = self.onaf_switch.onan_parameters.time_const_oil
 
@@ -113,7 +113,7 @@ class CoolingSwitchController:
         prev, curr = fans_status[index], fans_status[index + 1]
         if prev != curr:
             if curr:
-                return self.original_ONAF_specs
+                return self.original_onaf_specs
             else:
                 return self.get_onan_specs()
         return None
@@ -124,7 +124,7 @@ class CoolingSwitchController:
         """Handle switching based on temperature thresholds."""
         act, deact = temp_threshold.activation_temp, temp_threshold.deactivation_temp
         if previous_top_oil_temp < act <= top_oil_temp:
-            return self.original_ONAF_specs
+            return self.original_onaf_specs
         elif previous_top_oil_temp > deact >= top_oil_temp:
             return self.get_onan_specs()
         return None
