@@ -23,7 +23,7 @@ class CoolingSwitchController:
     ):
         """Initialize the controller with the given ONAF switch settings and transformer specifications."""
         self.onaf_switch = onaf_switch
-        self.original_onaf_specs = specs.model_copy()
+        self.original_onaf_specs = specs.model_copy(deep=True)
 
     def get_starting_specs(self) -> TransformerSpecifications | ThreeWindingTransformerSpecifications:
         """Get the initial specifications based on the ONAF switch settings.
@@ -43,7 +43,7 @@ class CoolingSwitchController:
 
         It decides, based on the specs whether to use the three winding specs or not.
         """
-        specs = self.original_onaf_specs.model_copy()
+        specs = self.original_onaf_specs.model_copy(deep=True)
         specs.top_oil_temp_rise = self.onaf_switch.onan_parameters.top_oil_temp_rise
         specs.time_const_oil = self.onaf_switch.onan_parameters.time_const_oil
 

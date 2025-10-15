@@ -203,7 +203,7 @@ def test_threewinding_onan_onaf_switch(
     three_winding_input_profile: ThreeWindingInputProfile,
 ):
     """Check that a three-winding transformer can be created with an ONAF switch."""
-    is_on = [False] * 50 + [True] * (len(three_winding_input_profile.datetime_index) - 50)
+    is_on = [False] * 10 + [True] * (len(three_winding_input_profile.datetime_index) - 10)
     onan_parameters = ThreeWindingONANParameters(
         onan_lv_winding=ONANWindingParameters(
             time_const_winding=10, nom_load=800, winding_oil_gradient=18, hot_spot_fac=1.1
@@ -216,13 +216,38 @@ def test_threewinding_onan_onaf_switch(
         ),
         top_oil_temp_rise=55,
         time_const_oil=160,
-        load_loss_mv_lv=300,
-        load_loss_hv_lv=300,
-        load_loss_hv_mv=300,
+        load_loss_mv_lv=100,
+        load_loss_hv_lv=100,
+        load_loss_hv_mv=100,
     )
     onaf_switch = ThreeWindingONAFSwitch(fans_status=is_on, temperature_threshold=None, onan_parameters=onan_parameters)
     transformer = ThreeWindingTransformer(
         user_specs=user_three_winding_transformer_specs, cooling_type=CoolerType.ONAF, onaf_switch=onaf_switch
     )
     model = Model(transformer=transformer, temperature_profile=three_winding_input_profile)
-    model.run()
+    onan_onaf_results = model.run()
+
+    # Check that an onan onaf switch with long periods of onaf reaches the same steady state as a constant onaf
+    onaf_transformer = ThreeWindingTransformer(
+        user_specs=user_three_winding_transformer_specs, cooling_type=CoolerType.ONAF
+    )
+    onaf_model = Model(transformer=onaf_transformer, temperature_profile=three_winding_input_profile)
+    onaf_results = onaf_model.run()
+    assert math.isclose(
+        onaf_results.top_oil_temp_profile.iloc[-1], onan_onaf_results.top_oil_temp_profile.iloc[-1], rel_tol=1e-2
+    )
+    assert math.isclose(
+        onaf_results.hot_spot_temp_profile["low_voltage_side"].iloc[-1],
+        onan_onaf_results.hot_spot_temp_profile["low_voltage_side"].iloc[-1],
+        rel_tol=1e-2,
+    )
+    assert math.isclose(
+        onaf_results.hot_spot_temp_profile["middle_voltage_side"].iloc[-1],
+        onan_onaf_results.hot_spot_temp_profile["middle_voltage_side"].iloc[-1],
+        rel_tol=1e-2,
+    )
+    assert math.isclose(
+        onaf_results.hot_spot_temp_profile["high_voltage_side"].iloc[-1],
+        onan_onaf_results.hot_spot_temp_profile["high_voltage_side"].iloc[-1],
+        rel_tol=1e-2,
+    )

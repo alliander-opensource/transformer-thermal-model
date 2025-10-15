@@ -13,9 +13,12 @@ from transformer_thermal_model.schemas.thermal_model.input_profile import (
     InputProfile,
     ThreeWindingInputProfile,
 )
-from transformer_thermal_model.transformer import ThreeWindingTransformer, Transformer
-from transformer_thermal_model.transformer.distribution import DistributionTransformer
-from transformer_thermal_model.transformer.power import PowerTransformer
+from transformer_thermal_model.transformer import (
+    DistributionTransformer,
+    PowerTransformer,
+    ThreeWindingTransformer,
+    Transformer,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -104,6 +107,7 @@ class Model:
         self.transformer = transformer
         self.data = temperature_profile
         self.init_top_oil_temp = init_top_oil_temp
+
         self.check_config()
 
     def check_config(self) -> None:
@@ -204,6 +208,7 @@ class Model:
             else:
                 top_k = self.transformer._end_temperature_top_oil(load[:, i])
             top_oil_temp_profile[i] = self._update_top_oil_temp(top_oil_temp_profile[i - 1], t_internal[i], top_k, f1)
+
             new_specs = self.transformer.check_switch_and_get_new_specs(
                 top_oil_temp_profile[i], top_oil_temp_profile[i - 1], i
             )
@@ -264,6 +269,7 @@ class Model:
             n_profiles = load.shape[0]
             n_steps = load.shape[1]
             for profile in range(n_profiles):
+                self.transformer.set_ONAN_ONAF_first_timestamp()
                 hot_spot_increase_windings = np.zeros(n_steps)
                 hot_spot_increase_oil = np.zeros(n_steps)
                 for i in range(1, n_steps):
@@ -332,7 +338,6 @@ class Model:
             top_oil_temp_profile = self.data.top_oil_temperature_profile
         else:
             top_oil_temp_profile = self._calculate_top_oil_temp_profile(t_internal, dt, load)
-        self.transformer.set_ONAN_ONAF_first_timestamp()
         hot_spot_temp_profile = self._calculate_hot_spot_temp_profile(load, top_oil_temp_profile, dt)
         logger.info("The calculation with the Thermal model is completed.")
         logger.info(f"Max top-oil temperature: {np.max(top_oil_temp_profile)}")

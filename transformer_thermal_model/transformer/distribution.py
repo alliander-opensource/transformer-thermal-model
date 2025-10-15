@@ -98,7 +98,12 @@ class DistributionTransformer(Transformer):
         return self.specs.top_oil_temp_rise + self.specs.amb_temp_surcharge
 
     def _end_temperature_top_oil(self, load: np.ndarray) -> float:
-        """Calculate the end temperature of the top-oil."""
+        """Calculate the end temperature of the top-oil.
+
+        The load is expected to be a 1D array with a single value for a power transformer. This is to keep the
+        interface consistent with the three-winding transformer, which can have multiple load profiles. In the
+        code we therefore access the first element of the array.
+        """
         load_ratio = np.power(load[0] / self.specs.nom_load_sec_side, 2)
         total_loss_ratio = (self.specs.no_load_loss + self.specs.load_loss * load_ratio) / (
             self.specs.no_load_loss + self.specs.load_loss
