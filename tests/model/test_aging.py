@@ -28,3 +28,13 @@ def test_paper_aging():
 
     total_aging = days_aged(hotspot_profile, "thermal upgraded")
     assert total_aging == pytest.approx(0.35, rel=1e-2)
+
+
+def test_assert_never_is_reached_with_invalid_values():
+    """Test that assert_never is reached with invalid values."""
+    one_day = 24 * 4 + 1
+    datetime_index = pd.date_range("2020-01-01", periods=one_day, freq="15min", tz="UTC")
+    hotspot_profile = pd.Series(100, index=datetime_index)
+
+    with pytest.raises(AssertionError):
+        days_aged(hotspot_profile, "invalid_value")
