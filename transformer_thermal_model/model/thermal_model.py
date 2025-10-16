@@ -200,6 +200,8 @@ class Model:
         top_oil_temp_profile = np.zeros_like(t_internal, dtype=np.float64)
         top_oil_temp_profile[0] = self.init_top_oil_temp if self.init_top_oil_temp is not None else t_internal[0]
 
+        self.transformer.set_ONAN_ONAF_first_timestamp(init_top_oil_temp=top_oil_temp_profile[0])
+
         # Handle both 1D (two-winding) and 2D (three-winding) load arrays
         for i in range(1, len(t_internal)):
             f1 = self._calculate_f1(dt[i], self.transformer.specs.time_const_oil)
@@ -237,6 +239,7 @@ class Model:
 
         # For a two winding transformer:
         if load.ndim == 1:
+            self.transformer.set_ONAN_ONAF_first_timestamp(init_top_oil_temp=top_oil_temp_profile[0])
             hot_spot_temp_profile[0] = top_oil_temp_profile[0]
             hot_spot_increase_windings = np.zeros_like(load)
             hot_spot_increase_oil = np.zeros_like(load)
@@ -269,7 +272,7 @@ class Model:
             n_profiles = load.shape[0]
             n_steps = load.shape[1]
             for profile in range(n_profiles):
-                self.transformer.set_ONAN_ONAF_first_timestamp()
+                self.transformer.set_ONAN_ONAF_first_timestamp(init_top_oil_temp=top_oil_temp_profile[0])
                 hot_spot_increase_windings = np.zeros(n_steps)
                 hot_spot_increase_oil = np.zeros(n_steps)
                 for i in range(1, n_steps):

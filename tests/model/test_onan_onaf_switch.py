@@ -51,6 +51,7 @@ def test_start_cooling_type(default_user_trafo_specs: UserTransformerSpecificati
     transformer = PowerTransformer(
         user_specs=default_user_trafo_specs, cooling_type=CoolerType.ONAF, onaf_switch=onaf_switch
     )
+    transformer.set_ONAN_ONAF_first_timestamp(init_top_oil_temp=20)
     assert transformer.specs.nom_load_sec_side == default_user_trafo_specs.nom_load_sec_side
     assert transformer.specs.top_oil_temp_rise == default_user_trafo_specs.top_oil_temp_rise
     assert transformer.specs.winding_oil_gradient == default_user_trafo_specs.winding_oil_gradient
@@ -61,6 +62,7 @@ def test_start_cooling_type(default_user_trafo_specs: UserTransformerSpecificati
     transformer = PowerTransformer(
         user_specs=default_user_trafo_specs, cooling_type=CoolerType.ONAF, onaf_switch=onaf_switch
     )
+    transformer.set_ONAN_ONAF_first_timestamp(init_top_oil_temp=20)
     assert transformer.specs.nom_load_sec_side == onaf_switch.onan_parameters.nom_load_sec_side
     assert transformer.specs.top_oil_temp_rise == onaf_switch.onan_parameters.top_oil_temp_rise
     assert transformer.specs.winding_oil_gradient == onaf_switch.onan_parameters.winding_oil_gradient
@@ -74,10 +76,21 @@ def test_start_cooling_type(default_user_trafo_specs: UserTransformerSpecificati
     transformer = PowerTransformer(
         user_specs=default_user_trafo_specs, cooling_type=CoolerType.ONAF, onaf_switch=onaf_switch
     )
+    transformer.set_ONAN_ONAF_first_timestamp(init_top_oil_temp=20)
     assert transformer.specs.nom_load_sec_side == onaf_switch.onan_parameters.nom_load_sec_side
     assert transformer.specs.top_oil_temp_rise == onaf_switch.onan_parameters.top_oil_temp_rise
     assert transformer.specs.winding_oil_gradient == onaf_switch.onan_parameters.winding_oil_gradient
     assert transformer.specs.hot_spot_fac == onaf_switch.onan_parameters.hot_spot_fac
+
+    # If the initial top-oil temperature is above the activation temperature, it should start in ONAF mode
+    transformer = PowerTransformer(
+        user_specs=default_user_trafo_specs, cooling_type=CoolerType.ONAF, onaf_switch=onaf_switch
+    )
+    transformer.set_ONAN_ONAF_first_timestamp(init_top_oil_temp=90)
+    assert transformer.specs.nom_load_sec_side == default_user_trafo_specs.nom_load_sec_side
+    assert transformer.specs.top_oil_temp_rise == default_user_trafo_specs.top_oil_temp_rise
+    assert transformer.specs.winding_oil_gradient == default_user_trafo_specs.winding_oil_gradient
+    assert transformer.specs.hot_spot_fac == default_user_trafo_specs.hot_spot_fac
 
 
 def test_wrong_onaf_switch(default_user_trafo_specs: UserTransformerSpecifications, iec_load_profile):

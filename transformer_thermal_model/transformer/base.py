@@ -44,12 +44,11 @@ class Transformer(ABC):
         if cooling_type == CoolerType.ONAN and cooling_controller is not None:
             raise ValueError("ONAF switch only works when the cooling type is ONAF.")
         self.cooling_controller = cooling_controller
-        self.set_ONAN_ONAF_first_timestamp()
 
-    def set_ONAN_ONAF_first_timestamp(self) -> None:
+    def set_ONAN_ONAF_first_timestamp(self, init_top_oil_temp: float) -> None:
         """Delegate initial cooling type logic to CoolingSwitchController."""
         if self.cooling_controller:
-            self.specs = self.cooling_controller.get_starting_specs()
+            self.specs = self.cooling_controller.get_starting_specs(init_top_oil_temp=init_top_oil_temp)
 
     def check_switch_and_get_new_specs(
         self, top_oil_temp: int, previous_top_oil_temp: int, index: int

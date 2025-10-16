@@ -25,7 +25,10 @@ class CoolingSwitchController:
         self.onaf_switch = onaf_switch
         self.original_onaf_specs = specs.model_copy(deep=True)
 
-    def get_starting_specs(self) -> TransformerSpecifications | ThreeWindingTransformerSpecifications:
+    def get_starting_specs(
+        self,
+        init_top_oil_temp: float,
+    ) -> TransformerSpecifications | ThreeWindingTransformerSpecifications:
         """Get the initial specifications based on the ONAF switch settings.
 
         If the fans are off at the start or if a temperature threshold is set,
@@ -34,7 +37,10 @@ class CoolingSwitchController:
         if self.onaf_switch.fans_status is not None:
             if not self.onaf_switch.fans_status[0]:
                 return self.get_onan_specs()
-        elif self.onaf_switch.temperature_threshold is not None:
+        elif (
+            self.onaf_switch.temperature_threshold is not None
+            and init_top_oil_temp < self.onaf_switch.temperature_threshold.activation_temp
+        ):
             return self.get_onan_specs()
         return self.original_onaf_specs
 
