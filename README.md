@@ -5,6 +5,11 @@ SPDX-License-Identifier: MPL-2.0
 -->
 # Transformer thermal model
 
+[![PyPI version](https://badge.fury.io/py/transformer-thermal-model.svg?no-cache)](https://badge.fury.io/py/transformer-thermal-model.svg) <!-- markdownlint-disable-line first-line-h1 line-length -->
+[![License: MPL2.0](https://img.shields.io/badge/License-MPL2.0-informational.svg)](https://github.com/PowerGridModel/power-grid-model/blob/main/LICENSE)
+[![Downloads](https://static.pepy.tech/badge/transformer-thermal-model)](https://pepy.tech/project/transformer-thermal-model)
+[![Downloads](https://static.pepy.tech/badge/transformer-thermal-model/month)](https://pepy.tech/project/transformer-thermal-model)
+
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=alliander-opensource_transformer-thermal-model&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=alliander-opensource_transformer-thermal-model)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=alliander-opensource_transformer-thermal-model&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=alliander-opensource_transformer-thermal-model)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=alliander-opensource_transformer-thermal-model&metric=coverage)](https://sonarcloud.io/summary/new_code?id=alliander-opensource_transformer-thermal-model)
