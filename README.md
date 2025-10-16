@@ -6,7 +6,7 @@ SPDX-License-Identifier: MPL-2.0
 # Transformer thermal model
 
 [![PyPI version](https://badge.fury.io/py/transformer-thermal-model.svg?no-cache)](https://badge.fury.io/py/transformer-thermal-model.svg) <!-- markdownlint-disable-line first-line-h1 line-length -->
-[![License: MPL2.0](https://img.shields.io/badge/License-MPL2.0-informational.svg)](https://github.com/PowerGridModel/power-grid-model/blob/main/LICENSE)
+[![License: MPL2.0](https://img.shields.io/badge/License-MPL2.0-informational.svg)](https://github.com/alliander-opensource/transformer-thermal-model/blob/main/LICENSE)
 [![Downloads](https://static.pepy.tech/badge/transformer-thermal-model)](https://pepy.tech/project/transformer-thermal-model)
 [![Downloads](https://static.pepy.tech/badge/transformer-thermal-model/month)](https://pepy.tech/project/transformer-thermal-model)
 
