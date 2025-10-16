@@ -65,7 +65,7 @@ class Model:
 
     Attributes:
         transformer (Transformer): The transformer that the model will use to calculate the temperatures.
-        data (pd.DataFrame): The data that the model will use to calculate the top-oil and hot-spottemperatures.
+        data (pd.DataFrame): The data that the model will use to calculate the top-oil and hot-spot temperatures.
         init_top_oil_temp (float | None): The initial top-oil temperature. Defaults to None. If this is provided,
             will start the calculation with this temperature. If not provided, will start the calculation
             with the first value of the ambient temperature profile.
@@ -90,7 +90,7 @@ class Model:
         """Initialize the thermal model.
 
         Args:
-            temperature_profile (InputProfile): The temperature profile for the model.
+            temperature_profile (BaseInputProfile): The temperature profile for the model.
             transformer (Transformer): The transformer object.
             init_top_oil_temp (float | None): The initial top-oil temperature. Defaults to None. If this is provided,
                 will start the calculation with this temperature. If not provided, will start the calculation
@@ -198,7 +198,7 @@ class Model:
             np.ndarray: The computed top-oil temperature profile over time.
         """
         top_oil_temp_profile = np.zeros_like(t_internal, dtype=np.float64)
-        top_oil_temp_profile[0] = t_internal[0] if self.init_top_oil_temp is None else self.init_top_oil_temp
+        top_oil_temp_profile[0] = self.init_top_oil_temp if self.init_top_oil_temp is not None else t_internal[0]
 
         # Handle both 1D (two-winding) and 2D (three-winding) load arrays
         for i in range(1, len(t_internal)):
@@ -343,7 +343,7 @@ class Model:
         logger.info(f"Max top-oil temperature: {np.max(top_oil_temp_profile)}")
         logger.info(f"Max hot-spot temperature: {np.max(hot_spot_temp_profile)}")
 
-        if type(self.transformer) is ThreeWindingTransformer:
+        if isinstance(self.transformer, ThreeWindingTransformer):
             return OutputProfile(
                 top_oil_temp_profile=pd.Series(top_oil_temp_profile, index=self.data.datetime_index),
                 hot_spot_temp_profile=pd.DataFrame(
