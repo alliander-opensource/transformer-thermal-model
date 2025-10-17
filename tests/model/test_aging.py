@@ -24,7 +24,7 @@ def test_paper_aging():
     one_day = 24 * 4 + 1
     datetime_index = pd.date_range("2020-01-01", periods=one_day, freq="15min", tz="UTC")
     hotspot_profile = pd.Series(100, index=datetime_index)
-    total_aging = days_aged(hotspot_profile, "normal")
+    total_aging = days_aged(hotspot_profile, PaperInsulationType.NORMAL)
     assert total_aging == pytest.approx(1.26, rel=1e-2)
 
     total_aging = days_aged(hotspot_profile, PaperInsulationType.THERMAL_UPGRADED)
