@@ -32,6 +32,7 @@ pre-commit = "^4.1.0"
 codespell = "^2.4.1"
 ipython = "^9.3.0"
 isort = "^6.0.0"
+mutmut = "^3.3.1"
 
 [tool.poetry.group.docs]
 optional = true
@@ -135,7 +136,8 @@ addopts = [
   "--cov-branch",
   "--cov-report=xml",
   "--cov-report=term-missing",  # Coverage report incl missing lines in terminal
-  "--doctest-modules"  # Run doctest to test examples in docstrings
+  "--doctest-modules",  # Run doctest to test examples in docstrings
+  "--ignore=mutants"  # Ignore the mutants folder
 ]
 doctest_optionflags = ["NORMALIZE_WHITESPACE", "IGNORE_EXCEPTION_DETAIL", "NUMBER"]
 
