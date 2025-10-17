@@ -136,7 +136,8 @@ addopts = [
   "--cov-branch",
   "--cov-report=xml",
   "--cov-report=term-missing",  # Coverage report incl missing lines in terminal
-  "--doctest-modules"  # Run doctest to test examples in docstrings
+  "--doctest-modules",  # Run doctest to test examples in docstrings
+  "--ignore=mutants"  # Ignore the mutants folder
 ]
 doctest_optionflags = ["NORMALIZE_WHITESPACE", "IGNORE_EXCEPTION_DETAIL", "NUMBER"]
 
