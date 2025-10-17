@@ -30,7 +30,7 @@ mypy = "^1.17.1"
 pytest-cov = "^6.2.1"
 pre-commit = "^4.1.0"
 codespell = "^2.4.1"
-ipython = "^9.3.0"
+ipython = "^9.6.0"
 isort = "^6.0.0"
 mutmut = "^3.3.1"
 
