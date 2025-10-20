@@ -6,6 +6,8 @@ from typing import Self
 
 from pydantic import BaseModel, Field, model_validator
 
+from transformer_thermal_model.schemas.specifications.transformer import WindingSpecifications
+
 
 class FanSwitchConfig(BaseModel):
     """Class representing the fan switch configuration for ONAF cooling."""
@@ -41,21 +43,12 @@ class ONANParameters(BaseONANParameters):
     hot_spot_fac: float
 
 
-class ONANWindingParameters(BaseModel):
-    """Class representing ONAN (Oil Natural Air Natural) cooling parameters for a single winding."""
-
-    time_const_winding: float
-    nom_load: float
-    winding_oil_gradient: float
-    hot_spot_fac: float
-
-
 class ThreeWindingONANParameters(BaseONANParameters):
     """Class representing ONAN (Oil Natural Air Natural) cooling parameters for three-winding transformers."""
 
-    onan_lv_winding: ONANWindingParameters = Field(..., description="ONAN parameters for the LV winding.")
-    onan_mv_winding: ONANWindingParameters = Field(..., description="ONAN parameters for the MV winding.")
-    onan_hv_winding: ONANWindingParameters = Field(..., description="ONAN parameters for the HV winding.")
+    lv_winding: WindingSpecifications = Field(..., description="ONAN parameters for the LV winding.")
+    mv_winding: WindingSpecifications = Field(..., description="ONAN parameters for the MV winding.")
+    hv_winding: WindingSpecifications = Field(..., description="ONAN parameters for the HV winding.")
     load_loss_mv_lv: float
     load_loss_hv_lv: float
     load_loss_hv_mv: float

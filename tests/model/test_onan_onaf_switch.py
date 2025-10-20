@@ -17,9 +17,9 @@ from transformer_thermal_model.schemas.thermal_model.onaf_switch import (
     FanSwitchConfig,
     ONAFSwitch,
     ONANParameters,
-    ONANWindingParameters,
     ThreeWindingONAFSwitch,
     ThreeWindingONANParameters,
+    WindingSpecifications,
 )
 from transformer_thermal_model.transformer.power import PowerTransformer
 from transformer_thermal_model.transformer.threewinding import ThreeWindingTransformer
@@ -49,7 +49,7 @@ def test_start_cooling_type(default_user_trafo_specs: UserTransformerSpecificati
         onan_parameters=onan_parameters,
     )
     transformer = PowerTransformer(
-        user_specs=default_user_trafo_specs, cooling_type=CoolerType.ONAF, onaf_switch=onaf_switch
+        user_specs=default_user_trafo_specs, cooling_type=CoolerType.ONAF, cooling_switch_settings=onaf_switch
     )
     transformer.set_ONAN_ONAF_first_timestamp(init_top_oil_temp=20)
     assert transformer.specs.nom_load_sec_side == default_user_trafo_specs.nom_load_sec_side
@@ -60,7 +60,7 @@ def test_start_cooling_type(default_user_trafo_specs: UserTransformerSpecificati
     is_on = [False] * 100
     onaf_switch.fans_status = is_on
     transformer = PowerTransformer(
-        user_specs=default_user_trafo_specs, cooling_type=CoolerType.ONAF, onaf_switch=onaf_switch
+        user_specs=default_user_trafo_specs, cooling_type=CoolerType.ONAF, cooling_switch_settings=onaf_switch
     )
     transformer.set_ONAN_ONAF_first_timestamp(init_top_oil_temp=20)
     assert transformer.specs.nom_load_sec_side == onaf_switch.onan_parameters.nom_load_sec_side
@@ -74,7 +74,7 @@ def test_start_cooling_type(default_user_trafo_specs: UserTransformerSpecificati
         onan_parameters=onan_parameters,
     )
     transformer = PowerTransformer(
-        user_specs=default_user_trafo_specs, cooling_type=CoolerType.ONAF, onaf_switch=onaf_switch
+        user_specs=default_user_trafo_specs, cooling_type=CoolerType.ONAF, cooling_switch_settings=onaf_switch
     )
     transformer.set_ONAN_ONAF_first_timestamp(init_top_oil_temp=20)
     assert transformer.specs.nom_load_sec_side == onaf_switch.onan_parameters.nom_load_sec_side
@@ -84,7 +84,7 @@ def test_start_cooling_type(default_user_trafo_specs: UserTransformerSpecificati
 
     # If the initial top-oil temperature is above the activation temperature, it should start in ONAF mode
     transformer = PowerTransformer(
-        user_specs=default_user_trafo_specs, cooling_type=CoolerType.ONAF, onaf_switch=onaf_switch
+        user_specs=default_user_trafo_specs, cooling_type=CoolerType.ONAF, cooling_switch_settings=onaf_switch
     )
     transformer.set_ONAN_ONAF_first_timestamp(init_top_oil_temp=90)
     assert transformer.specs.nom_load_sec_side == default_user_trafo_specs.nom_load_sec_side
@@ -108,15 +108,17 @@ def test_wrong_onaf_switch(default_user_trafo_specs: UserTransformerSpecificatio
     onaf_switch = ONAFSwitch(fans_status=is_on, temperature_threshold=None, onan_parameters=onan_parameters)
 
     with pytest.raises(ValueError, match=("ONAF switch only works when the cooling type is ONAF.")):
-        PowerTransformer(user_specs=default_user_trafo_specs, cooling_type=CoolerType.ONAN, onaf_switch=onaf_switch)
+        PowerTransformer(
+            user_specs=default_user_trafo_specs, cooling_type=CoolerType.ONAN, cooling_switch_settings=onaf_switch
+        )
 
     transformer = PowerTransformer(
-        user_specs=default_user_trafo_specs, cooling_type=CoolerType.ONAF, onaf_switch=onaf_switch
+        user_specs=default_user_trafo_specs, cooling_type=CoolerType.ONAF, cooling_switch_settings=onaf_switch
     )
     with pytest.raises(
         ValueError,
         match=(
-            "The length of the fans_status list in the onaf_switch must be equal to the length of "
+            "The length of the fans_status list in the cooling_switch_settings must be equal to the length of "
             "the temperature profile."
         ),
     ):
@@ -144,7 +146,7 @@ def test_complete_onan_onaf_switch_fans_status(
     )
     onaf_switch = ONAFSwitch(fans_status=is_on, temperature_threshold=None, onan_parameters=onan_parameters)
     transformer = PowerTransformer(
-        user_specs=default_user_trafo_specs, cooling_type=CoolerType.ONAF, onaf_switch=onaf_switch
+        user_specs=default_user_trafo_specs, cooling_type=CoolerType.ONAF, cooling_switch_settings=onaf_switch
     )
     model = Model(transformer=transformer, temperature_profile=constant_load_profile)
     output = model.run()
@@ -156,7 +158,7 @@ def test_complete_onan_onaf_switch_fans_status(
     is_on = [False] * 50 + [True] * 30 + [False] * (len(constant_load_profile.datetime_index) - 80)
     onaf_switch.fans_status = is_on
     transformer = PowerTransformer(
-        user_specs=default_user_trafo_specs, cooling_type=CoolerType.ONAF, onaf_switch=onaf_switch
+        user_specs=default_user_trafo_specs, cooling_type=CoolerType.ONAF, cooling_switch_settings=onaf_switch
     )
     model = Model(transformer=transformer, temperature_profile=constant_load_profile)
     output_2 = model.run()
@@ -196,7 +198,7 @@ def test_complete_onan_onaf_switch_temp_threshold(
         onan_parameters=onan_parameters,
     )
     transformer = PowerTransformer(
-        user_specs=default_user_trafo_specs, cooling_type=CoolerType.ONAF, onaf_switch=onaf_switch
+        user_specs=default_user_trafo_specs, cooling_type=CoolerType.ONAF, cooling_switch_settings=onaf_switch
     )
     model = Model(transformer=transformer, temperature_profile=constant_load_profile_minutes)
     output = model.run()
@@ -216,16 +218,16 @@ def test_threewinding_onan_onaf_switch(
     three_winding_input_profile: ThreeWindingInputProfile,
 ):
     """Check that a three-winding transformer can be created with an ONAF switch."""
-    is_on = [False] * 10 + [True] * (len(three_winding_input_profile.datetime_index) - 10)
+    is_on = [False] * 50 + [True] * (len(three_winding_input_profile.datetime_index) - 50)
     onan_parameters = ThreeWindingONANParameters(
-        onan_lv_winding=ONANWindingParameters(
-            time_const_winding=10, nom_load=800, winding_oil_gradient=18, hot_spot_fac=1.1
+        lv_winding=WindingSpecifications(
+            time_const_winding=10, nom_load=500, winding_oil_gradient=18, hot_spot_fac=1.1, nom_power=30
         ),
-        onan_mv_winding=ONANWindingParameters(
-            time_const_winding=10, nom_load=800, winding_oil_gradient=18, hot_spot_fac=1.1
+        mv_winding=WindingSpecifications(
+            time_const_winding=10, nom_load=500, winding_oil_gradient=18, hot_spot_fac=1.1, nom_power=100
         ),
-        onan_hv_winding=ONANWindingParameters(
-            time_const_winding=10, nom_load=800, winding_oil_gradient=18, hot_spot_fac=1.1
+        hv_winding=WindingSpecifications(
+            time_const_winding=10, nom_load=50, winding_oil_gradient=18, hot_spot_fac=1.1, nom_power=100
         ),
         top_oil_temp_rise=55,
         time_const_oil=160,
@@ -235,7 +237,9 @@ def test_threewinding_onan_onaf_switch(
     )
     onaf_switch = ThreeWindingONAFSwitch(fans_status=is_on, temperature_threshold=None, onan_parameters=onan_parameters)
     transformer = ThreeWindingTransformer(
-        user_specs=user_three_winding_transformer_specs, cooling_type=CoolerType.ONAF, onaf_switch=onaf_switch
+        user_specs=user_three_winding_transformer_specs,
+        cooling_type=CoolerType.ONAF,
+        cooling_switch_settings=onaf_switch,
     )
     model = Model(transformer=transformer, temperature_profile=three_winding_input_profile)
     onan_onaf_results = model.run()
@@ -246,6 +250,23 @@ def test_threewinding_onan_onaf_switch(
     )
     onaf_model = Model(transformer=onaf_transformer, temperature_profile=three_winding_input_profile)
     onaf_results = onaf_model.run()
+
+    # At position 50 the ONAN-ONAF transformer should be warmer
+    assert onan_onaf_results.top_oil_temp_profile.iloc[50] > onaf_results.top_oil_temp_profile.iloc[50] + 10
+    assert (
+        onan_onaf_results.hot_spot_temp_profile["low_voltage_side"].iloc[-1]
+        > onaf_results.hot_spot_temp_profile["low_voltage_side"].iloc[-1]
+    )
+    assert (
+        onan_onaf_results.hot_spot_temp_profile["middle_voltage_side"].iloc[-1]
+        > onaf_results.hot_spot_temp_profile["middle_voltage_side"].iloc[-1]
+    )
+    assert (
+        onan_onaf_results.hot_spot_temp_profile["high_voltage_side"].iloc[-1]
+        > onaf_results.hot_spot_temp_profile["high_voltage_side"].iloc[-1]
+    )
+
+    # At the end it should be the same
     assert math.isclose(
         onaf_results.top_oil_temp_profile.iloc[-1], onan_onaf_results.top_oil_temp_profile.iloc[-1], rel_tol=1e-2
     )
@@ -264,3 +285,87 @@ def test_threewinding_onan_onaf_switch(
         onan_onaf_results.hot_spot_temp_profile["high_voltage_side"].iloc[-1],
         rel_tol=1e-2,
     )
+
+
+def test_three_winding__onan_onaf_switch_threshold_temp(
+    user_three_winding_transformer_specs: UserThreeWindingTransformerSpecifications,
+    three_winding_input_profile: ThreeWindingInputProfile,
+):
+    """Check that a three-winding transformer can be created with an ONAF switch based on temperature thresholds."""
+    onan_parameters = ThreeWindingONANParameters(
+        lv_winding=WindingSpecifications(
+            time_const_winding=10, nom_load=500, winding_oil_gradient=18, hot_spot_fac=1.1, nom_power=30
+        ),
+        mv_winding=WindingSpecifications(
+            time_const_winding=10, nom_load=500, winding_oil_gradient=18, hot_spot_fac=1.1, nom_power=100
+        ),
+        hv_winding=WindingSpecifications(
+            time_const_winding=10, nom_load=50, winding_oil_gradient=18, hot_spot_fac=1.1, nom_power=100
+        ),
+        top_oil_temp_rise=55,
+        time_const_oil=160,
+        load_loss_mv_lv=100,
+        load_loss_hv_lv=100,
+        load_loss_hv_mv=100,
+    )
+
+    # Use very low activation temps. to make it a ONAF transformer
+    onaf_switch = ThreeWindingONAFSwitch(
+        fans_status=None,
+        temperature_threshold=FanSwitchConfig(activation_temp=10, deactivation_temp=0),
+        onan_parameters=onan_parameters,
+    )
+    transformer = ThreeWindingTransformer(
+        user_specs=user_three_winding_transformer_specs,
+        cooling_type=CoolerType.ONAF,
+        cooling_switch_settings=onaf_switch,
+    )
+    model = Model(transformer=transformer, temperature_profile=three_winding_input_profile)
+    onan_onaf_results = model.run()
+
+    onaf_transformer = ThreeWindingTransformer(
+        user_specs=user_three_winding_transformer_specs, cooling_type=CoolerType.ONAF
+    )
+    onaf_model = Model(transformer=onaf_transformer, temperature_profile=three_winding_input_profile)
+    onaf_results = onaf_model.run()
+
+    # They should be the same in all indices
+    assert onaf_results.top_oil_temp_profile.equals(onan_onaf_results.top_oil_temp_profile)
+    assert onaf_results.hot_spot_temp_profile["low_voltage_side"].equals(
+        onan_onaf_results.hot_spot_temp_profile["low_voltage_side"]
+    )
+    assert onaf_results.hot_spot_temp_profile["middle_voltage_side"].equals(
+        onan_onaf_results.hot_spot_temp_profile["middle_voltage_side"]
+    )
+    assert onaf_results.hot_spot_temp_profile["high_voltage_side"].equals(
+        onan_onaf_results.hot_spot_temp_profile["high_voltage_side"]
+    )
+
+    # Now we set a very high activation_temp, then it should be warmer in all but the first indice
+    onaf_switch = ThreeWindingONAFSwitch(
+        fans_status=None,
+        temperature_threshold=FanSwitchConfig(activation_temp=200, deactivation_temp=190),
+        onan_parameters=onan_parameters,
+    )
+    transformer = ThreeWindingTransformer(
+        user_specs=user_three_winding_transformer_specs,
+        cooling_type=CoolerType.ONAF,
+        cooling_switch_settings=onaf_switch,
+    )
+    model = Model(transformer=transformer, temperature_profile=three_winding_input_profile)
+    onan_onaf_results_2 = model.run()
+
+    # Check that the temperatures are higher in all but the first index
+    assert (onan_onaf_results_2.top_oil_temp_profile.iloc[1:] > onaf_results.top_oil_temp_profile.iloc[1:]).all()
+    assert (
+        onan_onaf_results_2.hot_spot_temp_profile["low_voltage_side"].iloc[1:]
+        > onaf_results.hot_spot_temp_profile["low_voltage_side"].iloc[1:]
+    ).all()
+    assert (
+        onan_onaf_results_2.hot_spot_temp_profile["middle_voltage_side"].iloc[1:]
+        > onaf_results.hot_spot_temp_profile["middle_voltage_side"].iloc[1:]
+    ).all()
+    assert (
+        onan_onaf_results_2.hot_spot_temp_profile["high_voltage_side"].iloc[1:]
+        > onaf_results.hot_spot_temp_profile["high_voltage_side"].iloc[1:]
+    ).all()

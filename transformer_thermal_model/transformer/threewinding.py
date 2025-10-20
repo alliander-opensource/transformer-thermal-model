@@ -84,7 +84,7 @@ class ThreeWindingTransformer(Transformer):
         self,
         user_specs: UserThreeWindingTransformerSpecifications,
         cooling_type: CoolerType,
-        onaf_switch: ThreeWindingONAFSwitch | None = None,
+        cooling_switch_settings: ThreeWindingONAFSwitch | None = None,
     ):
         """Initialize the ThreeWindingTransformer object."""
         logger.debug("Initialized ThreeWindingTransformer with specifications: %s", user_specs)
@@ -94,7 +94,9 @@ class ThreeWindingTransformer(Transformer):
 
         # Use CoolingSwitchController if onaf_switch is provided
         self.cooling_controller = (
-            CoolingSwitchController(onaf_switch=onaf_switch, specs=self.specs) if onaf_switch else None
+            CoolingSwitchController(onaf_switch=cooling_switch_settings, specs=self.specs)
+            if cooling_switch_settings
+            else None
         )
 
         super().__init__(

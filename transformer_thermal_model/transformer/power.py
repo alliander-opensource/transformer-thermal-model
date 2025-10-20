@@ -135,7 +135,7 @@ class PowerTransformer(Transformer):
         user_specs: UserTransformerSpecifications,
         cooling_type: CoolerType,
         internal_component_specs: TransformerComponentSpecifications | None = None,
-        onaf_switch: ONAFSwitch | None = None,
+        cooling_switch_settings: ONAFSwitch | None = None,
     ):
         """Initialize the transformer object.
 
@@ -146,7 +146,8 @@ class PowerTransformer(Transformer):
             cooling_type (CoolerType): The cooling type. Can be ONAN or ONAF.
             internal_component_specs (TransformerComponentSpecifications, optional): The internal component
                 specifications, which are used to calculate the limiting component. Defaults to None.
-            onaf_switch (ONAFSwitch, optional): The ONAF switch settings. Only used when the cooling type is ONAF.
+            cooling_switch_settings (ONAFSwitch, optional): The ONAF switch settings.
+                Only used when the cooling type is ONAF.
 
         """
         logger.info("Creating a power transformer object.")
@@ -161,9 +162,11 @@ class PowerTransformer(Transformer):
 
         self.specs = TransformerSpecifications.create(self.defaults, user_specs)
 
-        # Use CoolingSwitchController if onaf_switch is provided
+        # Use CoolingSwitchController if cooling_switch_settings is provided
         self.cooling_controller = (
-            CoolingSwitchController(onaf_switch=onaf_switch, specs=self.specs) if onaf_switch else None
+            CoolingSwitchController(onaf_switch=cooling_switch_settings, specs=self.specs)
+            if cooling_switch_settings
+            else None
         )
 
         super().__init__(cooling_type=cooling_type, cooling_controller=self.cooling_controller)

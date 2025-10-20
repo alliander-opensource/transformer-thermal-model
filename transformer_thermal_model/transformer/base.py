@@ -10,8 +10,6 @@ from transformer_thermal_model.cooler import CoolerType
 from transformer_thermal_model.schemas import (
     BaseDefaultTransformerSpecifications,
     BaseTransformerSpecifications,
-    ThreeWindingTransformerSpecifications,
-    TransformerSpecifications,
 )
 from transformer_thermal_model.transformer.cooling_switch_controller import CoolingSwitchController
 
@@ -48,11 +46,13 @@ class Transformer(ABC):
     def set_ONAN_ONAF_first_timestamp(self, init_top_oil_temp: float) -> None:
         """Delegate initial cooling type logic to CoolingSwitchController."""
         if self.cooling_controller:
-            self.specs = self.cooling_controller.get_starting_specs(init_top_oil_temp=init_top_oil_temp)
+            self.specs = self.cooling_controller.determine_initial_specifications(
+                initial_top_oil_temperature=init_top_oil_temp
+            )
 
     def check_switch_and_get_new_specs(
         self, top_oil_temp: int, previous_top_oil_temp: int, index: int
-    ) -> TransformerSpecifications | ThreeWindingTransformerSpecifications | None:
+    ) -> BaseTransformerSpecifications | None:
         """Delegate ONAN/ONAF switch logic to CoolingSwitchController."""
         if self.cooling_controller:
             return self.cooling_controller.check_switch_and_get_new_specs(top_oil_temp, previous_top_oil_temp, index)

@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: MPL-2.0
 
 from transformer_thermal_model.schemas.specifications.transformer import (
+    BaseTransformerSpecifications,
     ThreeWindingTransformerSpecifications,
     TransformerSpecifications,
 )
@@ -25,10 +26,10 @@ class CoolingSwitchController:
         self.onaf_switch = onaf_switch
         self.original_onaf_specs = specs.model_copy(deep=True)
 
-    def get_starting_specs(
+    def determine_initial_specifications(
         self,
-        init_top_oil_temp: float,
-    ) -> TransformerSpecifications | ThreeWindingTransformerSpecifications:
+        initial_top_oil_temperature: float,
+    ) -> BaseTransformerSpecifications:
         """Get the initial specifications based on the ONAF switch settings.
 
         If the fans are off at the start or if a temperature threshold is set,
@@ -36,63 +37,38 @@ class CoolingSwitchController:
         """
         if self.onaf_switch.fans_status is not None:
             if not self.onaf_switch.fans_status[0]:
-                return self.get_onan_specs()
+                return self.create_onan_specifications()
         elif (
             self.onaf_switch.temperature_threshold is not None
-            and init_top_oil_temp < self.onaf_switch.temperature_threshold.activation_temp
+            and initial_top_oil_temperature < self.onaf_switch.temperature_threshold.activation_temp
         ):
-            return self.get_onan_specs()
+            return self.create_onan_specifications()
         return self.original_onaf_specs
 
-    def get_onan_specs(self) -> TransformerSpecifications | ThreeWindingTransformerSpecifications:
-        """Function that returns the onan specs for a transformer.
+    def create_onan_specifications(self) -> BaseTransformerSpecifications:
+        """Create ONAN specifications by modifying the original ONAF specifications.
 
         It decides, based on the specs whether to use the three winding specs or not.
         """
-        specs = self.original_onaf_specs.model_copy(deep=True)
-        specs.top_oil_temp_rise = self.onaf_switch.onan_parameters.top_oil_temp_rise
-        specs.time_const_oil = self.onaf_switch.onan_parameters.time_const_oil
+        transformer_specs = self.original_onaf_specs.model_copy(deep=True)
 
-        if isinstance(specs, TransformerSpecifications) and isinstance(self.onaf_switch, ONAFSwitch):
-            specs.winding_oil_gradient = self.onaf_switch.onan_parameters.winding_oil_gradient
-            specs.time_const_windings = self.onaf_switch.onan_parameters.time_const_windings
-            specs.nom_load_sec_side = self.onaf_switch.onan_parameters.nom_load_sec_side
-            specs.load_loss = self.onaf_switch.onan_parameters.load_loss
-            specs.hot_spot_fac = self.onaf_switch.onan_parameters.hot_spot_fac
+        if isinstance(transformer_specs, TransformerSpecifications) and isinstance(self.onaf_switch, ONAFSwitch):
+            specs_dict = transformer_specs.model_dump()
+            specs_dict.update(self.onaf_switch.onan_parameters.model_dump(exclude_none=True))
+            transformer_specs = TransformerSpecifications(**specs_dict)
 
-        elif isinstance(specs, ThreeWindingTransformerSpecifications) and isinstance(
+        elif isinstance(transformer_specs, ThreeWindingTransformerSpecifications) and isinstance(
             self.onaf_switch, ThreeWindingONAFSwitch
         ):
-            specs.lv_winding.winding_oil_gradient = (
-                self.onaf_switch.onan_parameters.onan_lv_winding.winding_oil_gradient
-            )
-            specs.lv_winding.nom_load = self.onaf_switch.onan_parameters.onan_lv_winding.nom_load
-            specs.lv_winding.hot_spot_fac = self.onaf_switch.onan_parameters.onan_lv_winding.hot_spot_fac
-            specs.lv_winding.time_const_winding = self.onaf_switch.onan_parameters.onan_lv_winding.time_const_winding
+            specs_dict = transformer_specs.model_dump()
+            specs_dict.update(self.onaf_switch.onan_parameters.model_dump(exclude_none=True))
+            transformer_specs = ThreeWindingTransformerSpecifications(**specs_dict)
 
-            specs.mv_winding.winding_oil_gradient = (
-                self.onaf_switch.onan_parameters.onan_mv_winding.winding_oil_gradient
-            )
-            specs.mv_winding.nom_load = self.onaf_switch.onan_parameters.onan_mv_winding.nom_load
-            specs.mv_winding.hot_spot_fac = self.onaf_switch.onan_parameters.onan_mv_winding.hot_spot_fac
-            specs.mv_winding.time_const_winding = self.onaf_switch.onan_parameters.onan_mv_winding.time_const_winding
-
-            specs.hv_winding.winding_oil_gradient = (
-                self.onaf_switch.onan_parameters.onan_hv_winding.winding_oil_gradient
-            )
-            specs.hv_winding.nom_load = self.onaf_switch.onan_parameters.onan_hv_winding.nom_load
-            specs.hv_winding.hot_spot_fac = self.onaf_switch.onan_parameters.onan_hv_winding.hot_spot_fac
-            specs.hv_winding.time_const_winding = self.onaf_switch.onan_parameters.onan_hv_winding.time_const_winding
-
-            specs.load_loss_mv_lv = self.onaf_switch.onan_parameters.load_loss_mv_lv
-            specs.load_loss_hv_lv = self.onaf_switch.onan_parameters.load_loss_hv_lv
-            specs.load_loss_hv_mv = self.onaf_switch.onan_parameters.load_loss_hv_mv
-
-        return specs
+        return transformer_specs
 
     def check_switch_and_get_new_specs(
         self, top_oil_temp: float, previous_top_oil_temp: float, index: int
-    ) -> TransformerSpecifications | ThreeWindingTransformerSpecifications | None:
+    ) -> BaseTransformerSpecifications | None:
         """Check and handle the ONAF/ONAN switch based on the top-oil temperature and the switch settings.
 
         This method evaluates the current and previous top-oil temperatures, along with the fan status
@@ -112,25 +88,23 @@ class CoolingSwitchController:
             return self._handle_temp_threshold_switch(temp_threshold, top_oil_temp, previous_top_oil_temp)
         return None
 
-    def _handle_fan_status_switch(
-        self, fans_status: list[bool], index: int
-    ) -> TransformerSpecifications | ThreeWindingTransformerSpecifications | None:
+    def _handle_fan_status_switch(self, fans_status: list[bool], index: int) -> BaseTransformerSpecifications | None:
         """Handle switching based on fan status list."""
-        prev, curr = fans_status[index], fans_status[index + 1]
-        if prev != curr:
-            if curr:
+        previous_fan_status, current_fan_status = fans_status[index], fans_status[index + 1]
+        if previous_fan_status != current_fan_status:
+            if current_fan_status:
                 return self.original_onaf_specs
             else:
-                return self.get_onan_specs()
+                return self.create_onan_specifications()
         return None
 
     def _handle_temp_threshold_switch(
         self, temp_threshold: FanSwitchConfig, top_oil_temp: float, previous_top_oil_temp: float
-    ) -> TransformerSpecifications | ThreeWindingTransformerSpecifications | None:
+    ) -> BaseTransformerSpecifications | None:
         """Handle switching based on temperature thresholds."""
-        act, deact = temp_threshold.activation_temp, temp_threshold.deactivation_temp
-        if previous_top_oil_temp < act <= top_oil_temp:
+        activation_temp, deactivation_temp = temp_threshold.activation_temp, temp_threshold.deactivation_temp
+        if previous_top_oil_temp < activation_temp <= top_oil_temp:
             return self.original_onaf_specs
-        elif previous_top_oil_temp > deact >= top_oil_temp:
-            return self.get_onan_specs()
+        elif previous_top_oil_temp > deactivation_temp >= top_oil_temp:
+            return self.create_onan_specifications()
         return None
