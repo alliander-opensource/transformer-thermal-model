@@ -15,7 +15,93 @@ from transformer_thermal_model.schemas.thermal_model.onaf_switch import (
 
 
 class CoolingSwitchController:
-    """Encapsulates ONAN/ONAF cooling switch logic for transformers."""
+    """Encapsulates ONAN/ONAF cooling switch logic for transformers.
+
+    This class manages the automatic switching between ONAN (Oil Natural Air Natural) and ONAF
+    (Oil Natural Air Forced) cooling modes based on either:
+    - A predefined fan status schedule (list of boolean values)
+    - Temperature thresholds (activation and deactivation temperatures)
+
+    The controller is used internally by transformer classes and handles the logic for determining
+    when to switch cooling modes and what specifications to apply for each mode.
+
+    Example: Using CoolingSwitchController with temperature-based switching
+        ```python
+        >>> from transformer_thermal_model.transformer import PowerTransformer
+        >>> from transformer_thermal_model.schemas import UserTransformerSpecifications
+        >>> from transformer_thermal_model.schemas.thermal_model import ONAFSwitch, FanSwitchConfig, ONANParameters
+        >>> from transformer_thermal_model.cooler import CoolerType
+
+        >>> # Define the transformer specifications for ONAF mode
+        >>> user_specs = UserTransformerSpecifications(
+        ...     load_loss=1000,
+        ...     nom_load_sec_side=1500,
+        ...     no_load_loss=200,
+        ...     amb_temp_surcharge=20,
+        ... )
+        >>> # Define ONAN parameters (for when fans are off)
+        >>> onan_params = ONANParameters(
+        ...     nom_load_sec_side=1200,
+        ...     top_oil_temp_rise=65,
+        ...     winding_oil_gradient=20,
+        ...     hot_spot_fac=1.3,
+        ...     time_const_oil=210,
+        ...     time_const_windings=10,
+        ...     load_loss=800,
+        ... )
+        >>> # Create switch configuration with temperature thresholds
+        >>> # Fans activate at 70°C, deactivate at 60°C
+        >>> onaf_switch = ONAFSwitch(
+        ...     temperature_threshold=FanSwitchConfig(activation_temp=70, deactivation_temp=60),
+        ...     onan_parameters=onan_params
+        ... )
+        >>> # Create transformer with automatic switching capability
+        >>> transformer = PowerTransformer(
+        ...     user_specs=user_specs,
+        ...     cooling_type=CoolerType.ONAF,
+        ...     cooling_switch_settings=onaf_switch
+        ... )
+        >>> # The CoolingSwitchController is now managing the cooling mode switches automatically
+
+        ```
+
+    Example: Using CoolingSwitchController with predefined fan status
+        ```python
+        >>> from transformer_thermal_model.transformer import PowerTransformer
+        >>> from transformer_thermal_model.schemas.thermal_model import ONAFSwitch, ONANParameters
+
+        >>> # Create a fan status schedule: True = ONAF (fans on), False = ONAN (fans off)
+        >>> # This represents 5 time steps with fans on, then off, then on again
+        >>> fan_schedule = [True, True, True, True, True, False, False, False, True, True]
+        >>> # Define ONAN parameters for when fans are off
+        >>> onan_params = ONANParameters(
+        ...     nom_load_sec_side=1200,
+        ...     top_oil_temp_rise=65,
+        ...     winding_oil_gradient=20,
+        ...     hot_spot_fac=1.3,
+        ...     time_const_oil=210,
+        ...     time_const_windings=10,
+        ...     load_loss=800,
+        ... )
+        >>> onaf_switch = ONAFSwitch(
+        ...     fans_status=fan_schedule,
+        ...     onan_parameters=onan_params
+        ... )
+        >>> transformer = PowerTransformer(
+        ...     user_specs=user_specs,
+        ...     cooling_type=CoolerType.ONAF,
+        ...     cooling_switch_settings=onaf_switch
+        ... )
+        >>> # The controller will switch modes according to the predefined schedule
+
+        ```
+
+    Attributes:
+        onaf_switch (ONAFSwitch | ThreeWindingONAFSwitch): The switch configuration containing either
+            fan status schedule or temperature thresholds, plus ONAN parameters.
+        original_onaf_specs (BaseTransformerSpecifications): Deep copy of the original ONAF specifications,
+            used as reference when switching back to ONAF mode.
+    """
 
     def __init__(
         self,
