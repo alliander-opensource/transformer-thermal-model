@@ -132,9 +132,12 @@ class CoolingSwitchController:
         return self.original_onaf_specs
 
     def create_onan_specifications(self) -> BaseTransformerSpecifications:
-        """Create ONAN specifications by modifying the original ONAF specifications.
+        """Create ONAN specifications by merging ONAN parameters into the original ONAF specifications.
 
-        It decides, based on the specs whether to use the three winding specs or not.
+        This method returns a deep copy of the original ONAF specifications with fields overridden by the
+        ONAN parameters provided in the switch configuration. Only fields present in the ONAN parameters
+        are updated; all other fields remain unchanged. The method automatically selects the correct
+        specification type (standard or three-winding) based on the input objects.
         """
         transformer_specs = self.original_onaf_specs.model_copy(deep=True)
 
@@ -187,7 +190,11 @@ class CoolingSwitchController:
     def _handle_temp_threshold_switch(
         self, temp_threshold: FanSwitchConfig, top_oil_temp: float, previous_top_oil_temp: float
     ) -> BaseTransformerSpecifications | None:
-        """Handle switching based on temperature thresholds."""
+        """Handle switching based on temperature thresholds.
+
+        This method evaluates the current and previous top-oil temperatures against the activation and
+        deactivation thresholds to determine the appropriate transformer specifications to use.
+        """
         activation_temp, deactivation_temp = temp_threshold.activation_temp, temp_threshold.deactivation_temp
         if previous_top_oil_temp < activation_temp <= top_oil_temp:
             return self.original_onaf_specs

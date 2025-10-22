@@ -65,7 +65,7 @@ class Model:
 
     Attributes:
         transformer (Transformer): The transformer that the model will use to calculate the temperatures.
-        data (pd.DataFrame): The data that the model will use to calculate the top-oil and hot-spot temperatures.
+        data (BaseInputProfile): The input profile that the model will use to calculate temperatures.
         init_top_oil_temp (float | None): The initial top-oil temperature. Defaults to None. If this is provided,
             will start the calculation with this temperature. If not provided, will start the calculation
             with the first value of the ambient temperature profile.
@@ -234,6 +234,9 @@ class Model:
 
         Returns:
             np.ndarray: The computed hot-spot temperature profile over time.
+                - For two-winding transformers, returns a 1D array of shape (n_steps,).
+                - For three-winding transformers, returns a 2D array of shape (3, n_steps),
+                  where each row corresponds to one winding: [low_voltage_side, middle_voltage_side, high_voltage_side].
         """
         hot_spot_temp_profile = np.zeros_like(load, dtype=np.float64)
 
@@ -244,7 +247,7 @@ class Model:
             hot_spot_increase_windings = np.zeros_like(load)
             hot_spot_increase_oil = np.zeros_like(load)
             for i in range(1, len(load)):
-                static_hot_spot_incr = self._calculate_static_hot_spot_increase(np.array(load[i]))[0]
+                static_hot_spot_incr = self._calculate_static_hot_spot_increase(np.array([load[i]]))[0]
                 static_hot_spot_incr_windings = static_hot_spot_incr * self.transformer.specs.winding_const_k21
                 static_hot_spot_incr_oil = static_hot_spot_incr * (self.transformer.specs.winding_const_k21 - 1)
 
@@ -276,7 +279,7 @@ class Model:
                 hot_spot_increase_windings = np.zeros(n_steps)
                 hot_spot_increase_oil = np.zeros(n_steps)
                 for i in range(1, n_steps):
-                    static_hot_spot_incr = self._calculate_static_hot_spot_increase(np.array(load[:, i]))
+                    static_hot_spot_incr = self._calculate_static_hot_spot_increase(load[:, i])
                     static_hot_spot_incr_windings = static_hot_spot_incr * self.transformer.specs.winding_const_k21
                     static_hot_spot_incr_oil = static_hot_spot_incr * (self.transformer.specs.winding_const_k21 - 1)
 
@@ -291,7 +294,7 @@ class Model:
                     hot_spot_increase_oil[i] = self._update_hot_spot_increase(
                         hot_spot_increase_oil[i - 1], static_hot_spot_incr_oil[profile], f2_oil
                     )
-                    hot_spot_temp_profile[profile][i] = (
+                    hot_spot_temp_profile[profile, i] = (
                         top_oil_temp_profile[i] + hot_spot_increase_windings[i] - hot_spot_increase_oil[i]
                     )
                     new_specs = self.transformer.check_switch_and_get_new_specs(
