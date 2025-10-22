@@ -8,6 +8,7 @@ import numpy as np
 
 from transformer_thermal_model.cooler import CoolerType
 from transformer_thermal_model.schemas import (
+    DefaultWindingSpecifications,
     ThreeWindingTransformerDefaultSpecifications,
     ThreeWindingTransformerSpecifications,
     UserThreeWindingTransformerSpecifications,
@@ -65,6 +66,9 @@ class ThreeWindingTransformer(Transformer):
         oil_exp_x=0.8,
         winding_exp_y=1.3,
         end_temp_reduction=0,
+        lv_winding=DefaultWindingSpecifications(winding_oil_gradient=17, hot_spot_fac=1.3, time_const_winding=10),
+        mv_winding=DefaultWindingSpecifications(winding_oil_gradient=17, hot_spot_fac=1.3, time_const_winding=10),
+        hv_winding=DefaultWindingSpecifications(winding_oil_gradient=17, hot_spot_fac=1.3, time_const_winding=10),
     )
     _onaf_defaults = ThreeWindingTransformerDefaultSpecifications(
         time_const_oil=150,
@@ -75,6 +79,9 @@ class ThreeWindingTransformer(Transformer):
         oil_exp_x=0.8,
         winding_exp_y=1.3,
         end_temp_reduction=0,
+        lv_winding=DefaultWindingSpecifications(winding_oil_gradient=17, hot_spot_fac=1.3, time_const_winding=7),
+        mv_winding=DefaultWindingSpecifications(winding_oil_gradient=17, hot_spot_fac=1.3, time_const_winding=7),
+        hv_winding=DefaultWindingSpecifications(winding_oil_gradient=17, hot_spot_fac=1.3, time_const_winding=7),
     )
     specs: ThreeWindingTransformerSpecifications
 

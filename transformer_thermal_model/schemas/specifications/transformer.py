@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: MPL-2.0
 
 import logging
+from copy import deepcopy
 from typing import Self
 
 import numpy as np
@@ -11,13 +12,18 @@ from pydantic import BaseModel, Field
 logger = logging.getLogger(__name__)
 
 
-class WindingSpecifications(BaseModel):
+class DefaultWindingSpecifications(BaseModel):
+    """The default specifications for a single winding of a transformer."""
+
+    winding_oil_gradient: float | None = Field(default=None, description="Winding oil temperature gradient [K]", ge=0)
+    time_const_winding: float | None = Field(default=None, description="Time constant windings [min]", gt=0)
+    hot_spot_fac: float | None = Field(default=None, description="Hot-spot factor [-]", ge=0)
+
+
+class WindingSpecifications(DefaultWindingSpecifications):
     """The specifications for a single winding of a transformer."""
 
     nom_load: float = Field(..., description="Nominal load from the type plate [A]")
-    winding_oil_gradient: float = Field(..., description="Winding oil temperature gradient [K]", ge=0)
-    time_const_winding: float = Field(..., description="Time constant windings [min]", gt=0)
-    hot_spot_fac: float = Field(..., description="Hot-spot factor [-]", ge=0)
     nom_power: float = Field(..., description="Nominal power from the type plate [MVA]", ge=0)
 
 
@@ -145,7 +151,9 @@ class ThreeWindingTransformerDefaultSpecifications(BaseDefaultTransformerSpecifi
     For now this contains no additional elements, this is for future expansion.
     """
 
-    pass
+    lv_winding: DefaultWindingSpecifications
+    mv_winding: DefaultWindingSpecifications
+    hv_winding: DefaultWindingSpecifications
 
 
 class BaseTransformerSpecifications(BaseModel):
@@ -251,9 +259,23 @@ class ThreeWindingTransformerSpecifications(BaseTransformerSpecifications):
     def create(
         cls, defaults: ThreeWindingTransformerDefaultSpecifications, user: UserThreeWindingTransformerSpecifications
     ) -> Self:
-        """Create a ThreeWindingTransformerSpecifications instance by merging defaults with user specifications."""
-        data = defaults.model_dump()
-        data.update(user.model_dump(exclude_none=True))
+        """Create a ThreeWindingTransformerSpecifications instance by merging defaults with user specifications.
+
+        Note that we need to perform a deep merge here because of the nested WindingSpecifications.
+        """
+        # Perform a deep merge of defaults and user specifications
+        data = deepcopy(defaults.model_dump())
+        user_specs = user.model_dump(exclude_none=True)
+        for key, value in user_specs.items():
+            # check for nested dict (WindingSpecifications), and merge if necessary
+            if key in data and isinstance(data[key], dict) and isinstance(value, dict):
+                # Merge nested dictionaries
+                for sub_key, sub_value in value.items():
+                    data[key][sub_key] = sub_value
+            else:
+                # Overwrite or add top-level keys
+                data[key] = value
+
         logger.info("Complete three-winding transformer specifications: %s", data)
 
         data["load_loss_total_user"] = user.load_loss_total if user.load_loss_total is not None else None
