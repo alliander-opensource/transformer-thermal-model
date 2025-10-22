@@ -4,6 +4,7 @@
 
 import math
 
+import numpy as np
 import pytest
 
 from transformer_thermal_model.cooler import CoolerType
@@ -368,4 +369,89 @@ def test_three_winding__onan_onaf_switch_threshold_temp(
     assert (
         onan_onaf_results_2.hot_spot_temp_profile["high_voltage_side"].iloc[1:]
         > onaf_results.hot_spot_temp_profile["high_voltage_side"].iloc[1:]
+    ).all()
+
+
+def test_switch_with_given_top_oil_temp(
+    default_user_trafo_specs: UserTransformerSpecifications, constant_load_profile_minutes
+):
+    """Test switching logic when a top_oil temperature profile is given."""
+    constant_top_oil_profile = np.array([80] * len(constant_load_profile_minutes.load_profile))
+    constant_load_profile_minutes.top_oil_temperature_profile = constant_top_oil_profile
+
+    temp_threshold_always_on = FanSwitchConfig(activation_temp=60, deactivation_temp=50)
+    temp_threshold_always_off = FanSwitchConfig(activation_temp=90, deactivation_temp=50)
+
+    onan_parameters = ONANParameters(
+        top_oil_temp_rise=50.5,
+        time_const_oil=150,
+        time_const_windings=7,
+        load_loss=default_user_trafo_specs.load_loss,
+        nom_load_sec_side=constant_load_profile_minutes.load_profile[0] * 0.8,
+        winding_oil_gradient=23,
+        hot_spot_fac=1.2,
+    )
+    onaf_switch = ONAFSwitch(
+        fans_status=None,
+        temperature_threshold=temp_threshold_always_on,
+        onan_parameters=onan_parameters,
+    )
+    transformer = PowerTransformer(
+        user_specs=default_user_trafo_specs, cooling_type=CoolerType.ONAF, cooling_switch_settings=onaf_switch
+    )
+    model = Model(transformer=transformer, temperature_profile=constant_load_profile_minutes)
+    output = model.run()
+
+    full_onaf_transformer = PowerTransformer(user_specs=default_user_trafo_specs, cooling_type=CoolerType.ONAF)
+    full_onaf_model = Model(transformer=full_onaf_transformer, temperature_profile=constant_load_profile_minutes)
+    full_onaf_output = full_onaf_model.run()
+
+    # Since the top-oil temperature is always above the activation temp, it should always be in ONAF mode
+    assert np.allclose(output.top_oil_temp_profile, full_onaf_output.top_oil_temp_profile)
+    assert np.allclose(output.hot_spot_temp_profile, full_onaf_output.hot_spot_temp_profile)
+
+    onaf_switch_always_off = ONAFSwitch(
+        fans_status=None,
+        temperature_threshold=temp_threshold_always_off,
+        onan_parameters=onan_parameters,
+    )
+    transformer_onan = PowerTransformer(
+        user_specs=default_user_trafo_specs,
+        cooling_type=CoolerType.ONAF,
+        cooling_switch_settings=onaf_switch_always_off,
+    )
+    model_onan = Model(transformer=transformer_onan, temperature_profile=constant_load_profile_minutes)
+    output_onan = model_onan.run()
+
+    # ONAN mode is expected to be hotter than ONAF for all indices except the first,
+    # because the cooling fans in ONAF mode reduce the hot spot temperature after the initial state.
+    assert (output_onan.hot_spot_temp_profile.iloc[1:] > full_onaf_output.hot_spot_temp_profile.iloc[1:]).all()
+
+    # Create a top-oil temperature profile that is constant at 90 for the first half and 70 for the second half
+    split_index = len(constant_load_profile_minutes.load_profile) // 2
+    top_oil_temperature_profile = np.array([90] * split_index + [70] * split_index)
+
+    constant_load_profile_minutes.top_oil_temperature_profile = top_oil_temperature_profile
+    onaf_switch_mixed = ONAFSwitch(
+        fans_status=None,
+        temperature_threshold=FanSwitchConfig(activation_temp=85, deactivation_temp=75),
+        onan_parameters=onan_parameters,
+    )
+    transformer_mixed = PowerTransformer(
+        user_specs=default_user_trafo_specs, cooling_type=CoolerType.ONAF, cooling_switch_settings=onaf_switch_mixed
+    )
+    model_mixed = Model(transformer=transformer_mixed, temperature_profile=constant_load_profile_minutes)
+    output_mixed = model_mixed.run()
+
+    model_mixed_onaf = Model(transformer=full_onaf_transformer, temperature_profile=constant_load_profile_minutes)
+    full_onaf_output_mixed = model_mixed_onaf.run()
+
+    # In the first half, it should be in ONAF mode, in the second half in ONAN mode
+    assert np.allclose(
+        output_mixed.hot_spot_temp_profile.iloc[:split_index],
+        full_onaf_output_mixed.hot_spot_temp_profile.iloc[:split_index],
+    )
+    assert (
+        output_mixed.hot_spot_temp_profile.iloc[split_index + 1 :]
+        > full_onaf_output_mixed.hot_spot_temp_profile.iloc[split_index + 1 :]
     ).all()
