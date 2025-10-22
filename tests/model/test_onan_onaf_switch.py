@@ -234,13 +234,9 @@ def test_complete_onan_onaf_switch_temp_threshold(
     assert output.top_oil_temp_profile.max() < 65
 
 
-def test_threewinding_onan_onaf_switch(
-    user_three_winding_transformer_specs: UserThreeWindingTransformerSpecifications,
-    three_winding_input_profile: ThreeWindingInputProfile,
-):
-    """Check that a three-winding transformer can be created with an ONAF switch."""
-    is_on = [False] * 50 + [True] * (len(three_winding_input_profile.datetime_index) - 50)
-    onan_parameters = ThreeWindingONANParameters(
+def example_three_winding_onan_parameters():
+    """Example of onan three winding alternative parameters."""
+    return ThreeWindingONANParameters(
         lv_winding=WindingSpecifications(
             time_const_winding=10, nom_load=500, winding_oil_gradient=18, hot_spot_fac=1.1, nom_power=30
         ),
@@ -256,6 +252,15 @@ def test_threewinding_onan_onaf_switch(
         load_loss_hv_lv=100,
         load_loss_hv_mv=100,
     )
+
+
+def test_threewinding_onan_onaf_switch(
+    user_three_winding_transformer_specs: UserThreeWindingTransformerSpecifications,
+    three_winding_input_profile: ThreeWindingInputProfile,
+):
+    """Check that a three-winding transformer can be created with an ONAF switch."""
+    is_on = [False] * 50 + [True] * (len(three_winding_input_profile.datetime_index) - 50)
+    onan_parameters = example_three_winding_onan_parameters()
     onaf_switch = ThreeWindingONAFSwitch(fans_status=is_on, temperature_threshold=None, onan_parameters=onan_parameters)
     transformer = ThreeWindingTransformer(
         user_specs=user_three_winding_transformer_specs,
@@ -313,22 +318,7 @@ def test_three_winding__onan_onaf_switch_threshold_temp(
     three_winding_input_profile: ThreeWindingInputProfile,
 ):
     """Check that a three-winding transformer can be created with an ONAF switch based on temperature thresholds."""
-    onan_parameters = ThreeWindingONANParameters(
-        lv_winding=WindingSpecifications(
-            time_const_winding=10, nom_load=500, winding_oil_gradient=18, hot_spot_fac=1.1, nom_power=30
-        ),
-        mv_winding=WindingSpecifications(
-            time_const_winding=10, nom_load=500, winding_oil_gradient=18, hot_spot_fac=1.1, nom_power=100
-        ),
-        hv_winding=WindingSpecifications(
-            time_const_winding=10, nom_load=50, winding_oil_gradient=18, hot_spot_fac=1.1, nom_power=100
-        ),
-        top_oil_temp_rise=55,
-        time_const_oil=160,
-        load_loss_mv_lv=100,
-        load_loss_hv_lv=100,
-        load_loss_hv_mv=100,
-    )
+    onan_parameters = example_three_winding_onan_parameters()
 
     # Use very low activation temps. to make it a ONAF transformer
     onaf_switch = ThreeWindingONAFSwitch(
