@@ -125,6 +125,26 @@ def test_wrong_onaf_switch(default_user_trafo_specs: UserTransformerSpecificatio
     ):
         Model(transformer=transformer, temperature_profile=iec_load_profile)
 
+    with pytest.raises(
+        ValueError,
+        match=("Activation temperature must be higher than deactivation temperature."),
+    ):
+        ONAFSwitch(
+            fans_status=None,
+            temperature_threshold=FanSwitchConfig(activation_temp=50, deactivation_temp=60),
+            onan_parameters=onan_parameters,
+        )
+
+    # Provide either 'fans_status' or 'temperature_threshold', not both.
+    with pytest.raises(ValueError, match=("Provide either 'fans_status' or 'temperature_threshold', not both")):
+        ONAFSwitch(
+            temperature_threshold=FanSwitchConfig(activation_temp=80, deactivation_temp=70),
+            onan_parameters=onan_parameters,
+            fans_status=[True, False],
+        )
+    with pytest.raises(ValueError, match=("Either 'fans_status' or 'temperature_threshold' must be provided.")):
+        ONAFSwitch(temperature_threshold=None, onan_parameters=onan_parameters, fans_status=None)
+
 
 def test_complete_onan_onaf_switch_fans_status(
     default_user_trafo_specs: UserTransformerSpecifications, constant_load_profile
