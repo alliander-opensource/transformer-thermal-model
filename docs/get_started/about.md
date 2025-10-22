@@ -491,6 +491,250 @@ hot_spot_temp_profile = results.hot_spot_temp_profile
 Note, how the top oil temperature we receive as the output `results.top_oil_temp_profile` exactly matches
 the top oil temperature we provided as the input.
 
+### Use a transformer that switches between ONAN and ONAF
+
+Some transformers operate with forced cooling (ONAF) only when needed. When the cooling fans are OFF, the transformer
+is in ONAN mode. When the fans are ON, the transformer is in ONAF mode. The library supports modelling a transformer
+that dynamically switches between these modes using the `CoolingSwitchController` and an `ONAFSwitch` configuration
+object.
+
+You can configure switching in two mutually exclusive ways:
+
+1. **Fan status schedule** (historical or planned operation): provide a list of booleans (`fans_status`) indicating
+  for each time step whether the fans are ON (`True`) or OFF (`False`).
+2. **Temperature threshold control**: provide activation and deactivation temperatures. The fans turn ON when the
+  top‑oil temperature reaches the activation temperature and turn OFF when it falls below the deactivation temperature.
+
+In both cases, you must also supply a set of ONAN parameters (`onan_parameters`) describing the specification values
+that differ when the fans are OFF (such as nominal load, winding oil gradient, hot‑spot factor, losses, and time
+constants).
+
+The `CoolingSwitchController` keeps a deep copy of the original ONAF specifications and, whenever a switch event
+occurs, applies either the ONAN parameters or restores the original ONAF specifications. Switching is evaluated at
+each time step during the thermal model run, so temperature profiles reflect the current cooling mode immediately.
+
+#### 1. Switching using a fan status schedule
+
+```python
+import pandas as pd
+
+from transformer_thermal_model.cooler import CoolerType
+from transformer_thermal_model.model import Model
+from transformer_thermal_model.schemas import InputProfile, UserTransformerSpecifications
+from transformer_thermal_model.schemas.thermal_model import ONAFSwitch, ONANParameters
+from transformer_thermal_model.transformer import PowerTransformer
+
+# User (ONAF) specifications
+user_specs = UserTransformerSpecifications(
+  load_loss=1000,
+  nom_load_sec_side=1500,
+  no_load_loss=200,
+  amb_temp_surcharge=20,
+  time_const_windings=10,
+)
+
+# ONAN specifications used when fans are OFF (values that differ from ONAF mode)
+onan_params = ONANParameters(
+  top_oil_temp_rise=65,            # Different top‑oil rise
+  time_const_oil=8,                # Different oil time constant
+  time_const_windings=10,
+  load_loss=1000,
+  nom_load_sec_side=1200,          # Lower nominal current in ONAN mode
+  winding_oil_gradient=20,
+  hot_spot_fac=1.3,
+)
+
+# Create a schedule: first half OFF (ONAN), second half ON (ONAF)
+fans_status = [False]*2*24*7 + [True]*2*24*7  # Example for a week with 15-min intervals
+
+onaf_switch = ONAFSwitch(
+  fans_status=fans_status,
+  onan_parameters=onan_params,
+)
+
+transformer = PowerTransformer(
+  user_specs=user_specs,
+  cooling_type=CoolerType.ONAF,   # Overall transformer supports ONAF
+  cooling_switch_settings=onaf_switch,
+)
+one_week = 4*24*7
+datetime_index = pd.date_range("2020-01-01", periods=one_week, freq="15min")
+
+nominal_load = 100
+load_points = pd.Series([nominal_load] * one_week, index=datetime_index)
+ambient_temp = 21
+temperature_points = pd.Series([ambient_temp] * one_week, index=datetime_index)
+
+profile_input = InputProfile.create(
+   datetime_index = datetime_index,
+   load_profile = load_points,
+   ambient_temperature_profile = temperature_points,
+)
+
+model = Model(transformer=transformer, temperature_profile=profile_input)
+results = model.run()
+```
+
+During the run the model applies ONAN parameters for the initial OFF section,
+then switches to the original ONAF specs when `fans_status` becomes `True`.
+
+##### 2. Switching using temperature thresholds
+
+```python
+import pandas as pd
+
+from transformer_thermal_model.cooler import CoolerType
+from transformer_thermal_model.model import Model
+from transformer_thermal_model.schemas import InputProfile, UserTransformerSpecifications
+from transformer_thermal_model.schemas.thermal_model import FanSwitchConfig, ONAFSwitch, ONANParameters
+from transformer_thermal_model.transformer import PowerTransformer
+
+# User (ONAF) specifications
+user_specs = UserTransformerSpecifications(
+  load_loss=1000,
+  nom_load_sec_side=1500,
+  no_load_loss=200,
+  amb_temp_surcharge=20,
+  time_const_windings=10,
+)
+
+onan_params = ONANParameters(
+  top_oil_temp_rise=65,            
+  time_const_oil=8,                
+  time_const_windings=10,
+  load_loss=1000,
+  nom_load_sec_side=1200,
+  winding_oil_gradient=20,
+  hot_spot_fac=1.3,
+)
+
+# Fans turn ON at 70 °C and OFF again at 60 °C
+threshold = FanSwitchConfig(activation_temp=70, deactivation_temp=60)
+
+onaf_switch = ONAFSwitch(
+  temperature_threshold=threshold,
+  onan_parameters=onan_params,
+)
+
+transformer = PowerTransformer(
+  user_specs=user_specs,
+  cooling_type=CoolerType.ONAF
+  ,
+  cooling_switch_settings=onaf_switch,
+)
+one_week = 4*24*7
+datetime_index = pd.date_range("2020-01-01", periods=one_week, freq="15min")
+
+nominal_load = 100
+load_points = pd.Series([nominal_load] * one_week, index=datetime_index)
+ambient_temp = 21
+temperature_points = pd.Series([ambient_temp] * one_week, index=datetime_index)
+
+
+profile_input = InputProfile.create(
+   datetime_index = datetime_index,
+   load_profile = load_points,
+   ambient_temperature_profile = temperature_points,
+)
+
+results = Model(transformer=transformer, temperature_profile=profile_input).run()
+```
+
+Each time step the controller compares the previous and current top‑oil temperature to the
+activation / deactivation thresholds and switches mode accordingly.
+
+#### Three‑winding transformers
+
+For three‑winding transformers a dedicated `ThreeWindingONAFSwitch` and `ThreeWindingONANParameters`
+are available, allowing you to specify ONAN parameters per winding (LV, MV, HV) and the separate load losses.
+Usage is analogous:
+
+```python
+import pandas as pd
+
+from transformer_thermal_model.cooler import CoolerType
+from transformer_thermal_model.model import Model
+from transformer_thermal_model.schemas import (
+  ThreeWindingInputProfile,
+  UserThreeWindingTransformerSpecifications,
+  WindingSpecifications,
+)
+from transformer_thermal_model.schemas.thermal_model.onaf_switch import (
+  ThreeWindingONAFSwitch,
+  ThreeWindingONANParameters,
+)
+from transformer_thermal_model.transformer import ThreeWindingTransformer
+
+onan_parameters = ThreeWindingONANParameters(
+  lv_winding=WindingSpecifications(
+    nom_load=900, winding_oil_gradient=20, hot_spot_fac=1.2, 
+    time_const_winding=1, nom_power=1000),
+  mv_winding=WindingSpecifications(
+    nom_load=900, winding_oil_gradient=20, hot_spot_fac=1.2, 
+    time_const_winding=1, nom_power=1000),
+  hv_winding=WindingSpecifications(
+    nom_load=1800, winding_oil_gradient=20, hot_spot_fac=1.2,
+     time_const_winding=1, nom_power=2000),
+  top_oil_temp_rise=60,
+  time_const_oil=150,
+  load_loss_mv_lv=100,
+  load_loss_hv_lv=100,
+  load_loss_hv_mv=100,
+)
+
+switch_cfg = ThreeWindingONAFSwitch(
+  fans_status=[False]*144 + [True]*144,
+  onan_parameters=onan_parameters,
+)
+
+user_specs = UserThreeWindingTransformerSpecifications(
+  no_load_loss=20,
+  amb_temp_surcharge=10,
+  lv_winding=WindingSpecifications(
+    nom_load=1000, winding_oil_gradient=20, hot_spot_fac=1.2, 
+    time_const_winding=1, nom_power=1000),
+  mv_winding=WindingSpecifications(
+    nom_load=1000, winding_oil_gradient=20, hot_spot_fac=1.2, 
+    time_const_winding=1, nom_power=1000),
+  hv_winding=WindingSpecifications(
+    nom_load=2000, winding_oil_gradient=20, hot_spot_fac=1.2, 
+    time_const_winding=1, nom_power=2000),
+  load_loss_hv_lv=100,
+  load_loss_hv_mv=100,
+  load_loss_mv_lv=100,
+)
+
+transformer = ThreeWindingTransformer(
+  user_specs=user_specs,
+  cooling_type=CoolerType.ONAF,
+  cooling_switch_settings=switch_cfg,
+)
+
+# Create the input profile for the three-winding transformer
+datetime_index = [pd.to_datetime("2025-07-01 00:00:00") + pd.Timedelta(minutes=15 * i) for i in range(0, 288)]
+profile_input = ThreeWindingInputProfile.create(
+    datetime_index=datetime_index,
+    ambient_temperature_profile=pd.Series(data=900, index=datetime_index),
+    load_profile_high_voltage_side=pd.Series(data=500, index=datetime_index),
+    load_profile_middle_voltage_side=pd.Series(data=500, index=datetime_index),
+    load_profile_low_voltage_side=pd.Series(data=300, index=datetime_index),
+)
+
+results = Model(transformer=transformer, temperature_profile=profile_input).run()
+```
+
+#### When should you use switching?
+
+Use dynamic switching when:
+
+- You want more realistic temperature profiles under partial cooling operation.
+- You need to assess thermal limits or aging for both fan operating states.
+- You are performing what‑if analyses on fan activation strategy.
+
+If your transformer always runs with fans engaged (forced cooling), simply use `CoolerType.ONAF` without a switch configuration.
+
+See the example notebook `examples/example_ONAN_ONAF_switch.ipynb` for a full demonstration with plots.
+
 ## License
 
 This project is licensed under the Mozilla Public License, version 2.0 - see
