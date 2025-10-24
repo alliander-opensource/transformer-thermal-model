@@ -54,9 +54,9 @@ def test_three_winding_transformer(user_three_winding_transformer_specs):
         transformer.winding_oil_gradient_array
         == np.array(
             [
-                [user_three_winding_transformer_specs.lv_winding.winding_oil_gradient],
-                [user_three_winding_transformer_specs.mv_winding.winding_oil_gradient],
-                [user_three_winding_transformer_specs.hv_winding.winding_oil_gradient],
+                [defaults.lv_winding.winding_oil_gradient],
+                [defaults.mv_winding.winding_oil_gradient],
+                [defaults.hv_winding.winding_oil_gradient],
             ]
         )
     ).all()
