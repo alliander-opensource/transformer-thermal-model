@@ -8,7 +8,7 @@ message: "If you are using Transformer Thermal Model in your research work, plea
 
 title: "alliander-opensource/transformer-thermal-model"
 url: "https://github.com/alliander-opensource/transformer-thermal-model"
-doi: ""
+doi: "DOI: 10.5281/zenodo.17434809"
 license: "MPL-2.0"
 authors:
   - family-names: "Boerma"
