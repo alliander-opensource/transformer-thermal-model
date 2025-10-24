@@ -41,13 +41,6 @@ class BaseUserTransformerSpecifications(BaseModel):
             "because the loss occurs in the core of the transformer. (taken from worst-case from FA-test) [W]"
         ),
     )
-    amb_temp_surcharge: float = Field(
-        ...,
-        description=(
-            "Ambient temperature surcharge, A flat temperature surcharge due to some environmental factors related to "
-            "the transformer (e.g. +10K when standing inside) [K]"
-        ),
-    )
 
     # Cooler specific specs
     time_const_oil: float | None = Field(default=None, description="Time constant oil [min]", gt=0)
@@ -61,6 +54,13 @@ class BaseUserTransformerSpecifications(BaseModel):
     winding_exp_y: float | None = Field(default=None, description="Winding exponent y [-]", ge=0)
     end_temp_reduction: float | None = Field(
         default=None, description="Lowering of the end temperature with respect to the current specification [K]"
+    )
+    amb_temp_surcharge: float = Field(
+        default=None,
+        description=(
+            "Ambient temperature surcharge, A flat temperature surcharge due to some "
+            "environmental factors related to the transformer (e.g. +10K when standing inside) [K]"
+        ),
     )
 
 
@@ -135,6 +135,7 @@ class BaseDefaultTransformerSpecifications(BaseModel):
     oil_exp_x: float
     winding_exp_y: float
     end_temp_reduction: float
+    amb_temp_surcharge: float
 
 
 class DefaultTransformerSpecifications(BaseDefaultTransformerSpecifications):
