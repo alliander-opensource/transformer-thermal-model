@@ -35,4 +35,4 @@ jobs:
       run: |
         sudo apt-get update && sudo apt-get install -y r-base
     - name: Validate CITATION.cff
-      uses: dieghernan/cff-validator@v4
+      uses: dieghernan/cff-validator@114aae53e1850c3757733beb60036941900e3dc3
