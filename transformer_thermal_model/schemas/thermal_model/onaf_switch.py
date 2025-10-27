@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field, model_validator
 from transformer_thermal_model.schemas.specifications.transformer import WindingSpecifications
 
 
-class FanSwitchConfig(BaseModel):
+class CoolingSwitchConfig(BaseModel):
     """Class representing the fan switch configuration for ONAF cooling."""
 
     activation_temp: float = Field(..., description="Temperature at which the fan cooling activates.")
@@ -26,7 +26,7 @@ class FanSwitchConfig(BaseModel):
 class BaseONANParameters(BaseModel):
     """Base class representing common ONAN (Oil Natural Air Natural) cooling parameters.
 
-    THis is used when an ONAF transformer switches to ONAN cooling.
+    This is used when an ONAF transformer switches to ONAN cooling.
     """
 
     top_oil_temp_rise: float
@@ -54,13 +54,13 @@ class ThreeWindingONANParameters(BaseONANParameters):
     load_loss_hv_mv: float
 
 
-class ONAFSwitchBase(BaseModel):
+class CoolingSwitchBase(BaseModel):
     """Class representing the ONAF (Oil Natural Air Forced) cooling switch status."""
 
     fans_status: list[bool] | None = Field(
         None, description="List indicating the ONAF cooling switch status at each time step."
     )
-    temperature_threshold: FanSwitchConfig | None = Field(
+    temperature_threshold: CoolingSwitchConfig | None = Field(
         None, description="Temperature threshold for activating the ONAF cooling switch."
     )
 
@@ -80,7 +80,7 @@ class ONAFSwitchBase(BaseModel):
         return self
 
 
-class ONAFSwitch(ONAFSwitchBase):
+class CoolingSwitchSettings(CoolingSwitchBase):
     """Class representing the ONAF (Oil Natural Air Forced) cooling switch settings.
 
     This class includes the ONAN parameters to be used when the transformer switches to ONAN cooling.
@@ -91,7 +91,7 @@ class ONAFSwitch(ONAFSwitchBase):
     )
 
 
-class ThreeWindingONAFSwitch(ONAFSwitchBase):
+class ThreeWindingCoolingSwitchSettings(CoolingSwitchBase):
     """Class representing the ONAF (Oil Natural Air Forced) cooling switch settings for three-winding transformers.
 
     This class includes the ONAN parameters to be used when the transformer switches to ONAN cooling.

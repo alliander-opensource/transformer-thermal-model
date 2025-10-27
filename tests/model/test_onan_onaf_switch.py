@@ -15,10 +15,10 @@ from transformer_thermal_model.schemas.specifications.transformer import (
 )
 from transformer_thermal_model.schemas.thermal_model.input_profile import ThreeWindingInputProfile
 from transformer_thermal_model.schemas.thermal_model.onaf_switch import (
-    FanSwitchConfig,
-    ONAFSwitch,
+    CoolingSwitchConfig,
+    CoolingSwitchSettings,
     ONANParameters,
-    ThreeWindingONAFSwitch,
+    ThreeWindingCoolingSwitchSettings,
     ThreeWindingONANParameters,
     WindingSpecifications,
 )
@@ -44,7 +44,7 @@ def test_start_cooling_type(default_user_trafo_specs: UserTransformerSpecificati
         hot_spot_fac=1.2,
     )
 
-    onaf_switch = ONAFSwitch(
+    onaf_switch = CoolingSwitchSettings(
         fans_status=is_on,
         temperature_threshold=None,
         onan_parameters=onan_parameters,
@@ -69,9 +69,9 @@ def test_start_cooling_type(default_user_trafo_specs: UserTransformerSpecificati
     assert transformer.specs.winding_oil_gradient == onaf_switch.onan_parameters.winding_oil_gradient
     assert transformer.specs.hot_spot_fac == onaf_switch.onan_parameters.hot_spot_fac
 
-    onaf_switch = ONAFSwitch(
+    onaf_switch = CoolingSwitchSettings(
         fans_status=None,
-        temperature_threshold=FanSwitchConfig(activation_temp=85, deactivation_temp=75),
+        temperature_threshold=CoolingSwitchConfig(activation_temp=85, deactivation_temp=75),
         onan_parameters=onan_parameters,
     )
     transformer = PowerTransformer(
@@ -106,7 +106,7 @@ def test_wrong_onaf_switch(default_user_trafo_specs: UserTransformerSpecificatio
         winding_oil_gradient=23,
         hot_spot_fac=1.2,
     )
-    onaf_switch = ONAFSwitch(fans_status=is_on, temperature_threshold=None, onan_parameters=onan_parameters)
+    onaf_switch = CoolingSwitchSettings(fans_status=is_on, temperature_threshold=None, onan_parameters=onan_parameters)
 
     with pytest.raises(ValueError, match=("ONAF switch only works when the cooling type is ONAF.")):
         PowerTransformer(
@@ -129,21 +129,21 @@ def test_wrong_onaf_switch(default_user_trafo_specs: UserTransformerSpecificatio
         ValueError,
         match=("Activation temperature must be higher than deactivation temperature."),
     ):
-        ONAFSwitch(
+        CoolingSwitchSettings(
             fans_status=None,
-            temperature_threshold=FanSwitchConfig(activation_temp=50, deactivation_temp=60),
+            temperature_threshold=CoolingSwitchConfig(activation_temp=50, deactivation_temp=60),
             onan_parameters=onan_parameters,
         )
 
     # Provide either 'fans_status' or 'temperature_threshold', not both.
     with pytest.raises(ValueError, match=("Provide either 'fans_status' or 'temperature_threshold', not both")):
-        ONAFSwitch(
-            temperature_threshold=FanSwitchConfig(activation_temp=80, deactivation_temp=70),
+        CoolingSwitchSettings(
+            temperature_threshold=CoolingSwitchConfig(activation_temp=80, deactivation_temp=70),
             onan_parameters=onan_parameters,
             fans_status=[True, False],
         )
     with pytest.raises(ValueError, match=("Either 'fans_status' or 'temperature_threshold' must be provided.")):
-        ONAFSwitch(temperature_threshold=None, onan_parameters=onan_parameters, fans_status=None)
+        CoolingSwitchSettings(temperature_threshold=None, onan_parameters=onan_parameters, fans_status=None)
 
 
 def test_complete_onan_onaf_switch_fans_status(
@@ -165,7 +165,7 @@ def test_complete_onan_onaf_switch_fans_status(
         winding_oil_gradient=23,
         hot_spot_fac=1.2,
     )
-    onaf_switch = ONAFSwitch(fans_status=is_on, temperature_threshold=None, onan_parameters=onan_parameters)
+    onaf_switch = CoolingSwitchSettings(fans_status=is_on, temperature_threshold=None, onan_parameters=onan_parameters)
     transformer = PowerTransformer(
         user_specs=default_user_trafo_specs, cooling_type=CoolerType.ONAF, cooling_switch_settings=onaf_switch
     )
@@ -203,7 +203,7 @@ def test_complete_onan_onaf_switch_temp_threshold(
     default_user_trafo_specs.winding_oil_gradient = 25
     default_user_trafo_specs.hot_spot_fac = 1.1
     default_user_trafo_specs.nom_load_sec_side = constant_load_profile_minutes.load_profile[0] * 5
-    temp_threshold = FanSwitchConfig(activation_temp=60, deactivation_temp=50)
+    temp_threshold = CoolingSwitchConfig(activation_temp=60, deactivation_temp=50)
     onan_parameters = ONANParameters(
         top_oil_temp_rise=50.5,
         time_const_oil=150,
@@ -213,7 +213,7 @@ def test_complete_onan_onaf_switch_temp_threshold(
         winding_oil_gradient=23,
         hot_spot_fac=1.2,
     )
-    onaf_switch = ONAFSwitch(
+    onaf_switch = CoolingSwitchSettings(
         fans_status=None,
         temperature_threshold=temp_threshold,
         onan_parameters=onan_parameters,
@@ -261,7 +261,9 @@ def test_threewinding_onan_onaf_switch(
     """Check that a three-winding transformer can be created with an ONAF switch."""
     is_on = [False] * 50 + [True] * (len(three_winding_input_profile.datetime_index) - 50)
     onan_parameters = example_three_winding_onan_parameters()
-    onaf_switch = ThreeWindingONAFSwitch(fans_status=is_on, temperature_threshold=None, onan_parameters=onan_parameters)
+    onaf_switch = ThreeWindingCoolingSwitchSettings(
+        fans_status=is_on, temperature_threshold=None, onan_parameters=onan_parameters
+    )
     transformer = ThreeWindingTransformer(
         user_specs=user_three_winding_transformer_specs,
         cooling_type=CoolerType.ONAF,
@@ -321,9 +323,9 @@ def test_three_winding__onan_onaf_switch_threshold_temp(
     onan_parameters = example_three_winding_onan_parameters()
 
     # Use very low activation temps. to make it a ONAF transformer
-    onaf_switch = ThreeWindingONAFSwitch(
+    onaf_switch = ThreeWindingCoolingSwitchSettings(
         fans_status=None,
-        temperature_threshold=FanSwitchConfig(activation_temp=10, deactivation_temp=0),
+        temperature_threshold=CoolingSwitchConfig(activation_temp=10, deactivation_temp=0),
         onan_parameters=onan_parameters,
     )
     transformer = ThreeWindingTransformer(
@@ -353,9 +355,9 @@ def test_three_winding__onan_onaf_switch_threshold_temp(
     )
 
     # Now we set a very high activation_temp, then it should be warmer in all but the first indice
-    onaf_switch = ThreeWindingONAFSwitch(
+    onaf_switch = ThreeWindingCoolingSwitchSettings(
         fans_status=None,
-        temperature_threshold=FanSwitchConfig(activation_temp=200, deactivation_temp=190),
+        temperature_threshold=CoolingSwitchConfig(activation_temp=200, deactivation_temp=190),
         onan_parameters=onan_parameters,
     )
     transformer = ThreeWindingTransformer(
@@ -389,8 +391,8 @@ def test_switch_with_given_top_oil_temp(
     constant_top_oil_profile = np.array([80] * len(constant_load_profile_minutes.load_profile))
     constant_load_profile_minutes.top_oil_temperature_profile = constant_top_oil_profile
 
-    temp_threshold_always_on = FanSwitchConfig(activation_temp=60, deactivation_temp=50)
-    temp_threshold_always_off = FanSwitchConfig(activation_temp=90, deactivation_temp=50)
+    temp_threshold_always_on = CoolingSwitchConfig(activation_temp=60, deactivation_temp=50)
+    temp_threshold_always_off = CoolingSwitchConfig(activation_temp=90, deactivation_temp=50)
 
     onan_parameters = ONANParameters(
         top_oil_temp_rise=50.5,
@@ -401,7 +403,7 @@ def test_switch_with_given_top_oil_temp(
         winding_oil_gradient=23,
         hot_spot_fac=1.2,
     )
-    onaf_switch = ONAFSwitch(
+    onaf_switch = CoolingSwitchSettings(
         fans_status=None,
         temperature_threshold=temp_threshold_always_on,
         onan_parameters=onan_parameters,
@@ -420,7 +422,7 @@ def test_switch_with_given_top_oil_temp(
     assert np.allclose(output.top_oil_temp_profile, full_onaf_output.top_oil_temp_profile)
     assert np.allclose(output.hot_spot_temp_profile, full_onaf_output.hot_spot_temp_profile)
 
-    onaf_switch_always_off = ONAFSwitch(
+    onaf_switch_always_off = CoolingSwitchSettings(
         fans_status=None,
         temperature_threshold=temp_threshold_always_off,
         onan_parameters=onan_parameters,
@@ -442,9 +444,9 @@ def test_switch_with_given_top_oil_temp(
     top_oil_temperature_profile = np.array([90] * split_index + [70] * split_index)
 
     constant_load_profile_minutes.top_oil_temperature_profile = top_oil_temperature_profile
-    onaf_switch_mixed = ONAFSwitch(
+    onaf_switch_mixed = CoolingSwitchSettings(
         fans_status=None,
-        temperature_threshold=FanSwitchConfig(activation_temp=85, deactivation_temp=75),
+        temperature_threshold=CoolingSwitchConfig(activation_temp=85, deactivation_temp=75),
         onan_parameters=onan_parameters,
     )
     transformer_mixed = PowerTransformer(

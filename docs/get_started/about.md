@@ -491,11 +491,11 @@ hot_spot_temp_profile = results.hot_spot_temp_profile
 Note, how the top oil temperature we receive as the output `results.top_oil_temp_profile` exactly matches
 the top oil temperature we provided as the input.
 
-### Use a transformer that switches between ONAN and ONAF
+### Model a transformer that switches between ONAN and ONAF
 
 Some transformers operate with forced cooling (ONAF) only when needed. When the cooling fans are OFF, the transformer
 is in ONAN mode. When the fans are ON, the transformer is in ONAF mode. The library supports modelling a transformer
-that dynamically switches between these modes using the `CoolingSwitchController` and an `ONAFSwitch` configuration
+that dynamically switches between these modes using the `CoolingSwitchController` and an `CoolingSwitchSettings` configuration
 object.
 
 You can configure switching in two mutually exclusive ways:
@@ -521,7 +521,7 @@ import pandas as pd
 from transformer_thermal_model.cooler import CoolerType
 from transformer_thermal_model.model import Model
 from transformer_thermal_model.schemas import InputProfile, UserTransformerSpecifications
-from transformer_thermal_model.schemas.thermal_model import ONAFSwitch, ONANParameters
+from transformer_thermal_model.schemas.thermal_model import CoolingSwitchSettings, ONANParameters
 from transformer_thermal_model.transformer import PowerTransformer
 
 # User (ONAF) specifications
@@ -547,7 +547,7 @@ onan_params = ONANParameters(
 # Create a schedule: first half OFF (ONAN), second half ON (ONAF)
 fans_status = [False]*2*24*7 + [True]*2*24*7  # Example for a week with 15-min intervals
 
-onaf_switch = ONAFSwitch(
+onaf_switch = CoolingSwitchSettings(
   fans_status=fans_status,
   onan_parameters=onan_params,
 )
@@ -586,7 +586,7 @@ import pandas as pd
 from transformer_thermal_model.cooler import CoolerType
 from transformer_thermal_model.model import Model
 from transformer_thermal_model.schemas import InputProfile, UserTransformerSpecifications
-from transformer_thermal_model.schemas.thermal_model import FanSwitchConfig, ONAFSwitch, ONANParameters
+from transformer_thermal_model.schemas.thermal_model import CoolingSwitchConfig, CoolingSwitchSettings, ONANParameters
 from transformer_thermal_model.transformer import PowerTransformer
 
 # User (ONAF) specifications
@@ -609,9 +609,9 @@ onan_params = ONANParameters(
 )
 
 # Fans turn ON at 70 °C and OFF again at 60 °C
-threshold = FanSwitchConfig(activation_temp=70, deactivation_temp=60)
+threshold = CoolingSwitchConfig(activation_temp=70, deactivation_temp=60)
 
-onaf_switch = ONAFSwitch(
+onaf_switch = CoolingSwitchSettings(
   temperature_threshold=threshold,
   onan_parameters=onan_params,
 )
@@ -645,7 +645,7 @@ activation / deactivation thresholds and switches mode accordingly.
 
 #### Three‑winding transformers
 
-For three‑winding transformers a dedicated `ThreeWindingONAFSwitch` and `ThreeWindingONANParameters`
+For three‑winding transformers a dedicated `ThreeWindingCoolingSwitchSettings` and `ThreeWindingONANParameters`
 are available, allowing you to specify ONAN parameters per winding (LV, MV, HV) and the separate load losses.
 Usage is analogous:
 
@@ -660,7 +660,7 @@ from transformer_thermal_model.schemas import (
   WindingSpecifications,
 )
 from transformer_thermal_model.schemas.thermal_model.onaf_switch import (
-  ThreeWindingONAFSwitch,
+  ThreeWindingCoolingSwitchSettings,
   ThreeWindingONANParameters,
 )
 from transformer_thermal_model.transformer import ThreeWindingTransformer
@@ -682,7 +682,7 @@ onan_parameters = ThreeWindingONANParameters(
   load_loss_hv_mv=100,
 )
 
-switch_cfg = ThreeWindingONAFSwitch(
+switch_cfg = ThreeWindingCoolingSwitchSettings(
   fans_status=[False]*144 + [True]*144,
   onan_parameters=onan_parameters,
 )

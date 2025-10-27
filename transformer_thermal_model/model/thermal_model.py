@@ -111,10 +111,7 @@ class Model:
         self.check_config()
 
     def check_config(self) -> None:
-        """Check if the configuration is valid.
-
-        If the transformer is a ThreeWindingTransformer, the input profile must be a ThreeWindingInputProfile.
-        """
+        """Check if the combination of the transformer and input profile are valid."""
         if isinstance(self.transformer, ThreeWindingTransformer) and not isinstance(
             self.data, ThreeWindingInputProfile
         ):
@@ -211,7 +208,7 @@ class Model:
                 top_k = self.transformer._end_temperature_top_oil(load[:, i])
             top_oil_temp_profile[i] = self._update_top_oil_temp(top_oil_temp_profile[i - 1], t_internal[i], top_k, f1)
 
-            new_specs = self.transformer.check_switch_and_get_new_specs(
+            new_specs = self.transformer.set_cooling_switch_controller_specs(
                 top_oil_temp_profile[i], top_oil_temp_profile[i - 1], i
             )
             if new_specs:
@@ -263,7 +260,7 @@ class Model:
                 hot_spot_temp_profile[i] = (
                     top_oil_temp_profile[i] + hot_spot_increase_windings[i] - hot_spot_increase_oil[i]
                 )
-                new_specs = self.transformer.check_switch_and_get_new_specs(
+                new_specs = self.transformer.set_cooling_switch_controller_specs(
                     top_oil_temp_profile[i], top_oil_temp_profile[i - 1], i
                 )
                 if new_specs:
@@ -297,7 +294,7 @@ class Model:
                     hot_spot_temp_profile[profile, i] = (
                         top_oil_temp_profile[i] + hot_spot_increase_windings[i] - hot_spot_increase_oil[i]
                     )
-                    new_specs = self.transformer.check_switch_and_get_new_specs(
+                    new_specs = self.transformer.set_cooling_switch_controller_specs(
                         top_oil_temp_profile[i], top_oil_temp_profile[i - 1], i
                     )
                     if new_specs:

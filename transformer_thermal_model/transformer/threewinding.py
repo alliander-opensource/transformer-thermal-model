@@ -12,7 +12,7 @@ from transformer_thermal_model.schemas import (
     ThreeWindingTransformerSpecifications,
     UserThreeWindingTransformerSpecifications,
 )
-from transformer_thermal_model.schemas.thermal_model.onaf_switch import ThreeWindingONAFSwitch
+from transformer_thermal_model.schemas.thermal_model.onaf_switch import ThreeWindingCoolingSwitchSettings
 from transformer_thermal_model.transformer.cooling_switch_controller import CoolingSwitchController
 
 from .base import Transformer
@@ -84,7 +84,7 @@ class ThreeWindingTransformer(Transformer):
         self,
         user_specs: UserThreeWindingTransformerSpecifications,
         cooling_type: CoolerType,
-        cooling_switch_settings: ThreeWindingONAFSwitch | None = None,
+        cooling_switch_settings: ThreeWindingCoolingSwitchSettings | None = None,
     ):
         """Initialize the ThreeWindingTransformer object."""
         logger.debug("Initialized ThreeWindingTransformer with specifications: %s", user_specs)

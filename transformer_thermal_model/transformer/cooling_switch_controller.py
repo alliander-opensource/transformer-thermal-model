@@ -8,9 +8,10 @@ from transformer_thermal_model.schemas.specifications.transformer import (
     TransformerSpecifications,
 )
 from transformer_thermal_model.schemas.thermal_model.onaf_switch import (
-    FanSwitchConfig,
-    ONAFSwitch,
-    ThreeWindingONAFSwitch,
+    CoolingSwitchBase,
+    CoolingSwitchConfig,
+    CoolingSwitchSettings,
+    ThreeWindingCoolingSwitchSettings,
 )
 
 
@@ -29,7 +30,11 @@ class CoolingSwitchController:
         ```python
         >>> from transformer_thermal_model.transformer import PowerTransformer
         >>> from transformer_thermal_model.schemas import UserTransformerSpecifications
-        >>> from transformer_thermal_model.schemas.thermal_model import ONAFSwitch, FanSwitchConfig, ONANParameters
+        >>> from transformer_thermal_model.schemas.thermal_model import (
+        ...     CoolingSwitchSettings,
+        ...     CoolingSwitchConfig,
+        ...     ONANParameters,
+        ... )
         >>> from transformer_thermal_model.cooler import CoolerType
 
         >>> # Define the transformer specifications for ONAF mode
@@ -51,8 +56,8 @@ class CoolingSwitchController:
         ... )
         >>> # Create switch configuration with temperature thresholds
         >>> # Fans activate at 70°C, deactivate at 60°C
-        >>> onaf_switch = ONAFSwitch(
-        ...     temperature_threshold=FanSwitchConfig(activation_temp=70, deactivation_temp=60),
+        >>> onaf_switch = CoolingSwitchSettings(
+        ...     temperature_threshold=CoolingSwitchConfig(activation_temp=70, deactivation_temp=60),
         ...     onan_parameters=onan_params
         ... )
         >>> # Create transformer with automatic switching capability
@@ -68,7 +73,7 @@ class CoolingSwitchController:
     Example: Using CoolingSwitchController with predefined fan status
         ```python
         >>> from transformer_thermal_model.transformer import PowerTransformer
-        >>> from transformer_thermal_model.schemas.thermal_model import ONAFSwitch, ONANParameters
+        >>> from transformer_thermal_model.schemas.thermal_model import CoolingSwitchSettings, ONANParameters
 
         >>> # Create a fan status schedule: True = ONAF (fans on), False = ONAN (fans off)
         >>> # This represents 5 time steps with fans on, then off, then on again
@@ -83,7 +88,7 @@ class CoolingSwitchController:
         ...     time_const_windings=10,
         ...     load_loss=800,
         ... )
-        >>> onaf_switch = ONAFSwitch(
+        >>> onaf_switch = CoolingSwitchSettings(
         ...     fans_status=fan_schedule,
         ...     onan_parameters=onan_params
         ... )
@@ -97,16 +102,16 @@ class CoolingSwitchController:
         ```
 
     Attributes:
-        onaf_switch (ONAFSwitch | ThreeWindingONAFSwitch): The switch configuration containing either
-            fan status schedule or temperature thresholds, plus ONAN parameters.
+        onaf_switch (CoolingSwitchSettings | ThreeWindingCoolingSwitchSettings): The switch configuration containing
+            either fan status schedule or temperature thresholds, plus ONAN parameters.
         original_onaf_specs (BaseTransformerSpecifications): Deep copy of the original ONAF specifications,
             used as reference when switching back to ONAF mode.
     """
 
     def __init__(
         self,
-        onaf_switch: ONAFSwitch | ThreeWindingONAFSwitch,
-        specs: TransformerSpecifications | ThreeWindingTransformerSpecifications,
+        onaf_switch: CoolingSwitchBase,
+        specs: BaseTransformerSpecifications,
     ):
         """Initialize the controller with the given ONAF switch settings and transformer specifications."""
         self.onaf_switch = onaf_switch
@@ -141,13 +146,15 @@ class CoolingSwitchController:
         """
         transformer_specs = self.original_onaf_specs.model_copy(deep=True)
 
-        if isinstance(transformer_specs, TransformerSpecifications) and isinstance(self.onaf_switch, ONAFSwitch):
+        if isinstance(transformer_specs, TransformerSpecifications) and isinstance(
+            self.onaf_switch, CoolingSwitchSettings
+        ):
             specs_dict = transformer_specs.model_dump()
             specs_dict.update(self.onaf_switch.onan_parameters.model_dump(exclude_none=True))
             transformer_specs = TransformerSpecifications(**specs_dict)
 
         elif isinstance(transformer_specs, ThreeWindingTransformerSpecifications) and isinstance(
-            self.onaf_switch, ThreeWindingONAFSwitch
+            self.onaf_switch, ThreeWindingCoolingSwitchSettings
         ):
             specs_dict = transformer_specs.model_dump()
             specs_dict.update(self.onaf_switch.onan_parameters.model_dump(exclude_none=True))
@@ -155,7 +162,7 @@ class CoolingSwitchController:
 
         return transformer_specs
 
-    def check_switch_and_get_new_specs(
+    def get_new_specs(
         self, top_oil_temp: float, previous_top_oil_temp: float, index: int
     ) -> BaseTransformerSpecifications | None:
         """Check and handle the ONAF/ONAN switch based on the top-oil temperature and the switch settings.
@@ -188,7 +195,7 @@ class CoolingSwitchController:
         return None
 
     def _handle_temp_threshold_switch(
-        self, temp_threshold: FanSwitchConfig, top_oil_temp: float, previous_top_oil_temp: float
+        self, temp_threshold: CoolingSwitchConfig, top_oil_temp: float, previous_top_oil_temp: float
     ) -> BaseTransformerSpecifications | None:
         """Handle switching based on temperature thresholds.
 

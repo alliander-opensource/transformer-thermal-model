@@ -50,12 +50,12 @@ class Transformer(ABC):
                 initial_top_oil_temperature=init_top_oil_temp
             )
 
-    def check_switch_and_get_new_specs(
-        self, top_oil_temp: int, previous_top_oil_temp: int, index: int
+    def set_cooling_switch_controller_specs(
+        self, top_oil_temp: float, previous_top_oil_temp: float, index: int
     ) -> BaseTransformerSpecifications | None:
         """Delegate ONAN/ONAF switch logic to CoolingSwitchController."""
         if self.cooling_controller:
-            return self.cooling_controller.check_switch_and_get_new_specs(top_oil_temp, previous_top_oil_temp, index)
+            return self.cooling_controller.get_new_specs(top_oil_temp, previous_top_oil_temp, index)
         return None
 
     @property
