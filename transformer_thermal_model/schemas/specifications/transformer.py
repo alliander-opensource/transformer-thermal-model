@@ -262,15 +262,29 @@ class ThreeWindingTransformerSpecifications(BaseTransformerSpecifications):
     ) -> Self:
         """Create a ThreeWindingTransformerSpecifications instance by merging defaults with user specifications.
 
-        Note that we need to perform a deep merge here because of the nested WindingSpecifications.
+        This method performs a merge of the `defaults` and `user` specifications. The merge behavior is as follows:
+        - For top-level keys, values from `user` will overwrite those in `defaults`.
+        - For nested dictionaries (e.g., `WindingSpecifications`), the merge is shallow:
+            - Keys in the nested dictionary from `user` will overwrite or add to the corresponding keys in `defaults`.
+            - Deeper levels of nesting are not recursively merged. Entire nested values are replaced.
+
+        This implementation assumes that only two levels of nesting are required. If deeper recursive merging is needed,
+        the logic will need to be updated.
+
+        Args:
+            defaults (ThreeWindingTransformerDefaultSpecifications): The default transformer specifications.
+            user (UserThreeWindingTransformerSpecifications): The user-provided transformer specifications.
+
+        Returns:
+            ThreeWindingTransformerSpecifications: A new instance with merged specifications.
         """
-        # Perform a deep merge of defaults and user specifications
+        # Perform a shallow merge of defaults and user specifications (up to two levels)
         data = deepcopy(defaults.model_dump())
         user_specs = user.model_dump(exclude_none=True)
         for key, value in user_specs.items():
-            # check for nested dict (WindingSpecifications), and merge if necessary
+            # Check for nested dictionaries (e.g., WindingSpecifications)
             if key in data and isinstance(data[key], dict) and isinstance(value, dict):
-                # Merge nested dictionaries
+                # Perform a shallow merge at the second level
                 for sub_key, sub_value in value.items():
                     data[key][sub_key] = sub_value
             else:
@@ -279,6 +293,7 @@ class ThreeWindingTransformerSpecifications(BaseTransformerSpecifications):
 
         logger.info("Complete three-winding transformer specifications: %s", data)
 
+        # Add load_loss_total_user if provided in user specifications
         data["load_loss_total_user"] = user.load_loss_total if user.load_loss_total is not None else None
         return cls(**data)
 
