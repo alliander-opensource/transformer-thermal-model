@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: MPL-2.0
 
 import logging
+from copy import deepcopy
 from typing import Self
 
 import numpy as np
@@ -11,13 +12,18 @@ from pydantic import BaseModel, Field
 logger = logging.getLogger(__name__)
 
 
-class WindingSpecifications(BaseModel):
+class DefaultWindingSpecifications(BaseModel):
+    """The default specifications for a single winding of a transformer."""
+
+    winding_oil_gradient: float | None = Field(default=None, description="Winding oil temperature gradient [K]", ge=0)
+    time_const_winding: float | None = Field(default=None, description="Time constant windings [min]", gt=0)
+    hot_spot_fac: float | None = Field(default=None, description="Hot-spot factor [-]", ge=0)
+
+
+class WindingSpecifications(DefaultWindingSpecifications):
     """The specifications for a single winding of a transformer."""
 
     nom_load: float = Field(..., description="Nominal load from the type plate [A]")
-    winding_oil_gradient: float = Field(..., description="Winding oil temperature gradient [K]", ge=0)
-    time_const_winding: float = Field(..., description="Time constant windings [min]", gt=0)
-    hot_spot_fac: float = Field(..., description="Hot-spot factor [-]", ge=0)
     nom_power: float = Field(..., description="Nominal power from the type plate [MVA]", ge=0)
 
 
@@ -35,13 +41,6 @@ class BaseUserTransformerSpecifications(BaseModel):
             "because the loss occurs in the core of the transformer. (taken from worst-case from FA-test) [W]"
         ),
     )
-    amb_temp_surcharge: float = Field(
-        ...,
-        description=(
-            "Ambient temperature surcharge, A flat temperature surcharge due to some environmental factors related to "
-            "the transformer (e.g. +10K when standing inside) [K]"
-        ),
-    )
 
     # Cooler specific specs
     time_const_oil: float | None = Field(default=None, description="Time constant oil [min]", gt=0)
@@ -55,6 +54,13 @@ class BaseUserTransformerSpecifications(BaseModel):
     winding_exp_y: float | None = Field(default=None, description="Winding exponent y [-]", ge=0)
     end_temp_reduction: float | None = Field(
         default=None, description="Lowering of the end temperature with respect to the current specification [K]"
+    )
+    amb_temp_surcharge: float | None = Field(
+        default=None,
+        description=(
+            "Ambient temperature surcharge, setting this value will apply a constant temperature surcharge, to account"
+            "for environmental factors related to, e.g., the transformer enclosure [K]"
+        ),
     )
 
 
@@ -129,6 +135,7 @@ class BaseDefaultTransformerSpecifications(BaseModel):
     oil_exp_x: float
     winding_exp_y: float
     end_temp_reduction: float
+    amb_temp_surcharge: float
 
 
 class DefaultTransformerSpecifications(BaseDefaultTransformerSpecifications):
@@ -145,7 +152,9 @@ class ThreeWindingTransformerDefaultSpecifications(BaseDefaultTransformerSpecifi
     For now this contains no additional elements, this is for future expansion.
     """
 
-    pass
+    lv_winding: DefaultWindingSpecifications
+    mv_winding: DefaultWindingSpecifications
+    hv_winding: DefaultWindingSpecifications
 
 
 class BaseTransformerSpecifications(BaseModel):
@@ -251,11 +260,40 @@ class ThreeWindingTransformerSpecifications(BaseTransformerSpecifications):
     def create(
         cls, defaults: ThreeWindingTransformerDefaultSpecifications, user: UserThreeWindingTransformerSpecifications
     ) -> Self:
-        """Create a ThreeWindingTransformerSpecifications instance by merging defaults with user specifications."""
-        data = defaults.model_dump()
-        data.update(user.model_dump(exclude_none=True))
+        """Create a ThreeWindingTransformerSpecifications instance by merging defaults with user specifications.
+
+        This method performs a merge of the `defaults` and `user` specifications. The merge behavior is as follows:
+        - For top-level keys, values from `user` will overwrite those in `defaults`.
+        - For nested dictionaries (e.g., `WindingSpecifications`), the merge is shallow:
+            - Keys in the nested dictionary from `user` will overwrite or add to the corresponding keys in `defaults`.
+            - Deeper levels of nesting are not recursively merged. Entire nested values are replaced.
+
+        This implementation assumes that only two levels of nesting are required. If deeper recursive merging is needed,
+        the logic will need to be updated.
+
+        Args:
+            defaults (ThreeWindingTransformerDefaultSpecifications): The default transformer specifications.
+            user (UserThreeWindingTransformerSpecifications): The user-provided transformer specifications.
+
+        Returns:
+            ThreeWindingTransformerSpecifications: A new instance with merged specifications.
+        """
+        # Perform a shallow merge of defaults and user specifications (up to two levels)
+        data = deepcopy(defaults.model_dump())
+        user_specs = user.model_dump(exclude_none=True)
+        for key, value in user_specs.items():
+            # Check for nested dictionaries (e.g., WindingSpecifications)
+            if key in data and isinstance(data[key], dict) and isinstance(value, dict):
+                # Perform a shallow merge at the second level
+                for sub_key, sub_value in value.items():
+                    data[key][sub_key] = sub_value
+            else:
+                # Overwrite or add top-level keys
+                data[key] = value
+
         logger.info("Complete three-winding transformer specifications: %s", data)
 
+        # Add load_loss_total_user if provided in user specifications
         data["load_loss_total_user"] = user.load_loss_total if user.load_loss_total is not None else None
         return cls(**data)
 

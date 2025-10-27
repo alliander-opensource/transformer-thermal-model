@@ -8,6 +8,7 @@ import pytest
 
 from transformer_thermal_model.cooler import CoolerType
 from transformer_thermal_model.schemas import (
+    DefaultWindingSpecifications,
     ThreeWindingTransformerDefaultSpecifications,
     ThreeWindingTransformerSpecifications,
     UserThreeWindingTransformerSpecifications,
@@ -28,6 +29,10 @@ def test_three_winding_transformer(user_three_winding_transformer_specs):
         oil_exp_x=0.8,
         winding_exp_y=1.6,
         end_temp_reduction=0,
+        amb_temp_surcharge=0,
+        lv_winding=DefaultWindingSpecifications(winding_oil_gradient=17, hot_spot_fac=1.3, time_const_winding=10),
+        mv_winding=DefaultWindingSpecifications(winding_oil_gradient=17, hot_spot_fac=1.3, time_const_winding=10),
+        hv_winding=DefaultWindingSpecifications(winding_oil_gradient=17, hot_spot_fac=1.3, time_const_winding=10),
     )
     transformer = ThreeWindingTransformerSpecifications.create(
         defaults=defaults, user=user_three_winding_transformer_specs
@@ -49,9 +54,9 @@ def test_three_winding_transformer(user_three_winding_transformer_specs):
         transformer.winding_oil_gradient_array
         == np.array(
             [
-                [user_three_winding_transformer_specs.lv_winding.winding_oil_gradient],
-                [user_three_winding_transformer_specs.mv_winding.winding_oil_gradient],
-                [user_three_winding_transformer_specs.hv_winding.winding_oil_gradient],
+                [defaults.lv_winding.winding_oil_gradient],
+                [defaults.mv_winding.winding_oil_gradient],
+                [defaults.hv_winding.winding_oil_gradient],
             ]
         )
     ).all()
