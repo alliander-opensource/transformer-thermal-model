@@ -58,8 +58,8 @@ class BaseUserTransformerSpecifications(BaseModel):
     amb_temp_surcharge: float | None = Field(
         default=None,
         description=(
-            "Ambient temperature surcharge, A flat temperature surcharge due to some "
-            "environmental factors related to the transformer (e.g. +10K when standing inside) [K]"
+            "Ambient temperature surcharge, setting this value will apply a constant temperature surcharge, to account"
+            "for environmental factors related to, e.g., the transformer enclosure [K]"
         ),
     )
 
