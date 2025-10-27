@@ -55,7 +55,7 @@ class BaseUserTransformerSpecifications(BaseModel):
     end_temp_reduction: float | None = Field(
         default=None, description="Lowering of the end temperature with respect to the current specification [K]"
     )
-    amb_temp_surcharge: float = Field(
+    amb_temp_surcharge: float | None = Field(
         default=None,
         description=(
             "Ambient temperature surcharge, A flat temperature surcharge due to some "
