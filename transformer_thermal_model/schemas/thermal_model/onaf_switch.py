@@ -57,7 +57,7 @@ class ThreeWindingONANParameters(BaseONANParameters):
 class CoolingSwitchBase(BaseModel):
     """Class representing the ONAF (Oil Natural Air Forced) cooling switch status."""
 
-    fans_status: list[bool] | None = Field(
+    fan_on: list[bool] | None = Field(
         None, description="List indicating the ONAF cooling switch status at each time step."
     )
     temperature_threshold: CoolingSwitchConfig | None = Field(
@@ -66,17 +66,17 @@ class CoolingSwitchBase(BaseModel):
 
     @model_validator(mode="after")
     def check_consistency(self) -> Self:
-        """Check that either fans_status or temperature_threshold is provided, but not both.
+        """Check that either fan_on or temperature_threshold is provided, but not both.
 
         There are two ways to model a switch between ON and OFF for the ONAF cooling:
             1. Provide a list of booleans indicating whether the switch is ON (True) or OFF (False) at each time step.
             2. Provide a temperature threshold, where the switch turns ON when the hot-spot temperature
             exceeds this threshold.
         """
-        if self.fans_status is not None and self.temperature_threshold is not None:
-            raise ValueError("Provide either 'fans_status' or 'temperature_threshold', not both.")
-        if self.fans_status is None and self.temperature_threshold is None:
-            raise ValueError("Either 'fans_status' or 'temperature_threshold' must be provided.")
+        if self.fan_on is not None and self.temperature_threshold is not None:
+            raise ValueError("Provide either 'fan_on' or 'temperature_threshold', not both.")
+        if self.fan_on is None and self.temperature_threshold is None:
+            raise ValueError("Either 'fan_on' or 'temperature_threshold' must be provided.")
         return self
 
 

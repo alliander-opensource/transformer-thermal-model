@@ -89,7 +89,7 @@ class CoolingSwitchController:
         ...     load_loss=800,
         ... )
         >>> onaf_switch = CoolingSwitchSettings(
-        ...     fans_status=fan_schedule,
+        ...     fan_on=fan_schedule,
         ...     onan_parameters=onan_params
         ... )
         >>> transformer = PowerTransformer(
@@ -126,8 +126,8 @@ class CoolingSwitchController:
         If the fans are off at the start or if a temperature threshold is set,
         the transformer starts with ONAN specifications. Otherwise, it starts with ONAF specifications.
         """
-        if self.onaf_switch.fans_status is not None:
-            if not self.onaf_switch.fans_status[0]:
+        if self.onaf_switch.fan_on is not None:
+            if not self.onaf_switch.fan_on[0]:
                 return self.create_onan_specifications()
         elif (
             self.onaf_switch.temperature_threshold is not None
@@ -175,18 +175,18 @@ class CoolingSwitchController:
             previous_top_oil_temp (float): Previous top-oil temperature.
             index (int): Index for fan status or threshold evaluation.
         """
-        fans_status = self.onaf_switch.fans_status
+        fan_on = self.onaf_switch.fan_on
         temp_threshold = self.onaf_switch.temperature_threshold
 
-        if fans_status is not None and index < len(fans_status) - 1:
-            return self._handle_fan_status_switch(fans_status, index)
+        if fan_on is not None and index < len(fan_on) - 1:
+            return self._handle_fan_status_switch(fan_on, index)
         elif temp_threshold is not None:
             return self._handle_temp_threshold_switch(temp_threshold, top_oil_temp, previous_top_oil_temp)
         return None
 
-    def _handle_fan_status_switch(self, fans_status: list[bool], index: int) -> BaseTransformerSpecifications | None:
+    def _handle_fan_status_switch(self, fan_on: list[bool], index: int) -> BaseTransformerSpecifications | None:
         """Handle switching based on fan status list."""
-        previous_fan_status, current_fan_status = fans_status[index], fans_status[index + 1]
+        previous_fan_status, current_fan_status = fan_on[index], fan_on[index + 1]
         if previous_fan_status != current_fan_status:
             if current_fan_status:
                 return self.original_onaf_specs

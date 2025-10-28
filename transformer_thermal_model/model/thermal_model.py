@@ -122,11 +122,11 @@ class Model:
             raise ValueError("A DistributionTransformer requires an InputProfile.")
         if (
             self.transformer.cooling_controller
-            and self.transformer.cooling_controller.onaf_switch.fans_status
-            and len(self.transformer.cooling_controller.onaf_switch.fans_status) != len(self.data)
+            and self.transformer.cooling_controller.onaf_switch.fan_on
+            and len(self.transformer.cooling_controller.onaf_switch.fan_on) != len(self.data)
         ):
             raise ValueError(
-                "The length of the fans_status list in the cooling_switch_settings must be equal to the length of the "
+                "The length of the fan_on list in the cooling_switch_settings must be equal to the length of the "
                 "temperature profile."
             )
 

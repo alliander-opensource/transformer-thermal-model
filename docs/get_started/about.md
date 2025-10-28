@@ -500,7 +500,7 @@ object.
 
 You can configure switching in two mutually exclusive ways:
 
-1. **Fan status schedule** (historical or planned operation): provide a list of booleans (`fans_status`) indicating
+1. **Fan status schedule** (historical or planned operation): provide a list of booleans (`fan_on`) indicating
   for each time step whether the fans are ON (`True`) or OFF (`False`).
 2. **Temperature threshold control**: provide activation and deactivation temperatures. The fans turn ON when the
   top‑oil temperature reaches the activation temperature and turn OFF when it falls below the deactivation temperature.
@@ -545,10 +545,10 @@ onan_params = ONANParameters(
 )
 
 # Create a schedule: first half OFF (ONAN), second half ON (ONAF)
-fans_status = [False]*2*24*7 + [True]*2*24*7  # Example for a week with 15-min intervals
+fan_on = [False]*2*24*7 + [True]*2*24*7  # Example for a week with 15-min intervals
 
 onaf_switch = CoolingSwitchSettings(
-  fans_status=fans_status,
+  fan_on=fan_on,
   onan_parameters=onan_params,
 )
 
@@ -576,7 +576,7 @@ results = model.run()
 ```
 
 During the run the model applies ONAN parameters for the initial OFF section,
-then switches to the original ONAF specs when `fans_status` becomes `True`.
+then switches to the original ONAF specs when `fan_on` becomes `True`.
 
 ##### 2. Switching using temperature thresholds
 
@@ -683,7 +683,7 @@ onan_parameters = ThreeWindingONANParameters(
 )
 
 switch_cfg = ThreeWindingCoolingSwitchSettings(
-  fans_status=[False]*144 + [True]*144,
+  fan_on=[False]*144 + [True]*144,
   onan_parameters=onan_parameters,
 )
 
