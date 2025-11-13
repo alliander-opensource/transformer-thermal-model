@@ -31,7 +31,7 @@ pytest-cov = "^7.0.0"
 pre-commit = "^4.1.0"
 codespell = "^2.4.1"
 ipython = "^9.3.0"
-isort = "^6.0.0"
+isort = "^7.0.0"
 mutmut = "^3.3.1"
 
 [tool.poetry.group.docs]
