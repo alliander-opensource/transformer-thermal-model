@@ -33,6 +33,22 @@ from transformer_thermal_model.schemas.thermal_model.input_profile import InputP
         ),
         (
             pd.date_range("2021-01-01 00:00:00", periods=3),
+            [1, -2, 3],
+            [1, 2, 3],
+            None,
+            pytest.raises(ValueError),
+            "The load profile must not contain negative values",
+        ),
+        (
+            pd.date_range("2021-01-01 00:00:00", periods=3),
+            np.array([1, 2, -3]),
+            [1, 2, 3],
+            None,
+            pytest.raises(ValueError),
+            "The load profile must not contain negative values",
+        ),
+        (
+            pd.date_range("2021-01-01 00:00:00", periods=3),
             np.array([1, 2, 3]),
             [1, 2, 3],
             [2, 3, 4],
