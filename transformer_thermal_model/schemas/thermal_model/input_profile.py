@@ -52,6 +52,13 @@ class BaseInputProfile(BaseModel):
             raise ValueError("The length of the top_oil_temperature_profile should match the datetime_index.")
         return self
 
+    @model_validator(mode="after")
+    def _check_load_profile_not_negative(self) -> Self:
+        """Check if the load profile contains negative values."""
+        if np.min(self.load_profile_array) < 0:
+            raise ValueError("The load profile must not contain negative values")
+        return self
+
     def __len__(self) -> int:
         """Return the length of the datetime index."""
         return len(self.datetime_index)
@@ -259,6 +266,18 @@ class ThreeWindingInputProfile(BaseInputProfile):
                 self.load_profile_high_voltage_side,
             ]
         )
+
+    @model_validator(mode="after")
+    def _check_load_profile_not_negative(self) -> Self:
+        """We have to override the check here since the self.load_profile_array will throw an error it the dimension do not match."""
+        for load_profile in [
+            self.load_profile_low_voltage_side, 
+            self.load_profile_middle_voltage_side, 
+            self.load_profile_high_voltage_side
+        ]:
+            if np.min(load_profile) < 0:
+                raise ValueError("The load profile must not contain negative values")
+        return self
 
     @classmethod
     def create(
