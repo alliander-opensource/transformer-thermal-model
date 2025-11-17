@@ -47,25 +47,21 @@ def trafo_specs_onaf_uncalibrated():
         hot_spot_fac=None,
     )
 
+
 @pytest.fixture
 def threewind_specs_HS_13():
     """Fixture for the specifications of a threewind transformer with known hotspotfactor of 1.3."""
     return UserThreeWindingTransformerSpecifications(
-            no_load_loss=33930,
-            amb_temp_surcharge=0,
-            lv_winding=WindingSpecifications(
-                nom_load=1300, winding_oil_gradient=11.8, time_const_winding=7, nom_power=25
-            ),
-            mv_winding=WindingSpecifications(
-                nom_load=1045, winding_oil_gradient=11.4, time_const_winding=7, nom_power=95
-            ),
-            hv_winding=WindingSpecifications(
-                nom_load=366, winding_oil_gradient=11.8, time_const_winding=7, nom_power=95
-            ),
-            load_loss_hv_lv=102100,
-            load_loss_hv_mv=259000,
-            load_loss_mv_lv=100300,
-            )
+        no_load_loss=33930,
+        amb_temp_surcharge=0,
+        lv_winding=WindingSpecifications(nom_load=1300, winding_oil_gradient=11.8, time_const_winding=7, nom_power=25),
+        mv_winding=WindingSpecifications(nom_load=1045, winding_oil_gradient=11.4, time_const_winding=7, nom_power=95),
+        hv_winding=WindingSpecifications(nom_load=366, winding_oil_gradient=11.8, time_const_winding=7, nom_power=95),
+        load_loss_hv_lv=102100,
+        load_loss_hv_mv=259000,
+        load_loss_mv_lv=100300,
+    )
+
 
 @pytest.fixture
 def threewind_specs_HS_11():
@@ -73,48 +69,45 @@ def threewind_specs_HS_11():
     return UserThreeWindingTransformerSpecifications(
         no_load_loss=51590,
         amb_temp_surcharge=0,
-        lv_winding=WindingSpecifications(
-            nom_load=1560, winding_oil_gradient=20.0, time_const_winding=7, nom_power=30
-        ),
-        mv_winding=WindingSpecifications(
-            nom_load=1100, winding_oil_gradient=16.5, time_const_winding=7, nom_power=100
-        ),
-        hv_winding=WindingSpecifications(
-            nom_load=385, winding_oil_gradient=22.1, time_const_winding=7, nom_power=100
-        ),
+        lv_winding=WindingSpecifications(nom_load=1560, winding_oil_gradient=20.0, time_const_winding=7, nom_power=30),
+        mv_winding=WindingSpecifications(nom_load=1100, winding_oil_gradient=16.5, time_const_winding=7, nom_power=100),
+        hv_winding=WindingSpecifications(nom_load=385, winding_oil_gradient=22.1, time_const_winding=7, nom_power=100),
         load_loss_hv_lv=142300,
         load_loss_hv_mv=462700,
         load_loss_mv_lv=135800,
     )
 
+
 @pytest.fixture
 def threewind_specs_HS_12():
     """Fixture for the specifications of a threewind transformer with known hotspotfactor of 1.19."""
     return UserThreeWindingTransformerSpecifications(
-            no_load_loss=34000,
-            amb_temp_surcharge=0,
-            lv_winding=WindingSpecifications(
-                nom_load=1300,
-                winding_oil_gradient=15.0,
-                time_const_winding=7,
-                nom_power=25,
-            ),
-            mv_winding=WindingSpecifications(
-                nom_load=1045,
-                winding_oil_gradient=15.5, 
-                time_const_winding=7,
-                nom_power=95,
-            ),
-            hv_winding=WindingSpecifications(
-                nom_load=366,
-                winding_oil_gradient=15.0, 
-                time_const_winding=7,
-                nom_power=95,
-            ),
-            load_loss_hv_lv=95000,   
-            load_loss_hv_mv=245000,
-            load_loss_mv_lv=95000  
-        )
+        no_load_loss=34000,
+        amb_temp_surcharge=0,
+        lv_winding=WindingSpecifications(
+            nom_load=1300,
+            winding_oil_gradient=15.0,
+            time_const_winding=7,
+            nom_power=25,
+        ),
+        mv_winding=WindingSpecifications(
+            nom_load=1045,
+            winding_oil_gradient=15.5,
+            time_const_winding=7,
+            nom_power=95,
+        ),
+        hv_winding=WindingSpecifications(
+            nom_load=366,
+            winding_oil_gradient=15.0,
+            time_const_winding=7,
+            nom_power=95,
+        ),
+        load_loss_hv_lv=95000,
+        load_loss_hv_mv=245000,
+        load_loss_mv_lv=95000,
+    )
+
+
 @pytest.fixture
 def transformer_onan_uncalibrated(trafo_specs_onan_uncalibrated: UserTransformerSpecifications):
     """Fixture for the uncalibrated ONAN transformer."""
@@ -131,29 +124,24 @@ def transformer_onaf_uncalibrated(trafo_specs_onaf_uncalibrated: UserTransformer
         cooling_type=CoolerType.ONAF,
         user_specs=trafo_specs_onaf_uncalibrated,
     )
+
+
 @pytest.fixture
 def threewind_transformer_HS_11(threewind_specs_HS_11: UserThreeWindingTransformerSpecifications):
-     """Fixture for the threewind transformer with known hotspotfactor of 1.1."""
-     return ThreeWindingTransformer(
-          user_specs=threewind_specs_HS_11, 
-          cooling_type=CoolerType.ONAF
-    )
+    """Fixture for the threewind transformer with known hotspotfactor of 1.1."""
+    return ThreeWindingTransformer(user_specs=threewind_specs_HS_11, cooling_type=CoolerType.ONAF)
+
 
 @pytest.fixture
 def threewind_transformer_HS_12(threewind_specs_HS_12: UserThreeWindingTransformerSpecifications):
-     """Fixture for the threewind transformer with known hotspotfactor of 1.19."""
-     return ThreeWindingTransformer(
-          user_specs=threewind_specs_HS_12, 
-          cooling_type=CoolerType.ONAF
-    )
+    """Fixture for the threewind transformer with known hotspotfactor of 1.19."""
+    return ThreeWindingTransformer(user_specs=threewind_specs_HS_12, cooling_type=CoolerType.ONAF)
+
 
 @pytest.fixture
 def threewind_transformer_HS_13(threewind_specs_HS_13: UserThreeWindingTransformerSpecifications):
-     """Fixture for the threewind transformer with known hotspotfactor of 1.3."""
-     return ThreeWindingTransformer(
-          user_specs=threewind_specs_HS_13, 
-          cooling_type=CoolerType.ONAF
-    )
+    """Fixture for the threewind transformer with known hotspotfactor of 1.3."""
+    return ThreeWindingTransformer(user_specs=threewind_specs_HS_13, cooling_type=CoolerType.ONAF)
 
 
 def test_hot_spot_factor_calibration_onan(transformer_onan_uncalibrated: PowerTransformer):
@@ -213,6 +201,7 @@ def test_that_hot_spot_factor_fails_with_wrong_limits(transformer_onaf_uncalibra
             hot_spot_factor_max=1,
         )
 
+
 def test_hot_spot_factor_calibration_threewind_HS11(threewind_transformer_HS_11: ThreeWindingTransformer):
     """Test the calibration of the HS factor for the threewind transformer with known hotspotfactor 1.1."""
     transformer_calibrated = calibrate_hotspot_factor(
@@ -225,6 +214,7 @@ def test_hot_spot_factor_calibration_threewind_HS11(threewind_transformer_HS_11:
 
     assert transformer_calibrated.specs.lv_winding.hot_spot_fac == pytest.approx(1.1)
     assert transformer_calibrated.specs.amb_temp_surcharge == threewind_transformer_HS_11.specs.amb_temp_surcharge
+
 
 def test_hot_spot_factor_calibration_threewind_HS12(threewind_transformer_HS_12: ThreeWindingTransformer):
     """Test the calibration of the HS factor for the threewind transformer with known hotspotfactor 1.19."""
@@ -239,6 +229,7 @@ def test_hot_spot_factor_calibration_threewind_HS12(threewind_transformer_HS_12:
     assert transformer_calibrated.specs.lv_winding.hot_spot_fac == pytest.approx(1.16)
     assert transformer_calibrated.specs.amb_temp_surcharge == threewind_transformer_HS_12.specs.amb_temp_surcharge
 
+
 def test_hot_spot_factor_calibration_threewind_HS13(threewind_transformer_HS_13: ThreeWindingTransformer):
     """Test the calibration of the HS factor for the threewind transformer with known hotspotfactor 1.1."""
     transformer_calibrated = calibrate_hotspot_factor(
@@ -252,9 +243,10 @@ def test_hot_spot_factor_calibration_threewind_HS13(threewind_transformer_HS_13:
     assert transformer_calibrated.specs.lv_winding.hot_spot_fac == pytest.approx(1.3)
     assert transformer_calibrated.specs.amb_temp_surcharge == threewind_transformer_HS_13.specs.amb_temp_surcharge
 
+
 def test_that_hot_spot_factor_fails_with_wrong_limits_threewind(threewind_transformer_HS_11: ThreeWindingTransformer):
     """Test that the hot-spot factor calibration raises an error if the bounds are not defined correctly.
-    
+
     Test for the threewind transformer.
     """
     with pytest.raises(
@@ -268,7 +260,10 @@ def test_that_hot_spot_factor_fails_with_wrong_limits_threewind(threewind_transf
             hot_spot_factor_max=1,
         )
 
-def test_that_hot_spot_factor_calibration_caps_at_minimal_value_threewind(threewind_transformer_HS_13: ThreeWindingTransformer):
+
+def test_that_hot_spot_factor_calibration_caps_at_minimal_value_threewind(
+    threewind_transformer_HS_13: ThreeWindingTransformer,
+):
     """Test that the hot-spot factor calibration caps at the minimal value by setting the winding oil gradient high."""
     threewind_transformer_HS_13.specs.lv_winding.winding_oil_gradient = 30
     threewind_transformer_HS_13.specs.mv_winding.winding_oil_gradient = 30

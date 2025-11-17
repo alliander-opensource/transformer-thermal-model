@@ -18,7 +18,6 @@ from transformer_thermal_model.transformer import PowerTransformer, ThreeWinding
 logger = logging.getLogger(__name__)
 
 
-
 def calibrate_hotspot_factor(
     uncalibrated_transformer: PowerTransformer | ThreeWindingTransformer,
     hot_spot_limit: float,
@@ -81,16 +80,19 @@ def calibrate_hotspot_factor(
 
         calibrated_hot_spot_factor = np.clip(old_hot_spot_factor, hot_spot_factor_min, hot_spot_factor_max)
 
-    else:
+    elif isinstance(uncalibrated_transformer, ThreeWindingTransformer):
+        hot_spot_factors = [
+            uncalibrated_transformer.specs.lv_winding.hot_spot_fac,
+            uncalibrated_transformer.specs.mv_winding.hot_spot_fac,
+            uncalibrated_transformer.specs.hv_winding.hot_spot_fac,
+        ]
+        # Filter out None values before finding minimum
+        valid_hot_spot_factors = [f for f in hot_spot_factors if f is not None]
+        min_hot_spot_factor = min(valid_hot_spot_factors) if valid_hot_spot_factors else "undefined"
+
         logger.info(
-            "Calibrating the hot-spot factor of the threewinding transformer. The current minimum hot-spot factor equals"
-            + f"{
-                min(
-                    uncalibrated_transformer.specs.lv_winding.hot_spot_fac,
-                    uncalibrated_transformer.specs.mv_winding.hot_spot_fac,
-                    uncalibrated_transformer.specs.hv_winding.hot_spot_fac,
-                )
-            }."
+            "Calibrating the hot-spot factor of the threewinding transformer. "
+            "The current minimum hot-spot factor equals" + f" {min_hot_spot_factor}."
         )
         continuous_load_lv = pd.Series(
             [calibrated_transformer.specs.lv_winding.nom_load] * one_week_steps, index=datetime_index
@@ -112,27 +114,29 @@ def calibrate_hotspot_factor(
 
         difference = 100.0
         new_hot_spot_factor = hot_spot_factor_max
+        old_hot_spot_factor = hot_spot_factor_max  # Initialize to prevent unbound variable
         calibrated_transformer._set_HS_fac(new_hot_spot_factor)
 
         while difference > 0 and new_hot_spot_factor >= hot_spot_factor_min - 0.01:
             old_hot_spot_factor = new_hot_spot_factor
             model = Model(temperature_profile=model_input, transformer=calibrated_transformer)
-            if isinstance(uncalibrated_transformer, PowerTransformer):
-                results = model.run().convert_to_dataframe()
-                hot_spot_max = results["hot_spot_temperature"].max()
-            else: 
-                results = model.run()
-                hot_spot_max = max(
-                    np.amax(results.hot_spot_temp_profile["low_voltage_side"]),
-                    np.amax(results.hot_spot_temp_profile["middle_voltage_side"]),
-                    np.amax(results.hot_spot_temp_profile["high_voltage_side"]),
-                )
+
+            results = model.run()
+            hot_spot_max = max(
+                np.amax(results.hot_spot_temp_profile["low_voltage_side"]),
+                np.amax(results.hot_spot_temp_profile["middle_voltage_side"]),
+                np.amax(results.hot_spot_temp_profile["high_voltage_side"]),
+            )
             difference = hot_spot_max - hot_spot_limit
             new_hot_spot_factor = old_hot_spot_factor - 0.01
             calibrated_transformer._set_HS_fac(new_hot_spot_factor)
 
         calibrated_hot_spot_factor = np.clip(old_hot_spot_factor, hot_spot_factor_min, hot_spot_factor_max)
-
+    else:
+        raise ValueError(
+            "Incorrect Transformer Type: Hot-spot calibration is only implemented for transformers "
+            "of type PowerTransformer or ThreeWindingTransformer"
+        )
     calibrated_transformer._set_HS_fac(calibrated_hot_spot_factor)
     calibrated_transformer.specs.amb_temp_surcharge = uncalibrated_transformer.specs.amb_temp_surcharge
 
