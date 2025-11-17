@@ -217,7 +217,7 @@ def test_hot_spot_factor_calibration_threewind_HS11(threewind_transformer_HS_11:
 
 
 def test_hot_spot_factor_calibration_threewind_HS12(threewind_transformer_HS_12: ThreeWindingTransformer):
-    """Test the calibration of the HS factor for the threewind transformer with known hotspotfactor 1.19."""
+    """Test the calibration of the HS factor for the threewind transformer with known hotspotfactor 1.16."""
     transformer_calibrated = calibrate_hotspot_factor(
         uncalibrated_transformer=threewind_transformer_HS_12,
         hot_spot_limit=98,
@@ -231,7 +231,7 @@ def test_hot_spot_factor_calibration_threewind_HS12(threewind_transformer_HS_12:
 
 
 def test_hot_spot_factor_calibration_threewind_HS13(threewind_transformer_HS_13: ThreeWindingTransformer):
-    """Test the calibration of the HS factor for the threewind transformer with known hotspotfactor 1.1."""
+    """Test the calibration of the HS factor for the threewind transformer with known hotspotfactor 1.3."""
     transformer_calibrated = calibrate_hotspot_factor(
         uncalibrated_transformer=threewind_transformer_HS_13,
         hot_spot_limit=98,
