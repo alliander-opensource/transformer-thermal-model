@@ -86,6 +86,7 @@ class Model:
         temperature_profile: BaseInputProfile,
         transformer: Transformer,
         init_top_oil_temp: float | None = None,
+        initial_load: float | None = None,
     ) -> None:
         """Initialize the thermal model.
 
@@ -97,6 +98,9 @@ class Model:
                 with the first value of the ambient temperature profile.
                 will start the calculation with this temperature. If not provided, will start the calculation
                 with the first value of the ambient temperature profile.
+            initial_load (float | None): Initial load where the temperatures converge to steady state. Optional.
+                Defaults to None. When provided, the model uses and initial top_oil_temp and hot_spot_temp based on
+                this load.
 
         """
         logger.info("Initializing the thermal model.")
@@ -107,6 +111,7 @@ class Model:
         self.transformer = transformer
         self.data = temperature_profile
         self.init_top_oil_temp = init_top_oil_temp
+        self.initial_load = initial_load
 
         self.check_config()
 
@@ -178,6 +183,30 @@ class Model:
             * (load / self.transformer.specs.nominal_load_array) ** self.transformer.specs.winding_exp_y
         )
 
+    def get_initial_top_oil_temp(self, first_surrounding_temp: float) -> float:
+        """Funciion that returns the top oil temp for the first timestep."""
+        # If an initial top oil temperature is provided, use that
+        if self.init_top_oil_temp:
+            return self.init_top_oil_temp
+
+        # If an initial load is provided, calculate the initial top oil temperature based on that load
+        if self.initial_load:
+            top_k = self.transformer._end_temperature_top_oil(load=np.array([self.initial_load]))
+            return top_k + first_surrounding_temp
+
+        # The default for now is to return the surrounding temperature
+        return first_surrounding_temp
+
+    def get_initial_hot_spot_increase(self) -> float:
+        """Function that returns the hot spot temp for the first timestep."""
+        # If an initial load is provided, calculate the initial hot spot temperature based on that load
+        if self.initial_load:
+            static_hot_spot_incr = self._calculate_static_hot_spot_increase(np.array([self.initial_load]))[0]
+            return static_hot_spot_incr
+
+        # The default for now is 0
+        return 0
+
     def _calculate_top_oil_temp_profile(
         self,
         t_internal: np.ndarray,
@@ -195,7 +224,7 @@ class Model:
             np.ndarray: The computed top-oil temperature profile over time.
         """
         top_oil_temp_profile = np.zeros_like(t_internal, dtype=np.float64)
-        top_oil_temp_profile[0] = self.init_top_oil_temp if self.init_top_oil_temp is not None else t_internal[0]
+        top_oil_temp_profile[0] = self.get_initial_top_oil_temp(t_internal[0])
 
         self.transformer.set_ONAN_ONAF_first_timestamp(init_top_oil_temp=top_oil_temp_profile[0])
 
@@ -240,9 +269,16 @@ class Model:
         # For a two winding transformer:
         if load.ndim == 1:
             self.transformer.set_ONAN_ONAF_first_timestamp(init_top_oil_temp=top_oil_temp_profile[0])
-            hot_spot_temp_profile[0] = top_oil_temp_profile[0]
             hot_spot_increase_windings = np.zeros_like(load)
             hot_spot_increase_oil = np.zeros_like(load)
+
+            init_hot_spot_incr = self.get_initial_hot_spot_increase()
+            hot_spot_increase_windings[0] = init_hot_spot_incr * self.transformer.specs.winding_const_k21
+            hot_spot_increase_oil[0] = init_hot_spot_incr * (self.transformer.specs.winding_const_k21 - 1)
+            hot_spot_temp_profile[0] = (
+                top_oil_temp_profile[0] + hot_spot_increase_windings[0] - hot_spot_increase_oil[0]
+            )
+
             for i in range(1, len(load)):
                 static_hot_spot_incr = self._calculate_static_hot_spot_increase(np.array([load[i]]))[0]
                 static_hot_spot_incr_windings = static_hot_spot_incr * self.transformer.specs.winding_const_k21
