@@ -126,3 +126,16 @@ class ThreeWindingTransformer(Transformer):
         total_loss_ratio = (self.specs.no_load_loss + hv_rise + mv_rise + lv_rise) / self.specs.load_loss_total
 
         return self._pre_factor * np.power(total_loss_ratio, self.specs.oil_exp_x)
+
+    def _set_HS_fac(self, hot_spot_factor: float) -> None:
+        """Set hot-spot factor to specified value.
+
+        This function is (and should only be) used by hot-spot calibration. Note that the same hot-spot factor is set
+        for all windings.
+
+        Args:
+            hot_spot_factor (float): The new hot-spot factor resulting from calibration.
+        """
+        self.specs.lv_winding.hot_spot_fac = hot_spot_factor
+        self.specs.mv_winding.hot_spot_fac = hot_spot_factor
+        self.specs.hv_winding.hot_spot_fac = hot_spot_factor
