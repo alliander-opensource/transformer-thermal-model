@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MPL-2.0
 
 from contextlib import nullcontext as does_not_raise
-from datetime import datetime
+from datetime import UTC, datetime
 
 import numpy as np
 import pandas as pd
@@ -72,7 +72,13 @@ from transformer_thermal_model.schemas.thermal_model.input_profile import InputP
             None,
         ),
         (
-            np.array([datetime(2021, 1, 1, 0, 0, 0), datetime(2021, 1, 1, 0, 15, 0), datetime(2021, 1, 1, 0, 30, 0)]),
+            np.array(
+                [
+                    datetime(2021, 1, 1, 0, 0, 0),
+                    datetime(2021, 1, 1, 0, 15, 0),
+                    datetime(2021, 1, 1, 0, 30, 0),
+                ]
+            ),
             [1, 2, 3],
             [1, 2, 3],
             None,
@@ -116,11 +122,14 @@ from transformer_thermal_model.schemas.thermal_model.input_profile import InputP
             [1, 2, 3],
             [1, 2, 3],
             None,
-            pytest.raises(ValueError),
-            "Could not convert object to NumPy datetime",
+            pytest.raises(TypeError),
+            "Input must be a pandas DatetimeIndex or an iterable of datetime objects.",
         ),
         (
-            np.array(["2021-01-01 00:00:00", "2021-01-01 00:15:00", "2021-01-01 00:25:00"], dtype="datetime64[s]"),
+            np.array(
+                ["2021-01-01 00:00:00", "2021-01-01 00:15:00", "2021-01-01 00:25:00"],
+                dtype="datetime64[ns]",
+            ),
             [2, 4, 5],
             {"a": 1, "b": 3, "c": 3},
             None,
@@ -128,7 +137,10 @@ from transformer_thermal_model.schemas.thermal_model.input_profile import InputP
             None,
         ),
         (
-            np.array(["2021-01-01 00:00:00", "2021-01-01 00:15:00", "2021-01-01 00:25:00"], dtype="datetime64[s]"),
+            np.array(
+                ["2021-01-01 00:00:00", "2021-01-01 00:15:00", "2021-01-01 00:25:00"],
+                dtype="datetime64[ns]",
+            ),
             [2, 4, 5],
             [2, 4, 5],
             {"a": 1, "b": 3, "c": 3},
@@ -136,7 +148,10 @@ from transformer_thermal_model.schemas.thermal_model.input_profile import InputP
             None,
         ),
         (
-            np.array(["2021-01-01 00:00:00", "2021-01-01 00:15:00", "2021-01-01 00:25:00"], dtype="datetime64[s]"),
+            np.array(
+                ["2021-01-01 00:00:00", "2021-01-01 00:15:00", "2021-01-01 00:25:00"],
+                dtype="datetime64[ns]",
+            ),
             [[2, 4, 5], [2, 4, 5]],
             [2, 3, 4],
             None,
@@ -144,7 +159,10 @@ from transformer_thermal_model.schemas.thermal_model.input_profile import InputP
             None,
         ),
         (
-            np.array(["2021-01-01 00:00:00", "2021-01-01 00:15:00", "2021-01-01 00:25:00"], dtype="datetime64[s]"),
+            np.array(
+                ["2021-01-01 00:00:00", "2021-01-01 00:15:00", "2021-01-01 00:25:00"],
+                dtype="datetime64[ns]",
+            ),
             (2, 4, 5),
             pd.DataFrame([2, 3, 4], [2, 3, 4]),
             None,
@@ -152,7 +170,10 @@ from transformer_thermal_model.schemas.thermal_model.input_profile import InputP
             "array must be one-dimensional",
         ),
         (
-            np.array(["2021-01-01 00:00:00", "2021-01-01 00:15:00", "2021-01-01 00:25:00"], dtype="datetime64[s]"),
+            np.array(
+                ["2021-01-01 00:00:00", "2021-01-01 00:15:00", "2021-01-01 00:25:00"],
+                dtype="datetime64[ns]",
+            ),
             (2, 4, 5),
             [2, 3, 4],
             pd.DataFrame([2, 3, 4], [2, 3, 4]),
@@ -164,11 +185,14 @@ from transformer_thermal_model.schemas.thermal_model.input_profile import InputP
             [1, 2, 3],
             [1, 2, 3],
             None,
-            pytest.raises(ValueError),
-            "Converting an integer to a NumPy datetime requires a specified unit",
+            does_not_raise(),
+            None,
         ),
         (
-            np.array(["2021-01-01 00:00:00", "2021-01-01 00:15:00", "2021-01-01 00:25:00"], dtype="datetime64[s]"),
+            np.array(
+                ["2021-01-01 00:00:00", "2021-01-01 00:15:00", "2021-01-01 00:25:00"],
+                dtype="datetime64[ns]",
+            ),
             (2, 4, 5),
             [2, 3, 4],
             [2, 3, 4, 2, 3, 4],
@@ -178,7 +202,12 @@ from transformer_thermal_model.schemas.thermal_model.input_profile import InputP
     ],
 )
 def test_that_the_input_data_for_thermal_model_is_validated_properly(
-    datetime_index, load_profile, ambient_temperature_profile, top_oil_temperature_profile, expectation, message
+    datetime_index,
+    load_profile,
+    ambient_temperature_profile,
+    top_oil_temperature_profile,
+    expectation,
+    message,
 ):
     """Test that the InputProfile can be created from two Series."""
     with expectation as e:
@@ -235,6 +264,51 @@ def test_from_dataframe_missing_columns():
     )
 
     with pytest.raises(
-        ValueError, match="The dataframe is missing the following required columns: ambient_temperature_profile"
+        ValueError,
+        match="The dataframe is missing the following required columns: ambient_temperature_profile",
     ):
         InputProfile.from_dataframe(df_missing_columns)
+
+
+def test_timezone_gets_retained():
+    """Test if timezone handling of input datetime index is properly retained."""
+    input_df = pd.DataFrame(
+        {
+            "datetime_index": pd.date_range("2021-01-01 00:00:00", periods=2, tz="UTC"),
+            "load_profile": [0.8, 0.9],
+            "ambient_temperature_profile": [10, 20],
+        }
+    )
+
+    input_index = [
+        datetime(2023, 1, 1, 1, 5, tzinfo=UTC),
+        datetime(2023, 1, 1, 1, 10, tzinfo=UTC),
+    ]
+
+    input_naive = [
+        datetime(2023, 1, 1, 1, 5),
+        datetime(2023, 1, 1, 1, 10),
+    ]
+
+    # Check initial input check
+    assert input_df["datetime_index"].dtype == "datetime64[ns, UTC]"
+    assert input_index[0].tzinfo == UTC
+    assert input_naive[0].tzinfo is None
+
+    input_profile_df = InputProfile.from_dataframe(input_df)
+    input_index_out = InputProfile.create(
+        datetime_index=input_index,
+        load_profile=input_df["load_profile"],
+        ambient_temperature_profile=input_df["ambient_temperature_profile"],
+    )
+    input_naive_out = InputProfile.create(
+        datetime_index=input_naive,
+        load_profile=input_df["load_profile"],
+        ambient_temperature_profile=input_df["ambient_temperature_profile"],
+    )
+
+    # Check processed input is tz-aware datetime
+    assert input_profile_df.datetime_index[0].tzinfo == UTC
+    assert input_index_out.datetime_index[0].tzinfo == UTC
+    assert input_naive_out.datetime_index[0].tzinfo is None
+    assert np.array_equal(input_profile_df.load_profile, input_df["load_profile"])
