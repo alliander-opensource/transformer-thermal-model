@@ -160,9 +160,10 @@ class InputProfile(BaseInputProfile):
             ...     ambient_temperature_profile=ambient_temperature_profile,
             ... )
             >>> input_profile
-            InputProfile(datetime_index=array(['2023-01-01T00:00:00.000000',
-            '2023-01-01T01:00:00.000000', '2023-01-01T02:00:00.000000'],
-            dtype=), ambient_temperature_profile=array([25. , 24.5, 24. ]),
+            InputProfile(datetime_index=array([datetime.datetime(2023, 1, 1, 0, 0),
+                    datetime.datetime(2023, 1, 1, 1, 0),
+                    datetime.datetime(2023, 1, 1, 2, 0)],
+            dtype=object), ambient_temperature_profile=array([25. , 24.5, 24. ]),
             top_oil_temperature_profile=None, load_profile=array([0.8, 0.9, 1. ]))
 
             ```
@@ -187,7 +188,7 @@ class InputProfile(BaseInputProfile):
             >>> input_profile
             InputProfile(datetime_index=array(['2023-01-01T00:00:00.000000',
             '2023-01-01T01:00:00.000000', '2023-01-01T02:00:00.000000'],
-            dtype='datetime64[ns]'), ambient_temperature_profile=array([25. , 24.5, 24. ]),
+            dtype='datetime64[us]'), ambient_temperature_profile=array([25. , 24.5, 24. ]),
             top_oil_temperature_profile=None, load_profile=array([0.8, 0.9, 1. ]))
 
             ```
@@ -211,8 +212,10 @@ class InputProfile(BaseInputProfile):
             ...     top_oil_temperature_profile=top_oil_temperature,
             ... )
             >>> input_profile
-            InputProfile(datetime_index=array(['2023-01-01T00:00:00.000000', '2023-01-01T01:00:00.000000',
-            '2023-01-01T02:00:00.000000'], dtype='datetime64[us]'),
+            InputProfile(datetime_index=array([datetime.datetime(2023, 1, 1, 0, 0),
+                    datetime.datetime(2023, 1, 1, 1, 0),
+                    datetime.datetime(2023, 1, 1, 2, 0)],
+            dtype=object),
             ambient_temperature_profile=array([25. , 24.5, 24. ]),
             top_oil_temperature_profile=array([37. , 36.5, 36. ]), load_profile=array([0.8, 0.9, 1. ]))
 

@@ -285,15 +285,18 @@ def test_timezone_gets_retained():
         datetime(2023, 1, 1, 1, 10, tzinfo=UTC),
     ]
 
-    input_naive = [
-        datetime(2023, 1, 1, 1, 5),
-        datetime(2023, 1, 1, 1, 10),
-    ]
+    input_naive = np.array(
+        [
+            datetime(2023, 1, 1, 1, 5),
+            datetime(2023, 1, 1, 1, 10),
+        ],
+        dtype=np.datetime64,
+    )
 
     # Check initial input check
     assert input_df["datetime_index"].dtype == "datetime64[ns, UTC]"
     assert input_index[0].tzinfo == UTC
-    assert input_naive[0].tzinfo is None
+    assert input_naive.dtype == "<M8[us]"
 
     input_profile_df = InputProfile.from_dataframe(input_df)
     input_index_out = InputProfile.create(
@@ -309,6 +312,12 @@ def test_timezone_gets_retained():
 
     # Check processed input is tz-aware datetime
     assert input_profile_df.datetime_index[0].tzinfo == UTC
+    assert input_profile_df.datetime_index.dtype == "object"
+
     assert input_index_out.datetime_index[0].tzinfo == UTC
-    assert input_naive_out.datetime_index[0].tzinfo is None
+    assert input_index_out.datetime_index.dtype == "object"
+
+    assert input_naive_out.datetime_index.dtype == "<M8[ns]"
+
     assert np.array_equal(input_profile_df.load_profile, input_df["load_profile"])
+    assert np.array_equal(np.array(input_naive), input_naive_out.datetime_index)
