@@ -85,6 +85,14 @@ def test_wrong_three_winding_input_profile():
             load_profile_low_voltage_side=[300, 400],
             ambient_temperature_profile=[10, 20, 30],
         )
+    with pytest.raises(ValueError, match="The load profile must not contain negative values"):
+        ThreeWindingInputProfile.create(
+            datetime_index=pd.date_range("2021-01-01 00:00:00", periods=3),
+            load_profile_high_voltage_side=[100, 200, 300],
+            load_profile_middle_voltage_side=[200, 300, -150],
+            load_profile_low_voltage_side=[300, 400, 150],
+            ambient_temperature_profile=[10, 20, 30],
+        )
 
 
 def test_three_winding_transformer_total_loss():
