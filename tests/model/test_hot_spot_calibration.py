@@ -154,7 +154,7 @@ def test_hot_spot_factor_calibration_onan(transformer_onan_uncalibrated: PowerTr
         hot_spot_factor_max=1.3,
     )
 
-    assert transformer_calibrated.specs.hot_spot_fac == pytest.approx(1.3)
+    assert transformer_calibrated.specs.hot_spot_fac == pytest.approx(1.3)  # type: ignore
     assert transformer_calibrated.specs.amb_temp_surcharge == transformer_onan_uncalibrated.specs.amb_temp_surcharge
 
 
@@ -168,7 +168,7 @@ def test_hotspot_fac_calibration_onaf(transformer_onaf_uncalibrated: PowerTransf
         hot_spot_factor_max=1.3,
     )
 
-    assert transformer_calibrated.specs.hot_spot_fac == pytest.approx(1.18)
+    assert transformer_calibrated.specs.hot_spot_fac == pytest.approx(1.18)  # type: ignore
     assert transformer_calibrated.specs.amb_temp_surcharge == transformer_onaf_uncalibrated.specs.amb_temp_surcharge
 
 
@@ -184,7 +184,7 @@ def test_that_hot_spot_factor_calibration_caps_at_minimal_value(transformer_onaf
         hot_spot_factor_max=1.3,
     )
 
-    assert transformer_calibrated.specs.hot_spot_fac == pytest.approx(1.1)
+    assert transformer_calibrated.specs.hot_spot_fac == pytest.approx(1.1)  # type: ignore
     assert transformer_calibrated.specs.amb_temp_surcharge == transformer_onaf_uncalibrated.specs.amb_temp_surcharge
 
 
@@ -212,7 +212,7 @@ def test_hot_spot_factor_calibration_threewind_HS11(threewind_transformer_HS_11:
         hot_spot_factor_max=1.3,
     )
 
-    assert transformer_calibrated.specs.lv_winding.hot_spot_fac == pytest.approx(1.1)
+    assert transformer_calibrated.specs.lv_winding.hot_spot_fac == pytest.approx(1.1)  # type: ignore
     assert transformer_calibrated.specs.amb_temp_surcharge == threewind_transformer_HS_11.specs.amb_temp_surcharge
 
 
@@ -226,7 +226,7 @@ def test_hot_spot_factor_calibration_threewind_HS12(threewind_transformer_HS_12:
         hot_spot_factor_max=1.3,
     )
 
-    assert transformer_calibrated.specs.lv_winding.hot_spot_fac == pytest.approx(1.16)
+    assert transformer_calibrated.specs.lv_winding.hot_spot_fac == pytest.approx(1.16)  # type: ignore
     assert transformer_calibrated.specs.amb_temp_surcharge == threewind_transformer_HS_12.specs.amb_temp_surcharge
 
 
@@ -240,7 +240,7 @@ def test_hot_spot_factor_calibration_threewind_HS13(threewind_transformer_HS_13:
         hot_spot_factor_max=1.3,
     )
 
-    assert transformer_calibrated.specs.lv_winding.hot_spot_fac == pytest.approx(1.3)
+    assert transformer_calibrated.specs.lv_winding.hot_spot_fac == pytest.approx(1.3)  # type: ignore
     assert transformer_calibrated.specs.amb_temp_surcharge == threewind_transformer_HS_13.specs.amb_temp_surcharge
 
 
@@ -277,5 +277,5 @@ def test_that_hot_spot_factor_calibration_caps_at_minimal_value_threewind(
         hot_spot_factor_max=1.3,
     )
 
-    assert transformer_calibrated.specs.lv_winding.hot_spot_fac == pytest.approx(1.1)
+    assert transformer_calibrated.specs.lv_winding.hot_spot_fac == pytest.approx(1.1)  # type: ignore
     assert transformer_calibrated.specs.amb_temp_surcharge == threewind_transformer_HS_13.specs.amb_temp_surcharge

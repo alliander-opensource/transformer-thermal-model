@@ -88,7 +88,7 @@ def calibrate_hotspot_factor(
         continuous_load_mv = np.ones(one_week_steps, dtype=float) * uncalibrated_transformer.specs.mv_winding.nom_load
         continuous_load_hv = np.ones(one_week_steps, dtype=float) * uncalibrated_transformer.specs.hv_winding.nom_load
 
-        model_input = ThreeWindingInputProfile.create(
+        model_input = ThreeWindingInputProfile.create(  # type: ignore
             datetime_index=datetime_index,
             ambient_temperature_profile=ambient_temp_profile,
             load_profile_high_voltage_side=continuous_load_hv,
@@ -103,7 +103,7 @@ def calibrate_hotspot_factor(
     # Initiate the difference, one of the termination criteria, to a positive number.
     difference = 100.0
     # Initiate the new_hot_spot_factor with the upper limit. This is the starting point for the search algorithm
-    # which iterativily lowers the new_hot_spot_factor until a valid value is found.
+    # which iteratively lowers the new_hot_spot_factor until a valid value is found.
     new_hot_spot_factor = hot_spot_factor_max
     calibrated_transformer._set_HS_fac(new_hot_spot_factor)
 
@@ -112,7 +112,7 @@ def calibrate_hotspot_factor(
         model = Model(temperature_profile=model_input, transformer=calibrated_transformer)
         results = model.run()
         hot_spot_max = _get_max_hot_spot_temperature(results)
-        # Calculate the difference which is used as a termination criterium in the while loop:
+        # Calculate the difference which is used as a termination criteria in the while loop:
         # the maximum temperature of the hot-spot should be below the hot-spot temperature limit.
         difference = hot_spot_max - hot_spot_limit
         new_hot_spot_factor = old_hot_spot_factor - 0.01
