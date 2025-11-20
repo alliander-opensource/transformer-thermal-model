@@ -202,7 +202,7 @@ def test_that_hot_spot_factor_fails_with_wrong_limits(transformer_onaf_uncalibra
         )
 
 
-def test_hot_spot_factor_calibration_threewind_HS11(threewind_transformer_hs_11: ThreeWindingTransformer):
+def test_hot_spot_factor_calibration_threewind_hs11(threewind_transformer_hs_11: ThreeWindingTransformer):
     """Test the calibration of the HS factor for the threewind transformer with known hotspotfactor 1.1."""
     transformer_calibrated = calibrate_hotspot_factor(
         uncalibrated_transformer=threewind_transformer_hs_11,
@@ -216,7 +216,7 @@ def test_hot_spot_factor_calibration_threewind_HS11(threewind_transformer_hs_11:
     assert transformer_calibrated.specs.amb_temp_surcharge == threewind_transformer_hs_11.specs.amb_temp_surcharge
 
 
-def test_hot_spot_factor_calibration_threewind_HS12(threewind_transformer_hs_12: ThreeWindingTransformer):
+def test_hot_spot_factor_calibration_threewind_hs12(threewind_transformer_hs_12: ThreeWindingTransformer):
     """Test the calibration of the HS factor for the threewind transformer with known hotspotfactor 1.16."""
     transformer_calibrated = calibrate_hotspot_factor(
         uncalibrated_transformer=threewind_transformer_hs_12,
@@ -230,7 +230,7 @@ def test_hot_spot_factor_calibration_threewind_HS12(threewind_transformer_hs_12:
     assert transformer_calibrated.specs.amb_temp_surcharge == threewind_transformer_hs_12.specs.amb_temp_surcharge
 
 
-def test_hot_spot_factor_calibration_threewind_HS13(threewind_transformer_hs_13: ThreeWindingTransformer):
+def test_hot_spot_factor_calibration_threewind_hs13(threewind_transformer_hs_13: ThreeWindingTransformer):
     """Test the calibration of the HS factor for the threewind transformer with known hotspotfactor 1.3."""
     transformer_calibrated = calibrate_hotspot_factor(
         uncalibrated_transformer=threewind_transformer_hs_13,
