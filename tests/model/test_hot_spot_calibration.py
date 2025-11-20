@@ -49,7 +49,7 @@ def trafo_specs_onaf_uncalibrated():
 
 
 @pytest.fixture
-def threewind_specs_HS_13():
+def threewind_specs_hs_13():
     """Fixture for the specifications of a threewind transformer with known hotspotfactor of 1.3."""
     return UserThreeWindingTransformerSpecifications(
         no_load_loss=33930,
@@ -64,7 +64,7 @@ def threewind_specs_HS_13():
 
 
 @pytest.fixture
-def threewind_specs_HS_11():
+def threewind_specs_hs_11():
     """Fixture for the specifications of a threewind transformer with known hotspotfactor of 1.1."""
     return UserThreeWindingTransformerSpecifications(
         no_load_loss=51590,
@@ -79,7 +79,7 @@ def threewind_specs_HS_11():
 
 
 @pytest.fixture
-def threewind_specs_HS_12():
+def threewind_specs_hs_12():
     """Fixture for the specifications of a threewind transformer with known hotspotfactor of 1.19."""
     return UserThreeWindingTransformerSpecifications(
         no_load_loss=34000,
@@ -127,21 +127,21 @@ def transformer_onaf_uncalibrated(trafo_specs_onaf_uncalibrated: UserTransformer
 
 
 @pytest.fixture
-def threewind_transformer_HS_11(threewind_specs_HS_11: UserThreeWindingTransformerSpecifications):
+def threewind_transformer_hs_11(threewind_specs_hs_11: UserThreeWindingTransformerSpecifications):
     """Fixture for the threewind transformer with known hotspotfactor of 1.1."""
-    return ThreeWindingTransformer(user_specs=threewind_specs_HS_11, cooling_type=CoolerType.ONAF)
+    return ThreeWindingTransformer(user_specs=threewind_specs_hs_11, cooling_type=CoolerType.ONAF)
 
 
 @pytest.fixture
-def threewind_transformer_HS_12(threewind_specs_HS_12: UserThreeWindingTransformerSpecifications):
+def threewind_transformer_hs_12(threewind_specs_hs_12: UserThreeWindingTransformerSpecifications):
     """Fixture for the threewind transformer with known hotspotfactor of 1.19."""
-    return ThreeWindingTransformer(user_specs=threewind_specs_HS_12, cooling_type=CoolerType.ONAF)
+    return ThreeWindingTransformer(user_specs=threewind_specs_hs_12, cooling_type=CoolerType.ONAF)
 
 
 @pytest.fixture
-def threewind_transformer_HS_13(threewind_specs_HS_13: UserThreeWindingTransformerSpecifications):
+def threewind_transformer_hs_13(threewind_specs_hs_13: UserThreeWindingTransformerSpecifications):
     """Fixture for the threewind transformer with known hotspotfactor of 1.3."""
-    return ThreeWindingTransformer(user_specs=threewind_specs_HS_13, cooling_type=CoolerType.ONAF)
+    return ThreeWindingTransformer(user_specs=threewind_specs_hs_13, cooling_type=CoolerType.ONAF)
 
 
 def test_hot_spot_factor_calibration_onan(transformer_onan_uncalibrated: PowerTransformer):
@@ -202,10 +202,10 @@ def test_that_hot_spot_factor_fails_with_wrong_limits(transformer_onaf_uncalibra
         )
 
 
-def test_hot_spot_factor_calibration_threewind_HS11(threewind_transformer_HS_11: ThreeWindingTransformer):
+def test_hot_spot_factor_calibration_threewind_HS11(threewind_transformer_hs_11: ThreeWindingTransformer):
     """Test the calibration of the HS factor for the threewind transformer with known hotspotfactor 1.1."""
     transformer_calibrated = calibrate_hotspot_factor(
-        uncalibrated_transformer=threewind_transformer_HS_11,
+        uncalibrated_transformer=threewind_transformer_hs_11,
         hot_spot_limit=98,
         ambient_temp=20,
         hot_spot_factor_min=1.1,
@@ -213,13 +213,13 @@ def test_hot_spot_factor_calibration_threewind_HS11(threewind_transformer_HS_11:
     )
 
     assert transformer_calibrated.specs.lv_winding.hot_spot_fac == pytest.approx(1.1)  # type: ignore
-    assert transformer_calibrated.specs.amb_temp_surcharge == threewind_transformer_HS_11.specs.amb_temp_surcharge
+    assert transformer_calibrated.specs.amb_temp_surcharge == threewind_transformer_hs_11.specs.amb_temp_surcharge
 
 
-def test_hot_spot_factor_calibration_threewind_HS12(threewind_transformer_HS_12: ThreeWindingTransformer):
+def test_hot_spot_factor_calibration_threewind_HS12(threewind_transformer_hs_12: ThreeWindingTransformer):
     """Test the calibration of the HS factor for the threewind transformer with known hotspotfactor 1.16."""
     transformer_calibrated = calibrate_hotspot_factor(
-        uncalibrated_transformer=threewind_transformer_HS_12,
+        uncalibrated_transformer=threewind_transformer_hs_12,
         hot_spot_limit=98,
         ambient_temp=20,
         hot_spot_factor_min=1.1,
@@ -227,13 +227,13 @@ def test_hot_spot_factor_calibration_threewind_HS12(threewind_transformer_HS_12:
     )
 
     assert transformer_calibrated.specs.lv_winding.hot_spot_fac == pytest.approx(1.16)  # type: ignore
-    assert transformer_calibrated.specs.amb_temp_surcharge == threewind_transformer_HS_12.specs.amb_temp_surcharge
+    assert transformer_calibrated.specs.amb_temp_surcharge == threewind_transformer_hs_12.specs.amb_temp_surcharge
 
 
-def test_hot_spot_factor_calibration_threewind_HS13(threewind_transformer_HS_13: ThreeWindingTransformer):
+def test_hot_spot_factor_calibration_threewind_HS13(threewind_transformer_hs_13: ThreeWindingTransformer):
     """Test the calibration of the HS factor for the threewind transformer with known hotspotfactor 1.3."""
     transformer_calibrated = calibrate_hotspot_factor(
-        uncalibrated_transformer=threewind_transformer_HS_13,
+        uncalibrated_transformer=threewind_transformer_hs_13,
         hot_spot_limit=98,
         ambient_temp=20,
         hot_spot_factor_min=1.1,
@@ -241,10 +241,10 @@ def test_hot_spot_factor_calibration_threewind_HS13(threewind_transformer_HS_13:
     )
 
     assert transformer_calibrated.specs.lv_winding.hot_spot_fac == pytest.approx(1.3)  # type: ignore
-    assert transformer_calibrated.specs.amb_temp_surcharge == threewind_transformer_HS_13.specs.amb_temp_surcharge
+    assert transformer_calibrated.specs.amb_temp_surcharge == threewind_transformer_hs_13.specs.amb_temp_surcharge
 
 
-def test_that_hot_spot_factor_fails_with_wrong_limits_threewind(threewind_transformer_HS_11: ThreeWindingTransformer):
+def test_that_hot_spot_factor_fails_with_wrong_limits_threewind(threewind_transformer_hs_11: ThreeWindingTransformer):
     """Test that the hot-spot factor calibration raises an error if the bounds are not defined correctly.
 
     Test for the threewind transformer.
@@ -253,7 +253,7 @@ def test_that_hot_spot_factor_fails_with_wrong_limits_threewind(threewind_transf
         ValueError, match="The upper bound cannot be smaller than the lower bound of the hot-spot factor limits."
     ):
         calibrate_hotspot_factor(
-            uncalibrated_transformer=threewind_transformer_HS_11,
+            uncalibrated_transformer=threewind_transformer_hs_11,
             hot_spot_limit=98,
             ambient_temp=20,
             hot_spot_factor_min=5,
@@ -262,15 +262,15 @@ def test_that_hot_spot_factor_fails_with_wrong_limits_threewind(threewind_transf
 
 
 def test_that_hot_spot_factor_calibration_caps_at_minimal_value_threewind(
-    threewind_transformer_HS_13: ThreeWindingTransformer,
+    threewind_transformer_hs_13: ThreeWindingTransformer,
 ):
     """Test that the hot-spot factor calibration caps at the minimal value by setting the winding oil gradient high."""
-    threewind_transformer_HS_13.specs.lv_winding.winding_oil_gradient = 30
-    threewind_transformer_HS_13.specs.mv_winding.winding_oil_gradient = 30
-    threewind_transformer_HS_13.specs.hv_winding.winding_oil_gradient = 30
+    threewind_transformer_hs_13.specs.lv_winding.winding_oil_gradient = 30
+    threewind_transformer_hs_13.specs.mv_winding.winding_oil_gradient = 30
+    threewind_transformer_hs_13.specs.hv_winding.winding_oil_gradient = 30
 
     transformer_calibrated = calibrate_hotspot_factor(
-        uncalibrated_transformer=threewind_transformer_HS_13,
+        uncalibrated_transformer=threewind_transformer_hs_13,
         hot_spot_limit=98,
         ambient_temp=20,
         hot_spot_factor_min=1.1,
@@ -278,4 +278,4 @@ def test_that_hot_spot_factor_calibration_caps_at_minimal_value_threewind(
     )
 
     assert transformer_calibrated.specs.lv_winding.hot_spot_fac == pytest.approx(1.1)  # type: ignore
-    assert transformer_calibrated.specs.amb_temp_surcharge == threewind_transformer_HS_13.specs.amb_temp_surcharge
+    assert transformer_calibrated.specs.amb_temp_surcharge == threewind_transformer_hs_13.specs.amb_temp_surcharge

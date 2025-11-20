@@ -105,7 +105,7 @@ def calibrate_hotspot_factor(
     # Initiate the new_hot_spot_factor with the upper limit. This is the starting point for the search algorithm
     # which iteratively lowers the new_hot_spot_factor until a valid value is found.
     new_hot_spot_factor = hot_spot_factor_max
-    calibrated_transformer._set_HS_fac(new_hot_spot_factor)
+    calibrated_transformer._set_hs_fac(new_hot_spot_factor)
 
     while difference > 0 and new_hot_spot_factor >= hot_spot_factor_min - 0.01:
         old_hot_spot_factor = new_hot_spot_factor
@@ -116,10 +116,10 @@ def calibrate_hotspot_factor(
         # the maximum temperature of the hot-spot should be below the hot-spot temperature limit.
         difference = hot_spot_max - hot_spot_limit
         new_hot_spot_factor = old_hot_spot_factor - 0.01
-        calibrated_transformer._set_HS_fac(new_hot_spot_factor)
+        calibrated_transformer._set_hs_fac(new_hot_spot_factor)
 
     calibrated_hot_spot_factor = np.clip(old_hot_spot_factor, a_min=hot_spot_factor_min, a_max=hot_spot_factor_max)
-    calibrated_transformer._set_HS_fac(calibrated_hot_spot_factor)
+    calibrated_transformer._set_hs_fac(calibrated_hot_spot_factor)
     # During calibration the amb_temp_surcharge was set to zero. To return a transformer with correct specs,
     # the amb_temp_surcharge is set to the correct value again.
     calibrated_transformer.specs.amb_temp_surcharge = uncalibrated_transformer.specs.amb_temp_surcharge

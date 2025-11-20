@@ -127,7 +127,7 @@ class ThreeWindingTransformer(Transformer):
 
         return self._pre_factor * np.power(total_loss_ratio, self.specs.oil_exp_x)
 
-    def _set_HS_fac(self, hot_spot_factor: float) -> None:
+    def _set_hs_fac(self, hot_spot_factor: float) -> None:
         """Set hot-spot factor to specified value.
 
         This function is (and should only be) used by hot-spot calibration. Note that the same hot-spot factor is set
