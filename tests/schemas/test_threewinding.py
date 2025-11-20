@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: MPL-2.0
 
+import math
+
 import numpy as np
 import pandas as pd
 import pytest
@@ -197,6 +199,6 @@ def test_default_hotspotfactor_is_used_three_winding():
     three_winding_transformer = ThreeWindingTransformer(
         user_specs=user_specs_three_winding, cooling_type=CoolerType.ONAN
     )
-    assert three_winding_transformer.specs.lv_winding.hot_spot_fac == 1.3
-    assert three_winding_transformer.specs.mv_winding.hot_spot_fac == 1.3
-    assert three_winding_transformer.specs.hv_winding.hot_spot_fac == 1.3
+    assert math.isclose(three_winding_transformer.specs.lv_winding.hot_spot_fac, 1.3, rel_tol=1e-09, abs_tol=1e-09)
+    assert math.isclose(three_winding_transformer.specs.mv_winding.hot_spot_fac, 1.3, rel_tol=1e-09, abs_tol=1e-09)
+    assert math.isclose(three_winding_transformer.specs.hv_winding.hot_spot_fac, 1.3, rel_tol=1e-09, abs_tol=1e-09)
