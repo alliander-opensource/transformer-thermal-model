@@ -112,7 +112,7 @@ def calibrate_hotspot_factor(
         model = Model(temperature_profile=model_input, transformer=calibrated_transformer)
         results = model.run()
         hot_spot_max = _get_max_hot_spot_temperature(results)
-        # Calculate the difference which is used as a termination criteria in the while loop:
+        # Calculate the difference which is used as a termination criterion in the while loop:
         # the maximum temperature of the hot-spot should be below the hot-spot temperature limit.
         difference = hot_spot_max - hot_spot_limit
         new_hot_spot_factor = old_hot_spot_factor - 0.01
