@@ -18,7 +18,7 @@ repos:
 
 -   repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.
-    rev: v0.14.5
+    rev: v0.14.6
     hooks:
       # Run the linter.
     -   id: ruff
@@ -57,7 +57,7 @@ repos:
 
   # Linter for markdown files.
 -   repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.45.0
+    rev: v0.46.0
     hooks:
     -   id: markdownlint
         args: ["--ignore", "docs/theoretical_documentation/model.md"]
