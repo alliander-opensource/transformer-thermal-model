@@ -302,7 +302,7 @@ class PowerTransformer(Transformer):
         """Calculate the internal temperature of the transformer."""
         return ambient_temperature + self.specs.amb_temp_surcharge
 
-    def _set_HS_fac(self, hot_spot_factor: float) -> None:
+    def _set_hs_fac(self, hot_spot_factor: float) -> None:
         """Set hot-spot factor to specified value.
 
         This function is (and should only be) used by hot-spot calibration.
