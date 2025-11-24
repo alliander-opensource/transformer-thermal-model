@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 _NEGATIVE_LOAD_PROFILE_ERROR_MESSAGE = "The load profile must not contain negative values"
 
+
 class BaseInputProfile(BaseModel):
     """Base class for input profiles in the transformer thermal model.
 
@@ -274,9 +275,9 @@ class ThreeWindingInputProfile(BaseInputProfile):
         # We have to override the check here since the self.load_profile_array
         # will throw a hard to read error it the dimension do not match.
         for load_profile in [
-            self.load_profile_low_voltage_side, 
-            self.load_profile_middle_voltage_side, 
-            self.load_profile_high_voltage_side
+            self.load_profile_low_voltage_side,
+            self.load_profile_middle_voltage_side,
+            self.load_profile_high_voltage_side,
         ]:
             if np.min(load_profile) < 0:
                 raise ValueError(_NEGATIVE_LOAD_PROFILE_ERROR_MESSAGE)
