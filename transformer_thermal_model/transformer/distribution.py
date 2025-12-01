@@ -34,15 +34,14 @@ class DistributionTransformer(Transformer):
         ...     load_loss=5200,  # Transformer load loss [W]
         ...     nom_load_sec_side=900,  # Transformer nominal current secondary side [A]
         ...     no_load_loss=800,  # Transformer no-load loss [W]
-        ...     amb_temp_surcharge=10,  # Ambient temperature surcharge [K]
         ... )
         >>> # note that no cooling type can be specified here, as this is a distribution transformer
         >>> my_transformer = DistributionTransformer(user_specs=transformer_specifications)
         >>> # the default specifications that will be used when not provided
         >>> print(my_transformer.defaults)
         time_const_oil=180.0 top_oil_temp_rise=60.0 oil_const_k11=1.0
-        winding_const_k21=1 winding_const_k22=2 oil_exp_x=0.8 winding_exp_y=1.6
-        end_temp_reduction=0.0 time_const_windings=4.0 winding_oil_gradient=23.0 hot_spot_fac=1.2
+        winding_const_k21=1 winding_const_k22=2 oil_exp_x=0.8 winding_exp_y=1.6 end_temp_reduction=0.0
+        amb_temp_surcharge=10.0 time_const_windings=4.0 winding_oil_gradient=23.0 hot_spot_fac=1.2
         >>> # the combination of the user specifications and the default specifications
         >>> print(my_transformer.specs)
         no_load_loss=800.0 amb_temp_surcharge=10.0 time_const_oil=180.0 top_oil_temp_rise=60.0
@@ -91,6 +90,7 @@ class DistributionTransformer(Transformer):
             oil_exp_x=0.8,
             winding_exp_y=1.6,
             end_temp_reduction=0,
+            amb_temp_surcharge=10,  # Add surcharge by default, as distribution transformers are mostly located inside
         )
 
     @property

@@ -8,6 +8,7 @@ import numpy as np
 
 from transformer_thermal_model.cooler import CoolerType
 from transformer_thermal_model.schemas import (
+    DefaultWindingSpecifications,
     ThreeWindingTransformerDefaultSpecifications,
     ThreeWindingTransformerSpecifications,
     UserThreeWindingTransformerSpecifications,
@@ -48,11 +49,13 @@ class ThreeWindingTransformer(Transformer):
     >>> print(transformer.specs)
     no_load_loss=20.0 amb_temp_surcharge=10.0 time_const_oil=210.0 top_oil_temp_rise=60.0
     oil_const_k11=0.5 winding_const_k21=2 winding_const_k22=2 oil_exp_x=0.8 winding_exp_y=1.3
-    end_temp_reduction=0.0 lv_winding=WindingSpecifications(nom_load=1000.0,
-    winding_oil_gradient=20.0, time_const_winding=1.0, hot_spot_fac=1.2, nom_power=1000.0)
-    mv_winding=WindingSpecifications(nom_load=1000.0, winding_oil_gradient=20.0, time_const_winding=1.0,
-    hot_spot_fac=1.2, nom_power=1000.0) hv_winding=WindingSpecifications(nom_load=1000.0,
-    winding_oil_gradient=20.0, time_const_winding=1000000.0, hot_spot_fac=1.2, nom_power=1000.0)
+    end_temp_reduction=0.0
+    lv_winding=WindingSpecifications(winding_oil_gradient=20.0, time_const_winding=1.0, hot_spot_fac=1.2,
+      nom_load=1000.0, nom_power=1000.0)
+    mv_winding=WindingSpecifications(winding_oil_gradient=20.0, time_const_winding=1.0, hot_spot_fac=1.2,
+      nom_load=1000.0, nom_power=1000.0)
+    hv_winding=WindingSpecifications(winding_oil_gradient=20.0, time_const_winding=1000000.0, hot_spot_fac=1.2,
+      nom_load=1000.0, nom_power=1000.0)
     load_loss_hv_lv=100.0 load_loss_hv_mv=100.0 load_loss_mv_lv=100.0 load_loss_total_user=None
 
     ```
@@ -67,6 +70,10 @@ class ThreeWindingTransformer(Transformer):
         oil_exp_x=0.8,
         winding_exp_y=1.3,
         end_temp_reduction=0,
+        amb_temp_surcharge=0,
+        lv_winding=DefaultWindingSpecifications(winding_oil_gradient=17, hot_spot_fac=1.3, time_const_winding=10),
+        mv_winding=DefaultWindingSpecifications(winding_oil_gradient=17, hot_spot_fac=1.3, time_const_winding=10),
+        hv_winding=DefaultWindingSpecifications(winding_oil_gradient=17, hot_spot_fac=1.3, time_const_winding=10),
     )
     _onaf_defaults = ThreeWindingTransformerDefaultSpecifications(
         time_const_oil=150,
@@ -77,6 +84,10 @@ class ThreeWindingTransformer(Transformer):
         oil_exp_x=0.8,
         winding_exp_y=1.3,
         end_temp_reduction=0,
+        amb_temp_surcharge=0,
+        lv_winding=DefaultWindingSpecifications(winding_oil_gradient=17, hot_spot_fac=1.3, time_const_winding=7),
+        mv_winding=DefaultWindingSpecifications(winding_oil_gradient=17, hot_spot_fac=1.3, time_const_winding=7),
+        hv_winding=DefaultWindingSpecifications(winding_oil_gradient=17, hot_spot_fac=1.3, time_const_winding=7),
     )
     specs: ThreeWindingTransformerSpecifications
 
@@ -129,3 +140,16 @@ class ThreeWindingTransformer(Transformer):
         total_loss_ratio = (self.specs.no_load_loss + hv_rise + mv_rise + lv_rise) / self.specs.load_loss_total
 
         return self._pre_factor * np.power(total_loss_ratio, self.specs.oil_exp_x)
+
+    def _set_hs_fac(self, hot_spot_factor: float) -> None:
+        """Set hot-spot factor to specified value.
+
+        This function is (and should only be) used by hot-spot calibration. Note that the same hot-spot factor is set
+        for all windings.
+
+        Args:
+            hot_spot_factor (float): The new hot-spot factor resulting from calibration.
+        """
+        self.specs.lv_winding.hot_spot_fac = hot_spot_factor
+        self.specs.mv_winding.hot_spot_fac = hot_spot_factor
+        self.specs.hv_winding.hot_spot_fac = hot_spot_factor

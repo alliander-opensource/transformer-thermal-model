@@ -4,7 +4,7 @@
 
 [project]
 name = "transformer-thermal-model"
-version = "0.2.1"
+version = "0.4.0"
 description = "Thermal model for transformers"
 authors = [{ name = "Contributors to the Transformer Thermal Model project" }]
 requires-python = ">=3.11, <4.0"
@@ -24,14 +24,14 @@ dependencies = [
 optional = true
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^8.4.1"
-ruff = "^0.13.1"
-mypy = "^1.17.1"
-pytest-cov = "^6.2.1"
+pytest = "^9.0.1"
+ruff = "^0.14.0"
+mypy = "^1.18.0"
+pytest-cov = "^7.0.0"
 pre-commit = "^4.1.0"
 codespell = "^2.4.1"
 ipython = "^9.3.0"
-isort = "^6.0.0"
+isort = "^7.0.0"
 mutmut = "^3.3.1"
 
 [tool.poetry.group.docs]
@@ -41,7 +41,7 @@ optional = true
 mkdocs = "^1.6.1"
 mkdocstrings-python = "^1.16.12"
 mkdocs-exclude = "^1.0.2"
-mkdocs-llmstxt = "^0.3.0"
+mkdocs-llmstxt = "^0.4.0"
 mkdocs-material = "^9.6.11"
 mkdocs-mermaid2-plugin = "^1.2.1"
 mkdocs-jupyter = "^0.25.1"

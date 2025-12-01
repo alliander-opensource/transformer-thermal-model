@@ -13,6 +13,8 @@ from pydantic import BaseModel, ConfigDict, model_validator
 
 logger = logging.getLogger(__name__)
 
+_NEGATIVE_LOAD_PROFILE_ERROR_MESSAGE = "The load profile must not contain negative values"
+
 
 class BaseInputProfile(BaseModel):
     """Base class for input profiles in the transformer thermal model.
@@ -24,6 +26,19 @@ class BaseInputProfile(BaseModel):
     datetime_index: np.typing.NDArray[np.datetime64]
     ambient_temperature_profile: np.typing.NDArray[np.float64]
     top_oil_temperature_profile: np.typing.NDArray[np.float64] | None = None
+
+    @property
+    def time_step(self) -> np.ndarray:
+        """Get the time step between the data points.
+
+        Returns:
+            np.ndarray: The time step between the data points in minutes.
+        """
+        # Calculate time steps in minutes
+        time_deltas = (
+            np.diff(self.datetime_index, prepend=self.datetime_index[0]).astype("timedelta64[s]").astype(float) / 60
+        )
+        return time_deltas
 
     @model_validator(mode="after")
     def _check_datetime_index_is_sorted(self) -> Self:
@@ -50,6 +65,13 @@ class BaseInputProfile(BaseModel):
             self.datetime_index
         ):
             raise ValueError("The length of the top_oil_temperature_profile should match the datetime_index.")
+        return self
+
+    @model_validator(mode="after")
+    def _check_load_profile_not_negative(self) -> Self:
+        """Check if the load profile contains negative values."""
+        if np.min(self.load_profile_array) < 0:
+            raise ValueError(_NEGATIVE_LOAD_PROFILE_ERROR_MESSAGE)
         return self
 
     def __len__(self) -> int:
@@ -259,6 +281,20 @@ class ThreeWindingInputProfile(BaseInputProfile):
                 self.load_profile_high_voltage_side,
             ]
         )
+
+    @model_validator(mode="after")
+    def _check_load_profile_not_negative(self) -> Self:
+        """Check if the load profile contains negative values."""
+        # We have to override the check here since the self.load_profile_array
+        # will throw a hard to read error it the dimension do not match.
+        for load_profile in [
+            self.load_profile_low_voltage_side,
+            self.load_profile_middle_voltage_side,
+            self.load_profile_high_voltage_side,
+        ]:
+            if np.min(load_profile) < 0:
+                raise ValueError(_NEGATIVE_LOAD_PROFILE_ERROR_MESSAGE)
+        return self
 
     @classmethod
     def create(

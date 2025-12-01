@@ -135,21 +135,6 @@ class Model:
                 "temperature profile."
             )
 
-    def _get_time_step(self) -> np.ndarray:
-        """Get the time step between the data points in minutes.
-
-        Returns:
-            np.ndarray: The time step between the data points in minutes.
-
-        """
-        time_deltas = (
-            np.diff(self.data.datetime_index, prepend=self.data.datetime_index[0])
-            .astype("timedelta64[s]")
-            .astype(float)
-            / 60
-        )
-        return time_deltas
-
     def _get_internal_temp(self) -> np.ndarray:
         """Get the internal temperature of the environment where the transformer is located.
 
@@ -369,7 +354,7 @@ class Model:
         # decide if we use the top oil or ambient temperature as input and perform basic validation
         use_top_oil = not force_use_ambient_temperature and self.data.top_oil_temperature_profile is not None
 
-        dt = self._get_time_step()
+        dt = self.data.time_step
         load = self.data.load_profile_array
         t_internal = self._get_internal_temp()
 
