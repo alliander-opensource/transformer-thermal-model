@@ -9,6 +9,7 @@ SPDX-License-Identifier: MPL-2.0
 [![License: MPL2.0](https://img.shields.io/badge/License-MPL2.0-informational.svg)](https://github.com/alliander-opensource/transformer-thermal-model/blob/main/LICENSE)
 [![Downloads](https://static.pepy.tech/badge/transformer-thermal-model)](https://pepy.tech/project/transformer-thermal-model)
 [![Downloads](https://static.pepy.tech/badge/transformer-thermal-model/month)](https://pepy.tech/project/transformer-thermal-model)
+[![DOI](https://zenodo.org/badge/984616930.svg)](https://doi.org/10.5281/zenodo.17434808)
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=alliander-opensource_transformer-thermal-model&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=alliander-opensource_transformer-thermal-model)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=alliander-opensource_transformer-thermal-model&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=alliander-opensource_transformer-thermal-model)

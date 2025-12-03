@@ -102,25 +102,24 @@ This inertia is dependent on the oil time constant.
 
 ### Hot-spot temperature
 
-The hot-spot temperature rise above the top-oil temperature at time _t_ can be calculated as follows:
+Based on formula (12), (15) and  (16) from IEC-60076-7-2018, the hot-spot temperature rise above the top-oil temperature
+at time _t_ can be calculated as follows:
 
 $$
-\Delta\theta_{\text{h}}[t] = \Delta\theta_{\text{h}}[t-1] +
-    \left[
-      H \cdot gr \cdot K^{y}[t] - \Delta\theta_{\text{h}}[t-1]
-    \right]
-    \cdot
-    \left[
-      k_{21} \left(
-        1 - e^{-\frac{dt}{\tau_{\text{w}}k_{22}}}
-      \right) - \left(
-        k_{21} - 1
-      \right)
-      \cdot
-      \left(
-        1 - e^{-\frac{dt}{\tau_{\text{\rm o}}/k_{22}}}
-      \right)
-    \right],
+\Delta\theta_{\text{h}}[t] = \Delta\theta_{\text{h1}}[t] + \Delta\theta_{\text{h2}}[t]
+$$
+
+where
+
+$$
+\Delta \theta_{h1}[t] =k_{21}Hg_rK[t]^y + \{\Delta \theta_{h1}[t-1] - k_{21}Hg_rK[t]^y\}\times e^{(-\Delta t)/(k_{22}\times\tau_w)}
+$$
+
+and
+
+$$
+\Delta \theta_{h2} [t] = (k_{21} -1)Hg_rK[t]^y + \{\Delta \theta_{h2}[t-1] - (k_{21} -1)Hg_rK[t]^y\}\times e^
+{(-\Delta t)/(\tau_0 / k_{22})}
 $$
 
 where:
@@ -133,18 +132,9 @@ where:
 - **$y$**: winding exponent;
 - **$k_{21}$**: winding constant;
 - **$k_{22}$**: winding constant;
-- **$dt$**: time step size in minutes;
+- **$\Delta t$**: time step size in minutes;
 - **$\tau_{\text{w}}$**: winding time constant;
 - **$\tau_{\text{\rm o}}$**: oil time constant.
-
-Similar to the equation for the top-oil temperature, the temperature rise at the previous time step is used as the
-starting point for the calculation. In the middle section, the difference between the rise at the previous time step and
-the rise to which the hot-spot converges under current conditions is determined. The right part of the formula
-represents the delaying effect. In this case, the delaying effect consists of two parts:
-
-- _**The winding effect**_  indicates the inertia with which the windings themselves heat up (without the influence of
-the oil).
-- _**The oil effect**_ A slowing effect caused by the large thermal mass of the oil surrounding the windings.
 
 When the hot-spot temperature rise and the top-oil temperature at time t are known, the hot-spot temperature can simply
 be determined as:

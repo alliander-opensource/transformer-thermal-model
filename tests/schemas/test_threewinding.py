@@ -2,12 +2,15 @@
 #
 # SPDX-License-Identifier: MPL-2.0
 
+import math
+
 import numpy as np
 import pandas as pd
 import pytest
 
 from transformer_thermal_model.cooler import CoolerType
 from transformer_thermal_model.schemas import (
+    DefaultWindingSpecifications,
     ThreeWindingTransformerDefaultSpecifications,
     ThreeWindingTransformerSpecifications,
     UserThreeWindingTransformerSpecifications,
@@ -28,6 +31,10 @@ def test_three_winding_transformer(user_three_winding_transformer_specs):
         oil_exp_x=0.8,
         winding_exp_y=1.6,
         end_temp_reduction=0,
+        amb_temp_surcharge=0,
+        lv_winding=DefaultWindingSpecifications(winding_oil_gradient=17, hot_spot_fac=1.3, time_const_winding=10),
+        mv_winding=DefaultWindingSpecifications(winding_oil_gradient=17, hot_spot_fac=1.3, time_const_winding=10),
+        hv_winding=DefaultWindingSpecifications(winding_oil_gradient=17, hot_spot_fac=1.3, time_const_winding=10),
     )
     transformer = ThreeWindingTransformerSpecifications.create(
         defaults=defaults, user=user_three_winding_transformer_specs
@@ -49,9 +56,9 @@ def test_three_winding_transformer(user_three_winding_transformer_specs):
         transformer.winding_oil_gradient_array
         == np.array(
             [
-                [user_three_winding_transformer_specs.lv_winding.winding_oil_gradient],
-                [user_three_winding_transformer_specs.mv_winding.winding_oil_gradient],
-                [user_three_winding_transformer_specs.hv_winding.winding_oil_gradient],
+                [defaults.lv_winding.winding_oil_gradient],
+                [defaults.mv_winding.winding_oil_gradient],
+                [defaults.hv_winding.winding_oil_gradient],
             ]
         )
     ).all()
@@ -78,6 +85,14 @@ def test_wrong_three_winding_input_profile():
             load_profile_high_voltage_side=[100, 200, 300],
             load_profile_middle_voltage_side=[200, 300],
             load_profile_low_voltage_side=[300, 400],
+            ambient_temperature_profile=[10, 20, 30],
+        )
+    with pytest.raises(ValueError, match="The load profile must not contain negative values"):
+        ThreeWindingInputProfile.create(
+            datetime_index=pd.date_range("2021-01-01 00:00:00", periods=3),
+            load_profile_high_voltage_side=[100, 200, 300],
+            load_profile_middle_voltage_side=[200, 300, -150],
+            load_profile_low_voltage_side=[300, 400, 150],
             ambient_temperature_profile=[10, 20, 30],
         )
 
@@ -169,3 +184,29 @@ def test_transformer_winding_losses():
     assert (transformer.specs._c1 * transformer.specs._c2 * power_hs + power_ls) == transformer.specs.load_loss_hv_lv, (
         "p_hs_ls does not match expected value"
     )
+
+
+def test_default_hotspotfactor_is_used_three_winding():
+    """Test that the default hotspot factor is used for a three-winding transformer."""
+    user_specs_three_winding = UserThreeWindingTransformerSpecifications(
+        no_load_loss=10000,
+        amb_temp_surcharge=0,
+        lv_winding=WindingSpecifications(
+            nom_load=1600, winding_oil_gradient=23, hot_spot_fac=None, time_const_winding=10, nom_power=150
+        ),
+        mv_winding=WindingSpecifications(
+            nom_load=1600, winding_oil_gradient=23, hot_spot_fac=None, time_const_winding=10, nom_power=150
+        ),
+        hv_winding=WindingSpecifications(
+            nom_load=1600, winding_oil_gradient=23, hot_spot_fac=None, time_const_winding=10, nom_power=150
+        ),
+        load_loss_hv_lv=20000,
+        load_loss_hv_mv=20000,
+        load_loss_mv_lv=20000,
+    )
+    three_winding_transformer = ThreeWindingTransformer(
+        user_specs=user_specs_three_winding, cooling_type=CoolerType.ONAN
+    )
+    assert math.isclose(three_winding_transformer.specs.lv_winding.hot_spot_fac, 1.3, rel_tol=1e-09, abs_tol=1e-09)
+    assert math.isclose(three_winding_transformer.specs.mv_winding.hot_spot_fac, 1.3, rel_tol=1e-09, abs_tol=1e-09)
+    assert math.isclose(three_winding_transformer.specs.hv_winding.hot_spot_fac, 1.3, rel_tol=1e-09, abs_tol=1e-09)

@@ -50,7 +50,7 @@ class PowerTransformerComponents(StrEnum):
         >>> print(my_transformer.defaults)
         time_const_oil=210.0 top_oil_temp_rise=60.0 oil_const_k11=0.5 winding_const_k21=2
         winding_const_k22=2 oil_exp_x=0.8 winding_exp_y=1.3 end_temp_reduction=0.0
-        time_const_windings=10.0 winding_oil_gradient=17.0 hot_spot_fac=1.3
+        amb_temp_surcharge=0.0 time_const_windings=10.0 winding_oil_gradient=17.0 hot_spot_fac=1.3
         >>> # the combination of the user specifications and the default specifications
         >>> print(my_transformer.specs)
         no_load_loss=200.0 amb_temp_surcharge=20.0 time_const_oil=210.0
@@ -88,7 +88,6 @@ class PowerTransformer(Transformer):
     ...     load_loss=1000,
     ...     nom_load_sec_side=1500,
     ...     no_load_loss=200,
-    ...     amb_temp_surcharge=20,
     ... )
     >>> cooling_type = CoolerType.ONAN
     >>> transformer = PowerTransformer(
@@ -113,6 +112,7 @@ class PowerTransformer(Transformer):
         oil_exp_x=0.8,
         winding_exp_y=1.3,
         end_temp_reduction=0,
+        amb_temp_surcharge=0,
     )
     _onaf_defaults = DefaultTransformerSpecifications(
         time_const_oil=150,
@@ -126,6 +126,7 @@ class PowerTransformer(Transformer):
         oil_exp_x=0.8,
         winding_exp_y=1.3,
         end_temp_reduction=0,
+        amb_temp_surcharge=0,
     )
     internal_component_specs: TransformerComponentSpecifications | None = None
     _err = "Internal components are not set. Please provide these if you wish to calculate the limiting component."
@@ -319,7 +320,7 @@ class PowerTransformer(Transformer):
         """Calculate the internal temperature of the transformer."""
         return ambient_temperature + self.specs.amb_temp_surcharge
 
-    def _set_HS_fac(self, hot_spot_factor: float) -> None:
+    def _set_hs_fac(self, hot_spot_factor: float) -> None:
         """Set hot-spot factor to specified value.
 
         This function is (and should only be) used by hot-spot calibration.
