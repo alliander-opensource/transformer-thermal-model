@@ -6,6 +6,9 @@ SPDX-License-Identifier: MPL-2.0
 
 # The architecture of Transformer Thermal Model
 
+> **⚠️ Warning:**  
+> This overview is partly outdated and will be updated soon.
+
 ```mermaid
 stateDiagram-v2
     direction TB

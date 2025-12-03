@@ -333,9 +333,9 @@ class ThreeWindingTransformerSpecifications(BaseTransformerSpecifications):
         """Return the nominal loads as a numpy array."""
         return np.array(
             [
-                [cls.lv_winding.nom_load],
-                [cls.mv_winding.nom_load],
-                [cls.hv_winding.nom_load],
+                cls.lv_winding.nom_load,
+                cls.mv_winding.nom_load,
+                cls.hv_winding.nom_load,
             ]
         )
 
@@ -344,9 +344,9 @@ class ThreeWindingTransformerSpecifications(BaseTransformerSpecifications):
         """Return the winding oil gradient as a numpy array."""
         return np.array(
             [
-                [cls.lv_winding.winding_oil_gradient],
-                [cls.mv_winding.winding_oil_gradient],
-                [cls.hv_winding.winding_oil_gradient],
+                cls.lv_winding.winding_oil_gradient,
+                cls.mv_winding.winding_oil_gradient,
+                cls.hv_winding.winding_oil_gradient,
             ]
         )
 
@@ -355,9 +355,9 @@ class ThreeWindingTransformerSpecifications(BaseTransformerSpecifications):
         """Return the winding oil gradient as a numpy array."""
         return np.array(
             [
-                [cls.lv_winding.time_const_winding],
-                [cls.mv_winding.time_const_winding],
-                [cls.hv_winding.time_const_winding],
+                cls.lv_winding.time_const_winding,
+                cls.mv_winding.time_const_winding,
+                cls.hv_winding.time_const_winding,
             ]
         )
 
@@ -366,8 +366,8 @@ class ThreeWindingTransformerSpecifications(BaseTransformerSpecifications):
         """Return the winding oil gradient as a numpy array."""
         return np.array(
             [
-                [cls.lv_winding.hot_spot_fac],
-                [cls.mv_winding.hot_spot_fac],
-                [cls.hv_winding.hot_spot_fac],
+                cls.lv_winding.hot_spot_fac,
+                cls.mv_winding.hot_spot_fac,
+                cls.hv_winding.hot_spot_fac,
             ]
         )

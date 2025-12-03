@@ -13,6 +13,8 @@ from transformer_thermal_model.schemas import (
     ThreeWindingTransformerSpecifications,
     UserThreeWindingTransformerSpecifications,
 )
+from transformer_thermal_model.schemas.thermal_model.onaf_switch import ThreeWindingCoolingSwitchSettings
+from transformer_thermal_model.transformer.cooling_switch_controller import CoolingSwitchController
 
 from .base import Transformer
 
@@ -93,13 +95,25 @@ class ThreeWindingTransformer(Transformer):
         self,
         user_specs: UserThreeWindingTransformerSpecifications,
         cooling_type: CoolerType,
+        cooling_switch_settings: ThreeWindingCoolingSwitchSettings | None = None,
     ):
         """Initialize the ThreeWindingTransformer object."""
+        logger.debug("Initialized ThreeWindingTransformer with specifications: %s", user_specs)
+
+        self.cooling_type: CoolerType = cooling_type
+        self.specs = ThreeWindingTransformerSpecifications.create(self.defaults, user_specs)
+
+        # Use CoolingSwitchController if onaf_switch is provided
+        self.cooling_controller = (
+            CoolingSwitchController(onaf_switch=cooling_switch_settings, specs=self.specs)
+            if cooling_switch_settings
+            else None
+        )
+
         super().__init__(
             cooling_type=cooling_type,
+            cooling_controller=self.cooling_controller,
         )
-        self.specs = ThreeWindingTransformerSpecifications.create(self.defaults, user_specs)
-        logger.debug("Initialized ThreeWindingTransformer with specifications: %s", user_specs)
 
     @property
     def defaults(self) -> ThreeWindingTransformerDefaultSpecifications:
@@ -117,7 +131,7 @@ class ThreeWindingTransformer(Transformer):
         """Calculate the internal temperature of the transformer."""
         return ambient_temperature + self.specs.amb_temp_surcharge
 
-    def _end_temperature_top_oil(self, load_profile: np.ndarray) -> np.ndarray:
+    def _end_temperature_top_oil(self, load_profile: np.ndarray) -> float:
         """Calculate the end temperature of the top-oil."""
         lv_rise = self.specs._get_loss_lc() * np.power(load_profile[0] / self.specs.lv_winding.nom_load, 2)
         mv_rise = self.specs._get_loss_mc() * np.power(load_profile[1] / self.specs.mv_winding.nom_load, 2)

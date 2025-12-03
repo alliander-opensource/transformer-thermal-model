@@ -57,6 +57,7 @@ nav:
     - Aging: api_reference/aging.md
     - Components: api_reference/components.md
     - Cooler: api_reference/cooler.md
+    - ONAN/ONAF Switch: api_reference/cooling_switch_controller.md
     - Toolbox: api_reference/toolbox.md
   - Examples:
     - Quick start: examples/quickstart.ipynb
@@ -65,6 +66,7 @@ nav:
     - A three winding transformer: examples/three-winding-calculation.ipynb
     - Hot-spot factor calibration: examples/hot-spot_calibration.ipynb
     - Modelling with an initial state: examples/example_initial_state.ipynb
+    - Switch between ONAN and ONAF state: examples/example_ONAN_ONAF_switch.ipynb
   - Theoretical Documentation:
     - Overview: theoretical_documentation/overview.md
     - Transformer definition: theoretical_documentation/transformer_definition.md
