@@ -4,7 +4,8 @@
 
 from typing import Self
 
-from pydantic import BaseModel, Field, model_validator
+import numpy as np
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from transformer_thermal_model.schemas.specifications.transformer import WindingSpecifications
 
@@ -57,8 +58,8 @@ class ThreeWindingONANParameters(BaseONANParameters):
 class CoolingSwitchBase(BaseModel):
     """Class representing the ONAF (Oil Natural Air Forced) cooling switch status."""
 
-    fan_on: list[bool] | None = Field(
-        None, description="List indicating the ONAF cooling switch status at each time step."
+    fan_on: np.ndarray | list[bool] | None = Field(
+        None, description="List or array indicating the ONAF cooling switch status at each time step."
     )
     temperature_threshold: CoolingSwitchConfig | None = Field(
         None, description="Temperature threshold for activating the ONAF cooling switch."
@@ -78,6 +79,8 @@ class CoolingSwitchBase(BaseModel):
         if self.fan_on is None and self.temperature_threshold is None:
             raise ValueError("Either 'fan_on' or 'temperature_threshold' must be provided.")
         return self
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 class CoolingSwitchSettings(CoolingSwitchBase):

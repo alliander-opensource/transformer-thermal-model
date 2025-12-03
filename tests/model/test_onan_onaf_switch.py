@@ -32,7 +32,7 @@ def test_start_cooling_type(default_user_trafo_specs: UserTransformerSpecificati
     default_user_trafo_specs.winding_oil_gradient = 25
     default_user_trafo_specs.hot_spot_fac = 1.1
 
-    is_on = [True] * 100
+    is_on = np.array([True] * 100)
 
     onan_parameters = ONANParameters(
         top_oil_temp_rise=50.5,
@@ -58,7 +58,7 @@ def test_start_cooling_type(default_user_trafo_specs: UserTransformerSpecificati
     assert transformer.specs.winding_oil_gradient == default_user_trafo_specs.winding_oil_gradient
     assert transformer.specs.hot_spot_fac == default_user_trafo_specs.hot_spot_fac
 
-    is_on = [False] * 100
+    is_on = np.array([False] * 100)
     onaf_switch.fan_on = is_on
     transformer = PowerTransformer(
         user_specs=default_user_trafo_specs, cooling_type=CoolerType.ONAF, cooling_switch_settings=onaf_switch
@@ -96,7 +96,7 @@ def test_start_cooling_type(default_user_trafo_specs: UserTransformerSpecificati
 
 def test_wrong_onaf_switch(default_user_trafo_specs: UserTransformerSpecifications, iec_load_profile):
     """Check that a ValueError is raised when the length of fan_on does not match the temperature profile."""
-    is_on = [True] * 100
+    is_on = np.array([True] * 100)
     onan_parameters = ONANParameters(
         top_oil_temp_rise=50.5,
         time_const_oil=150,
@@ -155,7 +155,7 @@ def test_complete_onan_onaf_switch_fan_on(
     default_user_trafo_specs.hot_spot_fac = 1.1
     default_user_trafo_specs.nom_load_sec_side = constant_load_profile.load_profile[0] * 1.2
 
-    is_on = [False] * 50 + [True] * (len(constant_load_profile.datetime_index) - 50)
+    is_on = np.array([False] * 50 + [True] * (len(constant_load_profile.datetime_index) - 50))
     onan_parameters = ONANParameters(
         top_oil_temp_rise=50.5,
         time_const_oil=150,
@@ -176,7 +176,7 @@ def test_complete_onan_onaf_switch_fan_on(
     assert output.top_oil_temp_profile.iloc[45] > output.top_oil_temp_profile.iloc[55]
 
     # Test that it correctly switches back to ONAN if the fans are turned off again
-    is_on = [False] * 50 + [True] * 30 + [False] * (len(constant_load_profile.datetime_index) - 80)
+    is_on = np.array([False] * 50 + [True] * 30 + [False] * (len(constant_load_profile.datetime_index) - 80))
     onaf_switch.fan_on = is_on
     transformer = PowerTransformer(
         user_specs=default_user_trafo_specs, cooling_type=CoolerType.ONAF, cooling_switch_settings=onaf_switch
@@ -259,7 +259,7 @@ def test_threewinding_onan_onaf_switch(
     three_winding_input_profile: ThreeWindingInputProfile,
 ):
     """Check that a three-winding transformer can be created with an ONAF switch."""
-    is_on = [False] * 50 + [True] * (len(three_winding_input_profile.datetime_index) - 50)
+    is_on = np.array([False] * 50 + [True] * (len(three_winding_input_profile.datetime_index) - 50))
     onan_parameters = example_three_winding_onan_parameters()
     onaf_switch = ThreeWindingCoolingSwitchSettings(
         fan_on=is_on, temperature_threshold=None, onan_parameters=onan_parameters

@@ -122,7 +122,7 @@ class Model:
             raise ValueError("A DistributionTransformer requires an InputProfile.")
         if (
             self.transformer.cooling_controller
-            and self.transformer.cooling_controller.onaf_switch.fan_on
+            and self.transformer.cooling_controller.onaf_switch.fan_on is not None
             and len(self.transformer.cooling_controller.onaf_switch.fan_on) != len(self.data)
         ):
             raise ValueError(
