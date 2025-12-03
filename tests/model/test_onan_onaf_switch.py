@@ -140,7 +140,7 @@ def test_wrong_onaf_switch(default_user_trafo_specs: UserTransformerSpecificatio
         CoolingSwitchSettings(
             temperature_threshold=CoolingSwitchConfig(activation_temp=80, deactivation_temp=70),
             onan_parameters=onan_parameters,
-            fan_on=[True, False],
+            fan_on=np.array([True, False]),
         )
     with pytest.raises(ValueError, match=("Either 'fan_on' or 'temperature_threshold' must be provided.")):
         CoolingSwitchSettings(temperature_threshold=None, onan_parameters=onan_parameters, fan_on=None)

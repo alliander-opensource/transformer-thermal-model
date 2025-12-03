@@ -58,7 +58,7 @@ class ThreeWindingONANParameters(BaseONANParameters):
 class CoolingSwitchBase(BaseModel):
     """Class representing the ONAF (Oil Natural Air Forced) cooling switch status."""
 
-    fan_on: np.ndarray | list[bool] | None = Field(
+    fan_on: np.ndarray | None = Field(
         None, description="List or array indicating the ONAF cooling switch status at each time step."
     )
     temperature_threshold: CoolingSwitchConfig | None = Field(
