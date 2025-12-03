@@ -71,15 +71,15 @@ class Model:
             with the first value of the ambient temperature profile.
             will start the calculation with this temperature. If not provided, will start the calculation
             with the first value of the ambient temperature profile.
-        hot_spot_temp_profile (pd.Series): The modeled hot-spot temperature profile.
         top_oil_temp_profile (pd.Series): The modeled top-oil temperature profile.
+        initial_load (float | None): Initial load where the temperatures converge to steady state.
     """
 
     transformer: Transformer
     data: BaseInputProfile
-    init_top_oil_temp: float | None
-    hot_spot_temp_profile: pd.Series
     top_oil_temp_profile: pd.Series
+    init_top_oil_temp: float | None
+    initial_load: float | None
 
     def __init__(
         self,
@@ -169,7 +169,7 @@ class Model:
         )
 
     def get_initial_top_oil_temp(self, first_surrounding_temp: float) -> float:
-        """Funciion that returns the top oil temp for the first timestep."""
+        """Function that returns the top oil temp for the first timestep."""
         # If an initial top oil temperature is provided, use that
         if self.init_top_oil_temp:
             return self.init_top_oil_temp
@@ -358,10 +358,14 @@ class Model:
         load = self.data.load_profile_array
         t_internal = self._get_internal_temp()
 
+        # Check if top oil temperature profile is provided and use it if available
+        # If not, calculate it
         if use_top_oil and self.data.top_oil_temperature_profile is not None:
             top_oil_temp_profile = self.data.top_oil_temperature_profile
         else:
             top_oil_temp_profile = self._calculate_top_oil_temp_profile(t_internal, dt, load)
+
+        # Calculate hot-spot temperature profile
         hot_spot_temp_profile = self._calculate_hot_spot_temp_profile(load, top_oil_temp_profile, dt)
         logger.info("The calculation with the Thermal model is completed.")
         logger.info(f"Max top-oil temperature: {np.max(top_oil_temp_profile)}")
