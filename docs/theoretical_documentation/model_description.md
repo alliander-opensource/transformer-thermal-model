@@ -103,15 +103,20 @@ This inertia is dependent on the oil time constant.
 ### Hot-spot temperature
 
 Based on formula (12), (15) and  (16) from IEC-60076-7-2018, the hot-spot temperature rise above the top-oil temperature
- at time _t_ can be calculated as follows:
+at time _t_ can be calculated as follows:
+
 $$
 \Delta\theta_{\text{h}}[t] = \Delta\theta_{\text{h1}}[t] + \Delta\theta_{\text{h2}}[t]
 $$
+
 where
+
 $$
 \Delta \theta_{h1}[t] =k_{21}Hg_rK[t]^y + \{\Delta \theta_{h1}[t-1] - k_{21}Hg_rK[t]^y\}\times e^{(-\Delta t)/(k_{22}\times\tau_w)}
 $$
+
 and
+
 $$
 \Delta \theta_{h2} [t] = (k_{21} -1)Hg_rK[t]^y + \{\Delta \theta_{h2}[t-1] - (k_{21} -1)Hg_rK[t]^y\}\times e^
 {(-\Delta t)/(\tau_0 / k_{22})}
