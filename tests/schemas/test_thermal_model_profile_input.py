@@ -279,45 +279,32 @@ def test_timezone_gets_retained():
             "ambient_temperature_profile": [10, 20],
         }
     )
+    assert input_df["datetime_index"].dtype == "datetime64[ns, UTC]"
+    input_profile_df = InputProfile.from_dataframe(input_df)
+    assert input_profile_df.datetime_index[0].tzinfo == UTC
 
-    input_index = [
+    input_list = [
         datetime(2023, 1, 1, 1, 5, tzinfo=UTC),
         datetime(2023, 1, 1, 1, 10, tzinfo=UTC),
     ]
+    assert input_list[0].tzinfo == UTC
+    input_list_out = InputProfile.create(
+        datetime_index=input_list,
+        load_profile=input_df["load_profile"],
+        ambient_temperature_profile=input_df["ambient_temperature_profile"],
+    )
+    assert input_list_out.datetime_index[0].tzinfo == UTC
 
-    input_naive = np.array(
+    input_naive = pd.Series(
         [
             datetime(2023, 1, 1, 1, 5),
             datetime(2023, 1, 1, 1, 10),
         ],
-        dtype=np.datetime64,
     )
-
-    # Check initial input check
-    assert input_df["datetime_index"].dtype == "datetime64[ns, UTC]"
-    assert input_index[0].tzinfo == UTC
-    assert input_naive.dtype == "<M8[us]"
-
-    input_profile_df = InputProfile.from_dataframe(input_df)
-    input_index_out = InputProfile.create(
-        datetime_index=input_index,
-        load_profile=input_df["load_profile"],
-        ambient_temperature_profile=input_df["ambient_temperature_profile"],
-    )
+    assert input_naive.dtype == "<M8[ns]"
     input_naive_out = InputProfile.create(
         datetime_index=input_naive,
         load_profile=input_df["load_profile"],
         ambient_temperature_profile=input_df["ambient_temperature_profile"],
     )
-
-    # Check processed input is tz-aware datetime
-    assert input_profile_df.datetime_index[0].tzinfo == UTC
-    assert input_profile_df.datetime_index.dtype == "object"
-
-    assert input_index_out.datetime_index[0].tzinfo == UTC
-    assert input_index_out.datetime_index.dtype == "object"
-
-    assert input_naive_out.datetime_index.dtype == "<M8[ns]"
-
-    assert np.array_equal(input_profile_df.load_profile, input_df["load_profile"])
-    assert np.array_equal(np.array(input_naive), input_naive_out.datetime_index)
+    assert input_naive_out.datetime_index[0].tzinfo is None

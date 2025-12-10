@@ -86,26 +86,34 @@ class BaseInputProfile(BaseModel):
         raise NotImplementedError("Subclasses must define a load_profile field or property.")
 
     @classmethod
-    def to_datetime_array(cls, obj: pd.DatetimeIndex | list | tuple | np.ndarray) -> np.typing.NDArray:
+    def _to_datetime_array(cls, obj: pd.DatetimeIndex | pd.Series | list | tuple | np.ndarray) -> np.typing.NDArray:
         """Convert a pandas DatetimeIndex or iterable of datetimes to a NumPy array.
 
         - Preserves timezone if present.
         - Handles tz-naive efficiently.
         - Falls back for lists or other iterables.
         """
-        try:
-            if isinstance(obj, (list, tuple, np.ndarray)):
-                # Convert list-like to array, preserving tz if present
-                if all(hasattr(x, "tzinfo") for x in obj):
-                    return np.array(obj, dtype=object)
-                else:
-                    return np.array(obj, dtype="datetime64[ns]")
-            if isinstance(obj, pd.DatetimeIndex) and obj.tz is not None:
-                # tz-aware: preserve original timezone
-                return np.array(obj.to_pydatetime(), dtype=object)
+        if isinstance(obj, (list, tuple, np.ndarray, pd.Series)):
+            # Convert list-like to array, preserving tz if present
+            if all(hasattr(x, "tzinfo") for x in obj):
+                return np.array(obj, dtype=object)
+            else:
+                # Try except it to check if the obj in the iterable is something that
+                # can be interpreted as a datetime with preserving original type
+                # else raise error
+                try:
+                    [pd.to_datetime(x) for x in obj]
+                except Exception as e:
+                    raise ValueError("Provided array is not a datetime type") from e
+                return np.array(obj, dtype=type(obj))
+        elif isinstance(obj, pd.DatetimeIndex) and obj.tz is not None:
+            # tz-aware: preserve original timezone
+            return np.array(obj.to_pydatetime(), dtype=object)
+        elif isinstance(obj, pd.DatetimeIndex) and obj.tz is None:
+            # Not tz-aware: convert to normal datetime
             return obj.to_numpy(dtype="datetime64[ns]")
-        except AttributeError as e:
-            raise TypeError("Input must be a pandas DatetimeIndex or an iterable of datetime objects.") from e
+        else:
+            raise TypeError("Input must be a pandas DatetimeIndex or an iterable of datetime objects.")
 
 
 class InputProfile(BaseInputProfile):
@@ -222,7 +230,7 @@ class InputProfile(BaseInputProfile):
             ```
         """
         return cls(
-            datetime_index=cls.to_datetime_array(datetime_index),
+            datetime_index=cls._to_datetime_array(datetime_index),
             load_profile=np.array(load_profile, dtype=float),
             ambient_temperature_profile=np.array(ambient_temperature_profile, dtype=float),
             top_oil_temperature_profile=(
@@ -380,7 +388,7 @@ class ThreeWindingInputProfile(BaseInputProfile):
             ```
         """
         return cls(
-            datetime_index=cls.to_datetime_array(datetime_index),
+            datetime_index=cls._to_datetime_array(datetime_index),
             ambient_temperature_profile=np.array(ambient_temperature_profile, dtype=float),
             load_profile_high_voltage_side=np.array(load_profile_high_voltage_side, dtype=float),
             load_profile_middle_voltage_side=np.array(load_profile_middle_voltage_side, dtype=float),
