@@ -60,16 +60,18 @@ class TransformerComponentSpecifications(BaseModel):
         ```
     """
 
-    nom_load_prim_side: float = Field(..., description="Transformer nominal current primary side [A]")
-    tap_chang_capacity: float | None = Field(None, description="Tap changer nominal current [A]", ge=0)
-    tap_chang_conf: VectorConfig | None = Field(None, description="Tap Changer configuration")
-    tap_chang_side: TransformerSide | None = Field(None, description="Tap changer side")
-    prim_bush_capacity: float | None = Field(None, description="Primary bushing nominal current [A]")
-    prim_bush_conf: BushingConfig | None = Field(None, description="Primary bushing configuration")
-    sec_bush_capacity: float | None = Field(None, description="Secondary bushing nominal current [A]")
-    sec_bush_conf: BushingConfig | None = Field(None, description="Secondary bushing configuration")
-    cur_trans_capacity: float | None = Field(None, description="Current transformer nominal current [A]")
-    cur_trans_conf: VectorConfig | None = Field(None, description="Current transformer configuration")
-    cur_trans_side: TransformerSide | None = Field(None, description="Current transformer side")
+    nom_load_prim_side: float = Field(..., description="Transformer nominal current primary side [A]", deprecated=True)
+    tap_chang_capacity: float | None = Field(None, description="Tap changer nominal current [A]", ge=0, deprecated=True)
+    tap_chang_conf: VectorConfig | None = Field(None, description="Tap Changer configuration", deprecated=True)
+    tap_chang_side: TransformerSide | None = Field(None, description="Tap changer side", deprecated=True)
+    prim_bush_capacity: float | None = Field(None, description="Primary bushing nominal current [A]", deprecated=True)
+    prim_bush_conf: BushingConfig | None = Field(None, description="Primary bushing configuration", deprecated=True)
+    sec_bush_capacity: float | None = Field(None, description="Secondary bushing nominal current [A]", deprecated=True)
+    sec_bush_conf: BushingConfig | None = Field(None, description="Secondary bushing configuration", deprecated=True)
+    cur_trans_capacity: float | None = Field(
+        None, description="Current transformer nominal current [A]", deprecated=True
+    )
+    cur_trans_conf: VectorConfig | None = Field(None, description="Current transformer configuration", deprecated=True)
+    cur_trans_side: TransformerSide | None = Field(None, description="Current transformer side", deprecated=True)
 
     model_config = ConfigDict(populate_by_name=True)
