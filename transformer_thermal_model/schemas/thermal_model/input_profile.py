@@ -27,6 +27,19 @@ class BaseInputProfile(BaseModel):
     ambient_temperature_profile: np.typing.NDArray[np.float64]
     top_oil_temperature_profile: np.typing.NDArray[np.float64] | None = None
 
+    @property
+    def time_step(self) -> np.ndarray:
+        """Get the time step between the data points.
+
+        Returns:
+            np.ndarray: The time step between the data points in minutes.
+        """
+        # Calculate time steps in minutes
+        time_deltas = (
+            np.diff(self.datetime_index, prepend=self.datetime_index[0]).astype("timedelta64[s]").astype(float) / 60
+        )
+        return time_deltas
+
     @model_validator(mode="after")
     def _check_datetime_index_is_sorted(self) -> Self:
         """Check if the datetime index is sorted."""
