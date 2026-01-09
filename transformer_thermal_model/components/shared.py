@@ -25,7 +25,7 @@ class DeprecationEnumMeta(EnumMeta):
         cause recursion during class creation.
 
         Args:
-            name (_type_): _description_
+            name (str): the name of the attribute which will be accessed.
 
         Returns:
             _type_: _description_
