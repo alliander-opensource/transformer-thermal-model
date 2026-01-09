@@ -11,6 +11,7 @@ from transformer_thermal_model.schemas import (
     BaseDefaultTransformerSpecifications,
     BaseTransformerSpecifications,
 )
+from transformer_thermal_model.transformer.cooling_switch_controller import CoolingSwitchController
 
 
 class Transformer(ABC):
@@ -29,19 +30,33 @@ class Transformer(ABC):
     cooling_type: CoolerType
     specs: BaseTransformerSpecifications
 
-    def __init__(
-        self,
-        cooling_type: CoolerType,
-    ):
+    def __init__(self, cooling_type: CoolerType, cooling_controller: CoolingSwitchController | None = None):
         """Initialize the Transformer object.
 
         Args:
-            user_specs (UserTransformerSpecifications): The transformer specifications that you need to
-                provide to build the transformer. Any optional specifications not provided will be taken from the
-                default specifications.
             cooling_type (CoolerType): The cooling type. Can be ONAN, ONAF.
+            cooling_controller (CoolingSwitchController | None): The cooling controller that handles the ONAN/ONAF
+                switching logic.
         """
         self.cooling_type: CoolerType = cooling_type
+        if cooling_type == CoolerType.ONAN and cooling_controller is not None:
+            raise ValueError("ONAF switch only works when the cooling type is ONAF.")
+        self.cooling_controller = cooling_controller
+
+    def set_ONAN_ONAF_first_timestamp(self, init_top_oil_temp: float) -> None:
+        """Delegate initial cooling type logic to CoolingSwitchController."""
+        if self.cooling_controller:
+            self.specs = self.cooling_controller.determine_initial_specifications(
+                initial_top_oil_temperature=init_top_oil_temp
+            )
+
+    def set_cooling_switch_controller_specs(
+        self, top_oil_temp: float, previous_top_oil_temp: float, index: int
+    ) -> BaseTransformerSpecifications | None:
+        """Delegate ONAN/ONAF switch logic to CoolingSwitchController."""
+        if self.cooling_controller:
+            return self.cooling_controller.get_new_specs(top_oil_temp, previous_top_oil_temp, index)
+        return None
 
     @property
     @abstractmethod
@@ -59,5 +74,5 @@ class Transformer(ABC):
         pass
 
     @abstractmethod
-    def _end_temperature_top_oil(self, load: np.ndarray) -> np.ndarray:
+    def _end_temperature_top_oil(self, load: np.ndarray) -> float:
         pass
