@@ -3,7 +3,8 @@
 # SPDX-License-Identifier: MPL-2.0
 
 from .bushing_config import BushingConfig
+from .shared import DeprecationEnumMeta
 from .transformer_side import TransformerSide
 from .vector_config import VectorConfig
 
-__all__ = ["BushingConfig", "TransformerSide", "VectorConfig"]
+__all__ = ["BushingConfig", "TransformerSide", "VectorConfig", "DeprecationEnumMeta"]

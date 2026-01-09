@@ -2,10 +2,16 @@
 #
 # SPDX-License-Identifier: MPL-2.0
 
+import logging
 from enum import StrEnum
 
+from transformer_thermal_model.components.shared import DeprecationEnumMeta
 
-class BushingConfig(StrEnum):
+logging.captureWarnings(True)
+logger = logging.getLogger(__name__)
+
+
+class BushingConfig(StrEnum, metaclass=DeprecationEnumMeta):
     """The bushing configuration of a transformer.
 
     Each bushing configuration has a different capacity calculation method

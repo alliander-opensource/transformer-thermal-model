@@ -4,8 +4,10 @@
 
 from enum import StrEnum
 
+from transformer_thermal_model.components.shared import DeprecationEnumMeta
 
-class VectorConfig(StrEnum):
+
+class VectorConfig(StrEnum, metaclass=DeprecationEnumMeta):
     """Vector configuration of a transformer.
 
     Attributes:
