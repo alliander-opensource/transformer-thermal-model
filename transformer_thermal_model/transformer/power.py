@@ -8,7 +8,7 @@ from enum import StrEnum
 
 import numpy as np
 
-from transformer_thermal_model.components import BushingConfig, TransformerSide, VectorConfig
+from transformer_thermal_model.components import BushingConfig, DeprecationEnumMeta, TransformerSide, VectorConfig
 from transformer_thermal_model.cooler import CoolerType
 from transformer_thermal_model.schemas import (
     DefaultTransformerSpecifications,
@@ -22,7 +22,7 @@ from .base import Transformer
 logger = logging.getLogger(__name__)
 
 
-class PowerTransformerComponents(StrEnum):
+class PowerTransformerComponents(StrEnum, metaclass=DeprecationEnumMeta):
     """Components in a power transformer.
 
     This enumerator class describes the components in a power transformer
@@ -70,23 +70,6 @@ class PowerTransformerComponents(StrEnum):
     PRIMARY_BUSHINGS = "primary_bushings"
     SECONDARY_BUSHINGS = "secondary_bushings"
     CURRENT_TRANSFORMER = "current_transformer"
-
-    def __new__(cls, value: str) -> "PowerTransformerComponents":
-        """Create a new enum member and emit deprecation warnings when accessed.
-
-        Args:
-            value: The string value assigned to the enum member.
-        """
-        # Issue a warning when an enumerator is accessed
-        warnings.warn(
-            "PowerTransformerComponents was deprecated in version v0.4.0 and will be removed in v1.0.0.",
-            category=DeprecationWarning,
-            stacklevel=1,
-        )
-        # Create the enum member using str.__new__ to avoid recursion and set the _value_
-        obj = str.__new__(cls, value)
-        obj._value_ = value
-        return obj
 
 
 class PowerTransformer(Transformer):
@@ -173,7 +156,7 @@ class PowerTransformer(Transformer):
             warnings.warn(
                 "PowerTransformerComponents was deprecated in version v0.4.0 and will be removed in v1.0.0.",
                 category=DeprecationWarning,
-                stacklevel=2,
+                stacklevel=3,
             )
             self.internal_component_specs = internal_component_specs
 
@@ -216,7 +199,7 @@ class PowerTransformer(Transformer):
             warnings.warn(
                 "tap_changer_capacity_ratio was deprecated in version v0.4.0 and will be removed in v1.0.0.",
                 category=DeprecationWarning,
-                stacklevel=2,
+                stacklevel=3,
             )
             if self.internal_component_specs.tap_chang_side == TransformerSide.PRIMARY:
                 nominal_load = self.internal_component_specs.nom_load_prim_side
@@ -248,7 +231,7 @@ class PowerTransformer(Transformer):
             warnings.warn(
                 "primary_bushing_capacity_ratio was deprecated in version v0.4.0 and will be removed in v1.0.0.",
                 category=DeprecationWarning,
-                stacklevel=2,
+                stacklevel=3,
             )
             if self.internal_component_specs.prim_bush_conf == BushingConfig.TRIANGLE_INSIDE:
                 primary_bushing_load = np.sqrt(3) * self.internal_component_specs.prim_bush_capacity
@@ -276,7 +259,7 @@ class PowerTransformer(Transformer):
             warnings.warn(
                 "secondary_bushing_capacity_ratio was deprecated in version v0.4.0 and will be removed in v1.0.0.",
                 category=DeprecationWarning,
-                stacklevel=2,
+                stacklevel=3,
             )
             if self.internal_component_specs.sec_bush_conf == BushingConfig.TRIANGLE_INSIDE:
                 secondary_bushing_load = np.sqrt(3) * self.internal_component_specs.sec_bush_capacity
@@ -306,7 +289,7 @@ class PowerTransformer(Transformer):
             warnings.warn(
                 "int_cur_trans_capacity_ratio was deprecated in version v0.4.0 and will be removed in v1.0.0.",
                 category=DeprecationWarning,
-                stacklevel=2,
+                stacklevel=3,
             )
             if self.internal_component_specs.cur_trans_side == TransformerSide.PRIMARY:
                 nominal_load = self.internal_component_specs.nom_load_prim_side
@@ -336,7 +319,7 @@ class PowerTransformer(Transformer):
         warnings.warn(
             "component_capacities was deprecated in version v0.4.0 and will be removed in v1.0.0.",
             category=DeprecationWarning,
-            stacklevel=2,
+            stacklevel=3,
         )
         component_capacities = {
             PowerTransformerComponents.TAP_CHANGER.value: self.tap_changer_capacity_ratio,
