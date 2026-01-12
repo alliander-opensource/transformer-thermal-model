@@ -19,6 +19,7 @@ from transformer_thermal_model.schemas import (
 
 from .base import Transformer
 
+logging.captureWarnings(True)
 logger = logging.getLogger(__name__)
 
 

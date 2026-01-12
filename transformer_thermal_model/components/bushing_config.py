@@ -2,13 +2,9 @@
 #
 # SPDX-License-Identifier: MPL-2.0
 
-import logging
 from enum import StrEnum
 
-from transformer_thermal_model.components.shared import DeprecationEnumMeta
-
-logging.captureWarnings(True)
-logger = logging.getLogger(__name__)
+from transformer_thermal_model.components.deprecation_enum_meta import DeprecationEnumMeta
 
 
 class BushingConfig(StrEnum, metaclass=DeprecationEnumMeta):

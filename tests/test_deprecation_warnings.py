@@ -13,21 +13,21 @@ from transformer_thermal_model.transformer import PowerTransformer
 
 def test_bushing_config_warns():
     """Test that accessing BushingConfig raises a DeprecationWarning."""
-    with pytest.warns(DeprecationWarning, match="single bushing was deprecated"):
+    with pytest.warns(DeprecationWarning, match="BushingConfig was deprecated"):
         value = BushingConfig.SINGLE_BUSHING
         assert value == "single bushing"
 
 
 def test_transformer_side_warns():
     """Test that accessing TransformerSide raises a DeprecationWarning."""
-    with pytest.warns(DeprecationWarning, match="primary was deprecated"):
+    with pytest.warns(DeprecationWarning, match="TransformerSide was deprecated"):
         value = TransformerSide.PRIMARY
         assert value == "primary"
 
 
 def test_vector_config_warns():
     """Test that accessing VectorConfig raises a DeprecationWarning."""
-    with pytest.warns(DeprecationWarning, match="star was deprecated"):
+    with pytest.warns(DeprecationWarning, match="VectorConfig was deprecated"):
         value = VectorConfig.STAR
         assert value == "star"
 
