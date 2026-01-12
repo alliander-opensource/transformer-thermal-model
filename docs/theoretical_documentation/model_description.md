@@ -22,8 +22,8 @@ highest oil temperature in the transformer, it is one of the two temperatures th
 
 - **Average oil temperature** - temperature of the oil in the middle of the
   tank. It is assumed that there is a linear relationship between the height in
-  the tank and the oil temperature. For this reason, the temperature of the oil in the middle of the tank is equated to the
-  average oil temperature in the tank.
+  the tank and the oil temperature. For this reason, the temperature of the oil in the middle of the tank is equated to
+  the average oil temperature in the tank.
 
 - **Oil temperature inflow windings** - temperature of the oil at the bottom
   of the windings.
