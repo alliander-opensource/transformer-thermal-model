@@ -21,7 +21,6 @@ from transformer_thermal_model.transformer.cooling_switch_controller import Cool
 
 from .base import Transformer
 
-logging.captureWarnings(True)
 logger = logging.getLogger(__name__)
 
 
