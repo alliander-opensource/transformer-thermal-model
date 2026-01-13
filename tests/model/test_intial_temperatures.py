@@ -183,8 +183,8 @@ def test_initial_load_zero(base_input_profile, distribution_transformer_specs):
     )
     results = model.run()
 
-    # With zero initial load, temperature should be close to ambient + no-load loss effect
-    assert results.top_oil_temp_profile.iloc[0] >= base_input_profile.ambient_temperature_profile[0]
+    # With zero initial load, temperature should be equal to ambient at start
+    assert results.top_oil_temp_profile.iloc[0] == base_input_profile.ambient_temperature_profile[0]
 
 
 def test_initial_load_matches_profile_load(base_input_profile, distribution_transformer_specs):
@@ -201,4 +201,4 @@ def test_initial_load_matches_profile_load(base_input_profile, distribution_tran
     # The transient should be minimal
     top_oil_temps = results.top_oil_temp_profile.values
     temp_range = np.max(top_oil_temps) - np.min(top_oil_temps)
-    assert temp_range < 0.01, "Temperature should vary minimally when initial load matches profile"
+    assert temp_range < 0.001, "Temperature should not vary when initial load matches profile"
