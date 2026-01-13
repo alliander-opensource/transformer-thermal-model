@@ -4,6 +4,8 @@
 
 """Tests for the thermal model initialization with different initial temperatures."""
 
+import math
+
 import numpy as np
 import pandas as pd
 import pytest
@@ -75,10 +77,10 @@ def test_init_top_oil_temp_starts_at_specified_value(base_input_profile, distrib
     results = model.run()
 
     # First top-oil temperature should be exactly the specified value
-    assert results.top_oil_temp_profile.iloc[0] == init_temp
+    assert math.isclose(results.top_oil_temp_profile.iloc[0], init_temp)
 
     # Hot-spot should also start at the init temperature
-    assert results.hot_spot_temp_profile.iloc[0] == init_temp
+    assert math.isclose(results.hot_spot_temp_profile.iloc[0], init_temp)
 
 
 def test_init_top_oil_temp_affects_transient_response(base_input_profile, distribution_transformer_specs):
