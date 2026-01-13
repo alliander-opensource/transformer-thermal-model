@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Contributors to the Transformer Thermal Model project
 #
 # SPDX-License-Identifier: MPL-2.0
+import numpy as np
 
 from transformer_thermal_model.schemas.specifications.transformer import (
     BaseTransformerSpecifications,
@@ -28,6 +29,7 @@ class CoolingSwitchController:
 
     Example: Using CoolingSwitchController with temperature-based switching
         ```python
+        >>> import numpy as np
         >>> from transformer_thermal_model.transformer import PowerTransformer
         >>> from transformer_thermal_model.schemas import UserTransformerSpecifications
         >>> from transformer_thermal_model.schemas.thermal_model import (
@@ -77,7 +79,7 @@ class CoolingSwitchController:
 
         >>> # Create a fan status schedule: True = ONAF (fans on), False = ONAN (fans off)
         >>> # This represents 5 time steps with fans on, then off, then on again
-        >>> fan_schedule = [True, True, True, True, True, False, False, False, True, True]
+        >>> fan_schedule = np.array([True, True, True, True, True, False, False, False, True, True])
         >>> # Define ONAN parameters for when fans are off
         >>> onan_params = ONANParameters(
         ...     nom_load_sec_side=1200,
@@ -184,7 +186,7 @@ class CoolingSwitchController:
             return self._handle_temp_threshold_switch(temp_threshold, top_oil_temp, previous_top_oil_temp)
         return None
 
-    def _handle_fan_status_switch(self, fan_on: list[bool], index: int) -> BaseTransformerSpecifications | None:
+    def _handle_fan_status_switch(self, fan_on: np.ndarray, index: int) -> BaseTransformerSpecifications | None:
         """Handle switching based on fan status list."""
         previous_fan_status, current_fan_status = fan_on[index], fan_on[index + 1]
         if previous_fan_status != current_fan_status:

@@ -4,8 +4,10 @@
 
 from enum import StrEnum
 
+from transformer_thermal_model.components.deprecation_enum_meta import DeprecationEnumMeta
 
-class TransformerSide(StrEnum):
+
+class TransformerSide(StrEnum, metaclass=DeprecationEnumMeta):
     """The possible side a component can be connected to in a transformer.
 
     A transformer has two sides, the primary and secondary side. The primary

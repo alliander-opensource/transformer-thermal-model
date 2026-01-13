@@ -4,8 +4,10 @@
 
 from enum import StrEnum
 
+from transformer_thermal_model.components.deprecation_enum_meta import DeprecationEnumMeta
 
-class BushingConfig(StrEnum):
+
+class BushingConfig(StrEnum, metaclass=DeprecationEnumMeta):
     """The bushing configuration of a transformer.
 
     Each bushing configuration has a different capacity calculation method

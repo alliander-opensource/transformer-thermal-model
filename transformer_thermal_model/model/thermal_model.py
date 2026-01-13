@@ -127,13 +127,28 @@ class Model:
             raise ValueError("A DistributionTransformer requires an InputProfile.")
         if (
             self.transformer.cooling_controller
-            and self.transformer.cooling_controller.onaf_switch.fan_on
+            and self.transformer.cooling_controller.onaf_switch.fan_on is not None
             and len(self.transformer.cooling_controller.onaf_switch.fan_on) != len(self.data)
         ):
             raise ValueError(
                 "The length of the fan_on list in the cooling_switch_settings must be equal to the length of the "
                 "temperature profile."
             )
+
+    def _get_time_step(self) -> np.ndarray:
+        """Get the time step between the data points in minutes.
+
+        Returns:
+            np.ndarray: The time step between the data points in minutes.
+
+        """
+        time_deltas = (
+            np.diff(self.data.datetime_index, prepend=self.data.datetime_index[0])
+            .astype("timedelta64[s]")
+            .astype(float)
+            / 60
+        )
+        return time_deltas
 
     def _get_internal_temp(self) -> np.ndarray:
         """Get the internal temperature of the environment where the transformer is located.

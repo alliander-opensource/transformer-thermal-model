@@ -74,6 +74,7 @@ nav:
     - Thermal limits: theoretical_documentation/temperature_limits.md
     - Hot-spot factor calibration: theoretical_documentation/hotspot_calibration.md
     - Potential model improvements: theoretical_documentation/model_improvements.md
+    - ONAN ONAF switch modelling: theoretical_documentation/ONAN_ONAF_modelling.md
 
 plugins:
 - llmstxt:
