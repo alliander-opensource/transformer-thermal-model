@@ -99,7 +99,7 @@ class Model:
                 will start the calculation with this temperature. If not provided, will start the calculation
                 with the first value of the ambient temperature profile.
             initial_load (float | None): Initial load where the temperatures converge to steady state. Optional.
-                Defaults to None. When provided, the model uses and initial top_oil_temp and hot_spot_temp based on
+                Defaults to None. When provided, the model uses an initial top_oil_temp and hot_spot_temp based on
                 this load.
 
         """
