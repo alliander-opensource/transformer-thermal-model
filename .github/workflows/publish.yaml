@@ -2,14 +2,14 @@
 #
 # SPDX-License-Identifier: MPL-2.0
 name: (CI) publish Package
-permissions:
-  contents: read
 on:
     workflow_dispatch:
 
 jobs:
   build-package:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -49,7 +49,6 @@ jobs:
         path: dist/
     - name: Publish distribution 📦 to PyPI
       uses: pypa/gh-action-pypi-publish@76f52bc884231f62b9a034ebfe128415bbaabdfc #v1.12.4
-
   publish-to-github:
     name: Publish to GitHub Releases
     needs:
