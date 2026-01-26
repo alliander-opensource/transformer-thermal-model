@@ -8,6 +8,12 @@ import numpy as np
 import pandas as pd
 
 from transformer_thermal_model.schemas import OutputProfile
+from transformer_thermal_model.schemas.thermal_model.initial_state import (
+    ColdStart,
+    InitialCondition,
+    InitialLoad,
+    InitialTopOilTemp,
+)
 from transformer_thermal_model.schemas.thermal_model.input_profile import (
     BaseInputProfile,
     InputProfile,
@@ -78,30 +84,20 @@ class Model:
     transformer: Transformer
     data: BaseInputProfile
     top_oil_temp_profile: pd.Series
-    init_top_oil_temp: float | None
-    initial_load: float | None
+    initial_condition: InitialCondition
 
     def __init__(
         self,
         temperature_profile: BaseInputProfile,
         transformer: Transformer,
-        init_top_oil_temp: float | None = None,
-        initial_load: float | None = None,
+        initial_condition: InitialCondition | None = None,
     ) -> None:
         """Initialize the thermal model.
 
         Args:
             temperature_profile (BaseInputProfile): The temperature profile for the model.
             transformer (Transformer): The transformer object.
-            init_top_oil_temp (float | None): The initial top-oil temperature. Defaults to None. If this is provided,
-                will start the calculation with this temperature. If not provided, will start the calculation
-                with the first value of the ambient temperature profile.
-                will start the calculation with this temperature. If not provided, will start the calculation
-                with the first value of the ambient temperature profile.
-            initial_load (float | None): Initial load where the temperatures converge to steady state. Optional.
-                Defaults to None. When provided, the model uses an initial top_oil_temp and hot_spot_temp based on
-                this load.
-
+            initial_condition (InitialCondition | None): The initial condition for the model.
         """
         logger.info("Initializing the thermal model.")
         logger.info(f"First timestamp: {temperature_profile.datetime_index[0]}")
@@ -110,8 +106,9 @@ class Model:
         logger.info(f"Max load: {np.max(temperature_profile.load_profile_array)}")
         self.transformer = transformer
         self.data = temperature_profile
-        self.init_top_oil_temp = init_top_oil_temp
-        self.initial_load = initial_load
+
+        # If no initial condition is provided, use ColdStart
+        self.initial_condition = initial_condition or ColdStart()
 
         self.check_config()
 
@@ -185,27 +182,23 @@ class Model:
 
     def get_initial_top_oil_temp(self, first_surrounding_temp: float) -> float:
         """Function that returns the top oil temp for the first timestep."""
-        # If an initial top oil temperature is provided, use that
-        if self.init_top_oil_temp:
-            return self.init_top_oil_temp
-
-        # If an initial load is provided, calculate the initial top oil temperature based on that load
-        if self.initial_load:
-            top_k = self.transformer._end_temperature_top_oil(load=np.array([self.initial_load]))
-            return top_k + first_surrounding_temp
-
-        # The default for now is to return the surrounding temperature
-        return first_surrounding_temp
+        match self.initial_condition:
+            case InitialTopOilTemp(value=temp):
+                return temp
+            case InitialLoad(value=load):
+                top_k = self.transformer._end_temperature_top_oil(load=np.array([load]))
+                return top_k + first_surrounding_temp
+            case ColdStart():
+                return first_surrounding_temp
 
     def get_initial_hot_spot_increase(self) -> float:
         """Function that returns the hot spot temp for the first timestep."""
-        # If an initial load is provided, calculate the initial hot spot temperature based on that load
-        if self.initial_load:
-            static_hot_spot_incr = self._calculate_static_hot_spot_increase(np.array([self.initial_load]))[0]
-            return static_hot_spot_incr
-
-        # The default for now is 0
-        return 0
+        match self.initial_condition:
+            case InitialLoad(value=load):
+                static_hot_spot_incr = self._calculate_static_hot_spot_increase(np.array([load]))[0]
+                return static_hot_spot_incr
+            case _:
+                return 0.0
 
     def _calculate_top_oil_temp_profile(
         self,
