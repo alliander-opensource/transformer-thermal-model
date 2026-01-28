@@ -8,6 +8,12 @@ import numpy as np
 import pandas as pd
 
 from transformer_thermal_model.schemas import OutputProfile
+from transformer_thermal_model.schemas.thermal_model.initial_state import (
+    ColdStart,
+    InitialLoad,
+    InitialState,
+    InitialTopOilTemp,
+)
 from transformer_thermal_model.schemas.thermal_model.input_profile import (
     BaseInputProfile,
     InputProfile,
@@ -66,38 +72,27 @@ class Model:
     Attributes:
         transformer (Transformer): The transformer that the model will use to calculate the temperatures.
         data (BaseInputProfile): The input profile that the model will use to calculate temperatures.
-        init_top_oil_temp (float | None): The initial top-oil temperature. Defaults to None. If this is provided,
-            will start the calculation with this temperature. If not provided, will start the calculation
-            with the first value of the ambient temperature profile.
-            will start the calculation with this temperature. If not provided, will start the calculation
-            with the first value of the ambient temperature profile.
-        hot_spot_temp_profile (pd.Series): The modeled hot-spot temperature profile.
         top_oil_temp_profile (pd.Series): The modeled top-oil temperature profile.
+        initial_condition (InitialState): The initial condition for the model.
     """
 
     transformer: Transformer
     data: BaseInputProfile
-    init_top_oil_temp: float | None
-    hot_spot_temp_profile: pd.Series
     top_oil_temp_profile: pd.Series
+    initial_condition: InitialState
 
     def __init__(
         self,
         temperature_profile: BaseInputProfile,
         transformer: Transformer,
-        init_top_oil_temp: float | None = None,
+        initial_condition: InitialState | None = None,
     ) -> None:
         """Initialize the thermal model.
 
         Args:
             temperature_profile (BaseInputProfile): The temperature profile for the model.
             transformer (Transformer): The transformer object.
-            init_top_oil_temp (float | None): The initial top-oil temperature. Defaults to None. If this is provided,
-                will start the calculation with this temperature. If not provided, will start the calculation
-                with the first value of the ambient temperature profile.
-                will start the calculation with this temperature. If not provided, will start the calculation
-                with the first value of the ambient temperature profile.
-
+            initial_condition (InitialState | None): The initial condition for the model.
         """
         logger.info("Initializing the thermal model.")
         logger.info(f"First timestamp: {temperature_profile.datetime_index[0]}")
@@ -106,7 +101,8 @@ class Model:
         logger.info(f"Max load: {np.max(temperature_profile.load_profile_array)}")
         self.transformer = transformer
         self.data = temperature_profile
-        self.init_top_oil_temp = init_top_oil_temp
+
+        self.initial_condition = initial_condition or ColdStart()
 
         self.check_config()
 
@@ -178,6 +174,31 @@ class Model:
             * (load / self.transformer.specs.nominal_load_array) ** self.transformer.specs.winding_exp_y
         )
 
+    def get_initial_top_oil_temp(self, first_surrounding_temp: float) -> float:
+        """Function that returns the top oil temp for the first timestep."""
+        match self.initial_condition:
+            case InitialTopOilTemp():
+                return self.initial_condition.initial_top_oil_temp
+            case InitialLoad():
+                top_k = self.transformer._end_temperature_top_oil(load=np.array([self.initial_condition.initial_load]))
+
+                return top_k + first_surrounding_temp
+            case ColdStart():
+                return first_surrounding_temp
+            case _:
+                raise TypeError(f"Unsupported type: {type(self.initial_condition)}")
+
+    def get_initial_hot_spot_increase(self) -> float:
+        """Function that returns the hot spot temp for the first timestep."""
+        match self.initial_condition:
+            case InitialLoad():
+                static_hot_spot_incr = self._calculate_static_hot_spot_increase(
+                    np.array([self.initial_condition.initial_load])
+                )[0]
+                return static_hot_spot_incr
+            case _:
+                return 0.0
+
     def _calculate_top_oil_temp_profile(
         self,
         t_internal: np.ndarray,
@@ -195,7 +216,7 @@ class Model:
             np.ndarray: The computed top-oil temperature profile over time.
         """
         top_oil_temp_profile = np.zeros_like(t_internal, dtype=np.float64)
-        top_oil_temp_profile[0] = self.init_top_oil_temp if self.init_top_oil_temp is not None else t_internal[0]
+        top_oil_temp_profile[0] = self.get_initial_top_oil_temp(t_internal[0])
 
         self.transformer.set_ONAN_ONAF_first_timestamp(init_top_oil_temp=top_oil_temp_profile[0])
 
@@ -240,9 +261,16 @@ class Model:
         # For a two winding transformer:
         if load.ndim == 1:
             self.transformer.set_ONAN_ONAF_first_timestamp(init_top_oil_temp=top_oil_temp_profile[0])
-            hot_spot_temp_profile[0] = top_oil_temp_profile[0]
             hot_spot_increase_windings = np.zeros_like(load)
             hot_spot_increase_oil = np.zeros_like(load)
+
+            init_hot_spot_incr = self.get_initial_hot_spot_increase()
+            hot_spot_increase_windings[0] = init_hot_spot_incr * self.transformer.specs.winding_const_k21
+            hot_spot_increase_oil[0] = init_hot_spot_incr * (self.transformer.specs.winding_const_k21 - 1)
+            hot_spot_temp_profile[0] = (
+                top_oil_temp_profile[0] + hot_spot_increase_windings[0] - hot_spot_increase_oil[0]
+            )
+
             for i in range(1, len(load)):
                 static_hot_spot_incr = self._calculate_static_hot_spot_increase(np.array([load[i]]))[0]
                 static_hot_spot_incr_windings = static_hot_spot_incr * self.transformer.specs.winding_const_k21
@@ -337,10 +365,14 @@ class Model:
         load = self.data.load_profile_array
         t_internal = self._get_internal_temp()
 
+        # Check if top oil temperature profile is provided and use it if available
+        # If not, calculate it
         if use_top_oil and self.data.top_oil_temperature_profile is not None:
             top_oil_temp_profile = self.data.top_oil_temperature_profile
         else:
             top_oil_temp_profile = self._calculate_top_oil_temp_profile(t_internal, dt, load)
+
+        # Calculate hot-spot temperature profile
         hot_spot_temp_profile = self._calculate_hot_spot_temp_profile(load, top_oil_temp_profile, dt)
         logger.info("The calculation with the Thermal model is completed.")
         logger.info(f"Max top-oil temperature: {np.max(top_oil_temp_profile)}")

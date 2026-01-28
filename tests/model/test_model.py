@@ -15,6 +15,7 @@ from transformer_thermal_model.schemas import (
     UserTransformerSpecifications,
     WindingSpecifications,
 )
+from transformer_thermal_model.schemas.thermal_model.initial_state import InitialTopOilTemp
 from transformer_thermal_model.toolbox.temp_sim_profile_tools import create_temp_sim_profile_from_df
 from transformer_thermal_model.transformer import PowerTransformer
 from transformer_thermal_model.transformer.distribution import DistributionTransformer
@@ -381,7 +382,11 @@ def test_if_rise_matches_iec(iec_load_profile: InputProfile):
         cooling_type=CoolerType.ONAF,
     )
     iec_load_profile.load_profile = iec_load_profile.load_profile * transformer_specifications.nom_load_sec_side
-    thermal_model = Model(temperature_profile=iec_load_profile, transformer=transformer, init_top_oil_temp=25.6 + 12.7)
+    thermal_model = Model(
+        temperature_profile=iec_load_profile,
+        transformer=transformer,
+        initial_condition=InitialTopOilTemp(initial_top_oil_temp=25.6 + 12.7),
+    )
     results = thermal_model.run()
     hot_spot_temp_profile = results.hot_spot_temp_profile
     top_oil_temp_profile = results.top_oil_temp_profile
