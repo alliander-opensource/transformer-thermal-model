@@ -10,8 +10,8 @@ import pandas as pd
 from transformer_thermal_model.schemas import OutputProfile
 from transformer_thermal_model.schemas.thermal_model.initial_state import (
     ColdStart,
-    InitialCondition,
     InitialLoad,
+    InitialState,
     InitialTopOilTemp,
 )
 from transformer_thermal_model.schemas.thermal_model.input_profile import (
@@ -72,32 +72,27 @@ class Model:
     Attributes:
         transformer (Transformer): The transformer that the model will use to calculate the temperatures.
         data (BaseInputProfile): The input profile that the model will use to calculate temperatures.
-        init_top_oil_temp (float | None): The initial top-oil temperature. Defaults to None. If this is provided,
-            will start the calculation with this temperature. If not provided, will start the calculation
-            with the first value of the ambient temperature profile.
-            will start the calculation with this temperature. If not provided, will start the calculation
-            with the first value of the ambient temperature profile.
         top_oil_temp_profile (pd.Series): The modeled top-oil temperature profile.
-        initial_load (float | None): Initial load where the temperatures converge to steady state.
+        initial_condition (InitialState): The initial condition for the model.
     """
 
     transformer: Transformer
     data: BaseInputProfile
     top_oil_temp_profile: pd.Series
-    initial_condition: InitialCondition
+    initial_condition: InitialState
 
     def __init__(
         self,
         temperature_profile: BaseInputProfile,
         transformer: Transformer,
-        initial_condition: InitialCondition | None = None,
+        initial_condition: InitialState | None = None,
     ) -> None:
         """Initialize the thermal model.
 
         Args:
             temperature_profile (BaseInputProfile): The temperature profile for the model.
             transformer (Transformer): The transformer object.
-            initial_condition (InitialCondition | None): The initial condition for the model.
+            initial_condition (InitialState | None): The initial condition for the model.
         """
         logger.info("Initializing the thermal model.")
         logger.info(f"First timestamp: {temperature_profile.datetime_index[0]}")
@@ -107,7 +102,6 @@ class Model:
         self.transformer = transformer
         self.data = temperature_profile
 
-        # If no initial condition is provided, use ColdStart
         self.initial_condition = initial_condition or ColdStart()
 
         self.check_config()
@@ -183,19 +177,24 @@ class Model:
     def get_initial_top_oil_temp(self, first_surrounding_temp: float) -> float:
         """Function that returns the top oil temp for the first timestep."""
         match self.initial_condition:
-            case InitialTopOilTemp(value=temp):
-                return temp
-            case InitialLoad(value=load):
-                top_k = self.transformer._end_temperature_top_oil(load=np.array([load]))
+            case InitialTopOilTemp():
+                return self.initial_condition.initial_top_oil_temp
+            case InitialLoad():
+                top_k = self.transformer._end_temperature_top_oil(load=np.array([self.initial_condition.initial_load]))
+
                 return top_k + first_surrounding_temp
             case ColdStart():
                 return first_surrounding_temp
+            case _:
+                raise TypeError(f"Unsupported type: {type(self.initial_condition)}")
 
     def get_initial_hot_spot_increase(self) -> float:
         """Function that returns the hot spot temp for the first timestep."""
         match self.initial_condition:
-            case InitialLoad(value=load):
-                static_hot_spot_incr = self._calculate_static_hot_spot_increase(np.array([load]))[0]
+            case InitialLoad():
+                static_hot_spot_incr = self._calculate_static_hot_spot_increase(
+                    np.array([self.initial_condition.initial_load])
+                )[0]
                 return static_hot_spot_incr
             case _:
                 return 0.0

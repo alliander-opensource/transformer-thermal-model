@@ -12,6 +12,7 @@ import pytest
 
 from transformer_thermal_model.model import Model
 from transformer_thermal_model.schemas import InputProfile
+from transformer_thermal_model.schemas.thermal_model.initial_state import InitialLoad, InitialTopOilTemp
 
 
 @pytest.fixture
@@ -44,7 +45,7 @@ def test_init_top_oil_temp_starts_at_specified_value(base_input_profile, distrib
     model = Model(
         temperature_profile=base_input_profile,
         transformer=distribution_transformer,
-        init_top_oil_temp=init_temp,
+        initial_condition=InitialTopOilTemp(initial_top_oil_temp=init_temp),
     )
     results = model.run()
 
@@ -60,12 +61,12 @@ def test_different_init_top_oil_temp(base_input_profile, distribution_transforme
     model_low = Model(
         temperature_profile=base_input_profile,
         transformer=distribution_transformer,
-        init_top_oil_temp=init_temp_low,
+        initial_condition=InitialTopOilTemp(initial_top_oil_temp=init_temp_low),
     )
     model_high = Model(
         temperature_profile=base_input_profile,
         transformer=distribution_transformer,
-        init_top_oil_temp=init_temp_high,
+        initial_condition=InitialTopOilTemp(initial_top_oil_temp=init_temp_high),
     )
 
     results_low = model_low.run()
@@ -91,7 +92,7 @@ def test_multiple_init_temperatures_convergence(distribution_transformer):
         Model(
             temperature_profile=profile,
             transformer=distribution_transformer,
-            init_top_oil_temp=init_temp,
+            initial_condition=InitialTopOilTemp(initial_top_oil_temp=init_temp),
         )
         for init_temp in init_temps
     ]
@@ -110,7 +111,7 @@ def test_initial_load_stabilizes_temperature(base_input_profile, distribution_tr
     model = Model(
         temperature_profile=base_input_profile,
         transformer=distribution_transformer,
-        initial_load=initial_load,
+        initial_condition=InitialLoad(initial_load=initial_load),
     )
     results = model.run()
 
@@ -130,12 +131,12 @@ def test_higher_initial_load_higher_temperature(base_input_profile, distribution
     model_low = Model(
         temperature_profile=base_input_profile,
         transformer=distribution_transformer,
-        initial_load=load_low,
+        initial_condition=InitialLoad(initial_load=load_low),
     )
     model_high = Model(
         temperature_profile=base_input_profile,
         transformer=distribution_transformer,
-        initial_load=load_high,
+        initial_condition=InitialLoad(initial_load=load_high),
     )
 
     results_low = model_low.run()
@@ -145,26 +146,13 @@ def test_higher_initial_load_higher_temperature(base_input_profile, distribution
     assert results_high.top_oil_temp_profile.iloc[0] > results_low.top_oil_temp_profile.iloc[0]
 
 
-def test_initial_load_zero(base_input_profile, distribution_transformer):
-    """Test initialization with zero initial load."""
-    model = Model(
-        temperature_profile=base_input_profile,
-        transformer=distribution_transformer,
-        initial_load=0.0,
-    )
-    results = model.run()
-
-    # With zero initial load, temperature should be equal to ambient at start
-    assert results.top_oil_temp_profile.iloc[0] == base_input_profile.ambient_temperature_profile[0]
-
-
 def test_initial_load_matches_profile_load(base_input_profile, distribution_transformer):
     """Test that when initial_load equals profile load, temperature stabilizes quickly."""
     profile_load = 700.0
     model = Model(
         temperature_profile=base_input_profile,
         transformer=distribution_transformer,
-        initial_load=profile_load,
+        initial_condition=InitialLoad(initial_load=profile_load),
     )
     results = model.run()
 

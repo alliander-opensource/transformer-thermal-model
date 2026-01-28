@@ -2,31 +2,25 @@
 #
 # SPDX-License-Identifier: MPL-2.0
 
-from dataclasses import dataclass
-from typing import Literal
+
+from pydantic import BaseModel
 
 
-@dataclass(frozen=True)
-class ColdStart:
-    """Cold start with no initial conditions - uses ambient temperature."""
-
-    kind: Literal["COLD"] = "COLD"
+class InitialState(BaseModel):
+    """Defines the initial state of the transformer thermal model."""
 
 
-@dataclass(frozen=True)
-class InitialTopOilTemp:
-    """Start with a known top oil temperature."""
-
-    value: float
-    kind: Literal["INIT_TOP_OIL_TEMP"] = "INIT_TOP_OIL_TEMP"
+class ColdStart(InitialState):
+    """Start from cold conditions (ambient temperature)."""
 
 
-@dataclass(frozen=True)
-class InitialLoad:
+class InitialTopOilTemp(InitialState):
+    """Start with a known top-oil temperature."""
+
+    initial_top_oil_temp: float
+
+
+class InitialLoad(InitialState):
     """Start with a known load - calculates initial temperatures from steady state."""
 
-    value: float
-    kind: Literal["INIT_LOAD"] = "INIT_LOAD"
-
-
-InitialCondition = ColdStart | InitialTopOilTemp | InitialLoad
+    initial_load: float

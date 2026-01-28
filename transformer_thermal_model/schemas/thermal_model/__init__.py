@@ -2,7 +2,6 @@
 #
 # SPDX-License-Identifier: MPL-2.0
 
-from .initial_state import InitialCondition
 from .input_profile import InputProfile, ThreeWindingInputProfile
 from .onaf_switch import (
     CoolingSwitchBase,
@@ -24,5 +23,4 @@ __all__ = [
     "ONANParameters",
     "ThreeWindingCoolingSwitchSettings",
     "ThreeWindingONANParameters",
-    "InitialCondition",
 ]
