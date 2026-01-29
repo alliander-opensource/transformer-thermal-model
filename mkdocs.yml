@@ -65,7 +65,7 @@ nav:
     - A power transformer with a dynamic profile: examples/power_transformer_example.ipynb
     - A three winding transformer: examples/three-winding-calculation.ipynb
     - Hot-spot factor calibration: examples/hot-spot_calibration.ipynb
-    - Modelling with an initial state: examples/example_initial_state.ipynb
+    - Modelling with an initial state: examples/initial_temperature.ipynb
     - Switch between ONAN and ONAF state: examples/example_ONAN_ONAF_switch.ipynb
   - Theoretical Documentation:
     - Overview: theoretical_documentation/overview.md
