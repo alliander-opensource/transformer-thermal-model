@@ -21,7 +21,7 @@ C4Container
     Boundary(b0, "Transformer Thermal Model") {
 
         Boundary(b1, "Extra features") {
-            Container(docs, "Docs", "Python module", "Module with markdown files linking to existing code and extra added context around it.")
+            Container(docs, "Docs", "HTML module", "Module with markdown files linking to existing code and extra added context around it.")
             Container(toolbox, "Toolbox", "Python module", "Provides extra utility functions that are not necessary to run the model,<br/> but can be handy for a large group of our users.")
             Container(aging, "Aging", "Python module", "Determine the aging rate profile for a specific type of insulated paper<br/> for a given hot spot profile.")
         }
@@ -52,6 +52,43 @@ C4Container
 ```
 
 ## Component diagrams
+
+### Docs
+
+```mermaid
+C4Component
+    title C3: Docs Components
+
+    Person_Ext(scientist, "Scientist", "Someone that reports on or analyses thermals of transformers.")
+    Boundary(ttm, "Transformer Thermal Model"){
+        Boundary(b0, "Extra features") {
+            Container_Boundary(b01, "other features"){
+                System(other_features, "Other features", "The other extra features, e.g. the Toolbox and Aging.")
+            }
+            Container_Boundary(b02, "Docs"){
+                System(docs, "Docs", "HTML files building the documentation page")
+                System_Ext(mkdocs, "MkDocs", "MkDocs is a fast, simple and downright gorgeous static site generator that's geared towards building project documentation.")
+                Person(developer, "Developer", "Someone that contributes to the TTM.")
+                Rel(developer, mkdocs, "Builds the documentation by running")
+            }
+        }
+
+        Boundary(b1, "Core Container"){
+            System(thermal_modeling, "Thermal Modeling", "Calculate thermals of a transformer.")
+        }
+
+    }
+
+    Rel(scientist, docs, "Understands the inner workings of the TTM via")
+
+    Rel(mkdocs, thermal_modeling, "Retrieves documentation from")
+    Rel(mkdocs, other_features, "Retrieves documentation from")
+    Rel(docs, mkdocs, "Builds the HTML files with")
+
+    UpdateLayoutConfig($c4BoundaryInRow="1", $c4ShapeInRow="3")
+
+
+```
 
 ### Toolbox components
 
