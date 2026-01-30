@@ -19,13 +19,14 @@ C4Container
     Boundary(b0, "Transformer Thermal Model") {
         System(toolbox, "Toolbox", "Provides extra utility functions that are not necessary to run the model,<br/> but can be handy for a large group of our users.")
 
-        Boundary(b4, "Documentation") {
-            System(docs, "Docs", "Module with markdown files linking to existing code and extra added context around it.")
-        }
+        System(docs, "Docs", "Module with markdown files linking to existing code and extra added context around it.")
 
-        Boundary(b2, "Transformer Thermal Model 2"){
-            System(hs_calibration, "Hot-spot calibration", "Calibrates hot spot factor as a replacement<br/> if this value is unknown to the user.")
+        Boundary(b1, "Extra features") {
             System(aging, "Aging", "Determine the aging rate profile for a specific type of insulated paper<br/> for a given hot spot profile.")
+        }
+        
+        Boundary(b2, "Thermal Modeling"){
+            System(hs_calibration, "Hot-spot calibration", "Calibrates hot spot factor as a replacement<br/> if this value is unknown to the user.")
             System(model, "Model", "Calculate transformer temperatures under specified load<br/> and ambient temperature profiles.")
             System(transformer, "Transformer", "Data class (containing logic) with specifications and calculated properties<br/> of a transformer. Can build a PowerTransformer, DistributionTransformer<br/> and ThreeWindingTransformer.")
             System_Ext(numpy, "Numpy", "The fundamental package for scientific computing with Python")
