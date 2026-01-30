@@ -20,7 +20,6 @@ C4Container
 
     Boundary(b0, "Transformer Thermal Model") {
 
-
         Boundary(b1, "Extra features") {
             System(docs, "Docs", "Module with markdown files linking to existing code and extra added context around it.")
             System(toolbox, "Toolbox", "Provides extra utility functions that are not necessary to run the model,<br/> but can be handy for a large group of our users.")
@@ -29,6 +28,9 @@ C4Container
 
         Boundary(b2, "Core system"){
             System(thermal_modeling, "Thermal Modeling")
+        }
+        
+        Boundary(b3, "Imported packages"){
             System_Ext(numpy, "Numpy", "The fundamental package for scientific computing with Python")
         }
     }
@@ -42,9 +44,11 @@ C4Container
     Rel(toolbox, thermal_modeling, "Translates input from the user for")
 
     Rel(thermal_modeling, aging, "Provides possible insulator types for")
+
+    Rel(aging, numpy, "Represents, organizes and structures data with")
     Rel(thermal_modeling, numpy, "Represents, organizes and structures data with")
     
-    UpdateLayoutConfig($c4BoundaryInRow="2", $c4ShapeInRow="1")
+    UpdateLayoutConfig($c4BoundaryInRow="2", $c4ShapeInRow="2")
 ```
 
 ## Component diagrams
