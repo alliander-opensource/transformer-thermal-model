@@ -26,5 +26,11 @@ C4Container
     System_Ext(mkdocs, "mkdocs", "MkDocs is a fast, simple and downright gorgeous static site generator<br/> that's geared towards building project documentation.")
     System_Ext(pandas, "Pandas", "A fast, powerful, flexible and easy to use open source data analysis<br/> and manipulation tool, built on top of the Python programming language.")
     System_Ext(numpy, "Numpy", "The fundamental package for scientific computing with Python")
+
+    Rel(scientist, transformer, "Provides asset specifications to build a")
+    Rel(scientist, toolbox, "Easily transforms pandas input into TTM-valid input with")
+    Rel(scientist, aging, "Estimates the aging of a transformer using.")
+    Rel(scientist, docs, "Understands the workings of TTM via the")
+
 ```
 <!-- markdownlint-enable MD013 -->
