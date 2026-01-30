@@ -67,11 +67,11 @@ C4Component
             System_Ext(pandas, "Pandas", "A fast, powerful, flexible and easy to use open source data analysis<br/> and manipulation tool, built on top of the Python programming language.")
             Rel(toolbox, pandas, "Formats pandas DataFrames to numpy with")
         }
-        System(ttm, "Transformer Thermal Model")
+        System(thermal_model, "Thermal Modeling")
     }
 
     Rel(scientist, toolbox, "Translates their pandas DataFrames to TTM inputs using")
-    Rel(toolbox, ttm, "Reads methods for generating user input from")
+    Rel(toolbox, thermal_model, "Reads methods for generating user input from")
 
     UpdateLayoutConfig($c4BoundaryInRow="2", $c4ShapeInRow="1")
 ```
