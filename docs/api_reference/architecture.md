@@ -21,28 +21,28 @@ C4Container
     Boundary(b0, "Transformer Thermal Model") {
 
         Boundary(b1, "Extra features") {
-            System(docs, "Docs", "Module with markdown files linking to existing code and extra added context around it.")
-            System(toolbox, "Toolbox", "Provides extra utility functions that are not necessary to run the model,<br/> but can be handy for a large group of our users.")
-            System(aging, "Aging", "Determine the aging rate profile for a specific type of insulated paper<br/> for a given hot spot profile.")
+            Container(docs, "Docs", "Python module", "Module with markdown files linking to existing code and extra added context around it.")
+            Container(toolbox, "Toolbox", "Python module", "Provides extra utility functions that are not necessary to run the model,<br/> but can be handy for a large group of our users.")
+            Container(aging, "Aging", "Python module", "Determine the aging rate profile for a specific type of insulated paper<br/> for a given hot spot profile.")
         }
 
-        Boundary(b2, "Core system"){
-            System(thermal_modeling, "Thermal Modeling")
+        Boundary(b2, "Core Container"){
+            System(thermal_modeling, "Thermal Modeling", "Calculate thermals of a transformer.")
         }
-        
+
         Boundary(b3, "Imported packages"){
             System_Ext(numpy, "Numpy", "The fundamental package for scientific computing with Python")
         }
     }
 
     Rel(scientist, toolbox, "Easily transforms pandas input into TTM-valid input with")
-    Rel(scientist, aging, "Estimates the aging of a transformer using.")
+    Rel(scientist, aging, "Estimates the aging of a transformer using")
     Rel(scientist, docs, "Understands the workings of TTM via the")
+    Rel(scientist, thermal_modeling, "Calculates thermal values of a transformer using")
 
     Rel(cyclops, thermal_modeling, "Calculates thermal transformer limits using")
 
-    Rel(toolbox, thermal_modeling, "Translates input from the user for")
-
+    Rel(thermal_modeling, toolbox, "Provides input schemas for")
     Rel(thermal_modeling, aging, "Provides possible insulator types for")
 
     Rel(aging, numpy, "Represents, organizes and structures data with")
@@ -87,9 +87,9 @@ C4Component
 
     Boundary(b0, "Transformer Thermal Model"){
         System_Boundary(s0, "Thermal Modeling"){
-            System(hs_calibration, "Hot-spot calibration", "Calibrates hot spot factor as a replacement<br/> if this value is unknown to the user.")
-            System(model, "Model", "Calculate transformer temperatures under specified load<br/> and ambient temperature profiles.")
-            System(transformer, "Transformer", "Data class (containing logic) with specifications and calculated properties<br/> of a transformer. Can build a PowerTransformer, DistributionTransformer<br/> and ThreeWindingTransformer.")
+            Container(hs_calibration, "Hot-spot calibration", "Python module", "Calibrates hot spot factor as a replacement<br/> if this value is unknown to the user.")
+            Container(model, "Model", "Python module", "Calculate transformer temperatures under specified load<br/> and ambient temperature profiles.")
+            Container(transformer, "Transformer", "Python module", "Data class (containing logic) with specifications and calculated properties<br/> of a transformer. Can build a PowerTransformer, DistributionTransformer<br/> and ThreeWindingTransformer.")
         }
 
         System_Boundary(s1, "Imported packages"){
