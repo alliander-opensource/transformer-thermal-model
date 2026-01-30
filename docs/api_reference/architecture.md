@@ -7,6 +7,8 @@ SPDX-License-Identifier: MPL-2.0
 # The architecture of Transformer Thermal Model
 
 <!-- markdownlint-disable MD013 -->
+## Container diagram
+
 ```mermaid
 C4Container
     title C2: Containers of the Transformer Thermal Model
@@ -24,7 +26,9 @@ C4Container
         Boundary(b1, "Extra features") {
             System(aging, "Aging", "Determine the aging rate profile for a specific type of insulated paper<br/> for a given hot spot profile.")
         }
-        
+
+        System(thermal_modeling, "Thermal Modeling")
+
         Boundary(b2, "Thermal Modeling"){
             System(hs_calibration, "Hot-spot calibration", "Calibrates hot spot factor as a replacement<br/> if this value is unknown to the user.")
             System(model, "Model", "Calculate transformer temperatures under specified load<br/> and ambient temperature profiles.")
@@ -33,20 +37,21 @@ C4Container
         }
     }
 
-    Rel(scientist, transformer, "Provides asset specifications to build a")
     Rel(scientist, toolbox, "Easily transforms pandas input into TTM-valid input with")
     Rel(scientist, aging, "Estimates the aging of a transformer using.")
     Rel(scientist, docs, "Understands the workings of TTM via the")
 
-    Rel(cyclops, model, "Calculates thermal transformer limits using")
+    Rel(cyclops, thermal_modeling, "Calculates thermal transformer limits using")
 
-    Rel(toolbox, model, "Translates input from the user for")
+    Rel(toolbox, thermal_modeling, "Translates input from the user for")
 
-    Rel(transformer, aging, "Provides possible insulator types for")
-    Rel(transformer, numpy, "Represents, organizes and structures data with")
+    Rel(thermal_modeling, aging, "Provides possible insulator types for")
+    Rel(thermal_modeling, numpy, "Represents, organizes and structures data with")
     
     UpdateLayoutConfig($c4BoundaryInRow="4", $c4ShapeInRow="1")
 ```
+
+## Component diagrams
 
 ```mermaid
 C4Component
@@ -68,4 +73,36 @@ C4Component
 
     UpdateLayoutConfig($c4BoundaryInRow="2", $c4ShapeInRow="1")
 ```
+
+```mermaid
+C4Component
+    title C3: Thermal Modeling
+
+    Person_Ext(scientist, "Scientist", "Someone that reports on or analyses thermals of transformers.")
+    System_Ext(cyclops, "Cyclic Optimiser", "Finds a thermal limit of a transformer by repeatedly calculating<br/> the thermals and scaling a load profile.")
+
+    Boundary(b0, "Transformer Thermal Model"){
+        System_Boundary(s0, "Thermal Modeling"){
+            System(hs_calibration, "Hot-spot calibration", "Calibrates hot spot factor as a replacement<br/> if this value is unknown to the user.")
+            System(model, "Model", "Calculate transformer temperatures under specified load<br/> and ambient temperature profiles.")
+            System(transformer, "Transformer", "Data class (containing logic) with specifications and calculated properties<br/> of a transformer. Can build a PowerTransformer, DistributionTransformer<br/> and ThreeWindingTransformer.")
+        }
+
+        System_Boundary(s1, "Imported packages"){
+            System_Ext(numpy, "Numpy", "The fundamental package for scientific computing with Python")
+        }
+    }
+    Rel(scientist, transformer, "Provides asset specifications to build a")
+    Rel(scientist, hs_calibration, "Calibrates hot-spot factor (when unknown) with")
+    Rel(cyclops, model, "Finds thermal limits of Transformer using")
+    Rel(scientist, model, "Finds thermal values of a Transformer using")
+    Rel(model, transformer, "Simulates thermal values of the provided")
+
+    Rel(model, numpy, "Represents data with")
+    Rel(transformer, numpy, "Represents data with")
+    Rel(hs_calibration, numpy, "Represents data with")
+
+    UpdateLayoutConfig($c4BoundaryInRow="3", $c4ShapeInRow="1")
+```
+
 <!-- markdownlint-enable MD013 -->
