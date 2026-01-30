@@ -17,14 +17,10 @@ C4Container
     
 
     Boundary(b0, "Transformer Thermal Model") {
-        Boundary(b1, "Transformer Thermal Model 1"){
-            System(toolbox, "Toolbox", "Provides extra utility functions that are not necessary to run the model,<br/> but can be handy for a large group of our users.")
-            System_Ext(pandas, "Pandas", "A fast, powerful, flexible and easy to use open source data analysis<br/> and manipulation tool, built on top of the Python programming language.")
-        }
+        System(toolbox, "Toolbox", "Provides extra utility functions that are not necessary to run the model,<br/> but can be handy for a large group of our users.")
+
         Boundary(b4, "Documentation") {
             System(docs, "Docs", "Module with markdown files linking to existing code and extra added context around it.")
-            System_Ext(mkdocs, "mkdocs", "MkDocs is a fast, simple and downright gorgeous static site generator<br/> that's geared towards building project documentation.")
-            Rel(docs, mkdocs, "Automatically generates html files from code with")
         }
 
         Boundary(b2, "Transformer Thermal Model 2"){
@@ -43,12 +39,32 @@ C4Container
 
     Rel(cyclops, model, "Calculates thermal transformer limits using")
 
-    Rel(toolbox, pandas, "Translates pandas DataFrames to numpy using")
     Rel(toolbox, model, "Translates input from the user for")
 
     Rel(transformer, aging, "Provides possible insulator types for")
     Rel(transformer, numpy, "Represents, organizes and structures data with")
     
     UpdateLayoutConfig($c4BoundaryInRow="4", $c4ShapeInRow="1")
+```
+
+```mermaid
+C4Component
+    title C3: Toolbox Components
+
+    Person_Ext(scientist, "Scientist", "Someone that reports on or analyses thermals of transformers.")
+    Boundary(b0, "Transformer Thermal Model"){
+
+        System_Boundary(b1, "Toolbox"){
+            System(toolbox, "Toolbox", "Provides extra utility functions that are not necessary to run the model,<br/> but can be handy for a large group of our users.")
+            System_Ext(pandas, "Pandas", "A fast, powerful, flexible and easy to use open source data analysis<br/> and manipulation tool, built on top of the Python programming language.")
+            Rel(toolbox, pandas, "Formats pandas DataFrames to numpy with")
+        }
+        System(ttm, "Transformer Thermal Model")
+    }
+
+    Rel(scientist, toolbox, "Translates their pandas DataFrames to TTM inputs using")
+    Rel(toolbox, ttm, "Reads methods for generating user input from")
+
+    UpdateLayoutConfig($c4BoundaryInRow="2", $c4ShapeInRow="1")
 ```
 <!-- markdownlint-enable MD013 -->
