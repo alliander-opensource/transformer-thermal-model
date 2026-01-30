@@ -14,29 +14,26 @@ C4Container
     Person_Ext(scientist, "Scientist", "Someone that reports on or analyses thermals of transformers.")
     System_Ext(cyclops, "Cyclic Optimiser", "Finds a thermal limit of a transformer by repeatedly calculating<br/> the thermals and scaling a load profile.")
 
+    
+
     Boundary(b0, "Transformer Thermal Model") {
         Boundary(b1, "Transformer Thermal Model 1"){
             System(toolbox, "Toolbox", "Provides extra utility functions that are not necessary to run the model,<br/> but can be handy for a large group of our users.")
+            System_Ext(pandas, "Pandas", "A fast, powerful, flexible and easy to use open source data analysis<br/> and manipulation tool, built on top of the Python programming language.")
         }
         Boundary(b4, "Documentation") {
             System(docs, "Docs", "Module with markdown files linking to existing code and extra added context around it.")
+            System_Ext(mkdocs, "mkdocs", "MkDocs is a fast, simple and downright gorgeous static site generator<br/> that's geared towards building project documentation.")
+            Rel(docs, mkdocs, "Automatically generates html files from code with")
         }
 
         Boundary(b2, "Transformer Thermal Model 2"){
             System(hs_calibration, "Hot-spot calibration", "Calibrates hot spot factor as a replacement<br/> if this value is unknown to the user.")
             System(aging, "Aging", "Determine the aging rate profile for a specific type of insulated paper<br/> for a given hot spot profile.")
-        }
-
-        Boundary(b3, "Transformer Thermal Model 3"){
             System(model, "Model", "Calculate transformer temperatures under specified load<br/> and ambient temperature profiles.")
             System(transformer, "Transformer", "Data class (containing logic) with specifications and calculated properties<br/> of a transformer. Can build a PowerTransformer, DistributionTransformer<br/> and ThreeWindingTransformer.")
+            System_Ext(numpy, "Numpy", "The fundamental package for scientific computing with Python")
         }
-    }
-
-    Boundary(e0, "Imported packages"){
-        System_Ext(mkdocs, "mkdocs", "MkDocs is a fast, simple and downright gorgeous static site generator<br/> that's geared towards building project documentation.")
-        System_Ext(pandas, "Pandas", "A fast, powerful, flexible and easy to use open source data analysis<br/> and manipulation tool, built on top of the Python programming language.")
-        System_Ext(numpy, "Numpy", "The fundamental package for scientific computing with Python")
     }
 
     Rel(scientist, transformer, "Provides asset specifications to build a")
@@ -47,6 +44,11 @@ C4Container
     Rel(cyclops, model, "Calculates thermal transformer limits using")
 
     Rel(toolbox, pandas, "Translates pandas DataFrames to numpy using")
+    Rel(toolbox, model, "Translates input from the user for")
 
+    Rel(transformer, aging, "Provides possible insulator types for")
+    Rel(transformer, numpy, "Represents, organizes and structures data with")
+    
+    UpdateLayoutConfig($c4BoundaryInRow="4", $c4ShapeInRow="1")
 ```
 <!-- markdownlint-enable MD013 -->
