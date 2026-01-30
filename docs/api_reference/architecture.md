@@ -19,20 +19,16 @@ C4Container
     
 
     Boundary(b0, "Transformer Thermal Model") {
-        System(toolbox, "Toolbox", "Provides extra utility functions that are not necessary to run the model,<br/> but can be handy for a large group of our users.")
 
-        System(docs, "Docs", "Module with markdown files linking to existing code and extra added context around it.")
 
         Boundary(b1, "Extra features") {
+            System(docs, "Docs", "Module with markdown files linking to existing code and extra added context around it.")
+            System(toolbox, "Toolbox", "Provides extra utility functions that are not necessary to run the model,<br/> but can be handy for a large group of our users.")
             System(aging, "Aging", "Determine the aging rate profile for a specific type of insulated paper<br/> for a given hot spot profile.")
         }
 
-        System(thermal_modeling, "Thermal Modeling")
-
-        Boundary(b2, "Thermal Modeling"){
-            System(hs_calibration, "Hot-spot calibration", "Calibrates hot spot factor as a replacement<br/> if this value is unknown to the user.")
-            System(model, "Model", "Calculate transformer temperatures under specified load<br/> and ambient temperature profiles.")
-            System(transformer, "Transformer", "Data class (containing logic) with specifications and calculated properties<br/> of a transformer. Can build a PowerTransformer, DistributionTransformer<br/> and ThreeWindingTransformer.")
+        Boundary(b2, "Core system"){
+            System(thermal_modeling, "Thermal Modeling")
             System_Ext(numpy, "Numpy", "The fundamental package for scientific computing with Python")
         }
     }
@@ -48,7 +44,7 @@ C4Container
     Rel(thermal_modeling, aging, "Provides possible insulator types for")
     Rel(thermal_modeling, numpy, "Represents, organizes and structures data with")
     
-    UpdateLayoutConfig($c4BoundaryInRow="4", $c4ShapeInRow="1")
+    UpdateLayoutConfig($c4BoundaryInRow="2", $c4ShapeInRow="1")
 ```
 
 ## Component diagrams
