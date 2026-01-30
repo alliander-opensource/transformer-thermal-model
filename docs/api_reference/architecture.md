@@ -32,5 +32,7 @@ C4Container
     Rel(scientist, aging, "Estimates the aging of a transformer using.")
     Rel(scientist, docs, "Understands the workings of TTM via the")
 
+    Rel(cyclops, model, "Calculates thermal transformer limits using")
+
 ```
 <!-- markdownlint-enable MD013 -->
