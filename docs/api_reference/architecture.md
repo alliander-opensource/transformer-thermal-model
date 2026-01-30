@@ -53,6 +53,8 @@ C4Container
 
 ## Component diagrams
 
+### Toolbox components
+
 ```mermaid
 C4Component
     title C3: Toolbox Components
@@ -73,6 +75,8 @@ C4Component
 
     UpdateLayoutConfig($c4BoundaryInRow="2", $c4ShapeInRow="1")
 ```
+
+### Thermal Modeling
 
 ```mermaid
 C4Component
