@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: Contributors to the Transformer Thermal Model project
+
+SPDX-License-Identifier: MPL-2.0
+-->
 ### _We believe in making optimal use of our grid, so that electricity can remain as affordable, reliable, and accessible as possible._
 
 
