@@ -48,7 +48,7 @@ transformer = PowerTransformer(user_specs=tr_specs, cooling_type=CoolerType.ONAF
 datetime_index = pd.date_range("2020-01-01", periods=168, freq="15min")
 profile_input = InputProfile.create(
     datetime_index=datetime_index,
-    load_profile=pd.Series([100] * 168, index=datetime_index),
+    load_profile=pd.Series([1250] * 168, index=datetime_index),
     ambient_temperature_profile=pd.Series([21] * 168, index=datetime_index),
 )
 
