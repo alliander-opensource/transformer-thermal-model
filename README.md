@@ -17,8 +17,9 @@ SPDX-License-Identifier: MPL-2.0
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=alliander-opensource_transformer-thermal-model&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=alliander-opensource_transformer-thermal-model)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=alliander-opensource_transformer-thermal-model&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=alliander-opensource_transformer-thermal-model)
 
-A Python library for modelling transformer top-oil and hot-spot temperatures based on IEC 60076-7 (Loading Guide).
-Predicts temperature profiles from load and ambient temperature profile, and transformer specifications.
+`transformer-thermal-model` is a library for modelling the transformer top-oil and
+hot-spot temperature based on the transformer specifications, a load profile and an ambient temperature profile.
+The model is an implementation according to the standard IEC 60076-7, also known as de Loading Guide.
 
 ## Quick Start
 
@@ -61,11 +62,10 @@ For more examples, see the [documentation](https://alliander-opensource.github.i
 ## Features
 
 - **Temperature modeling**: Calculate top-oil and hot-spot temperatures according to IEC 60076-7
-- **Multiple transformer types**: Power, distribution, and three-winding transformers
+- **Multiple transformer types**: Power, distribution, and three-winding transformers are supported
+- **ONAN/ONAF modelling**: Model with different cooling types
 - **Hot-spot calibration**: Automatic calibration of hot-spot factors
-- **Component analysis**: Calculate load capacities of transformer components
-- **Aging calculations**: Analyze transformer aging and life expectancy
-- **Flexible profiles**: Support for time-varying load and ambient temperature inputs
+- **Aging calculations**: Analyze transformer aging
 
 ## Documentation
 
