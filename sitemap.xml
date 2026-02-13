@@ -2,102 +2,114 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://github.com/alliander-opensource/transformer-thermal-model/</loc>
-         <lastmod>2025-12-02</lastmod>
+         <lastmod>2026-02-13</lastmod>
     </url>
     <url>
          <loc>https://github.com/alliander-opensource/transformer-thermal-model/api_reference/aging/</loc>
-         <lastmod>2025-12-02</lastmod>
+         <lastmod>2026-02-13</lastmod>
     </url>
     <url>
          <loc>https://github.com/alliander-opensource/transformer-thermal-model/api_reference/architecture/</loc>
-         <lastmod>2025-12-02</lastmod>
+         <lastmod>2026-02-13</lastmod>
     </url>
     <url>
          <loc>https://github.com/alliander-opensource/transformer-thermal-model/api_reference/components/</loc>
-         <lastmod>2025-12-02</lastmod>
+         <lastmod>2026-02-13</lastmod>
     </url>
     <url>
          <loc>https://github.com/alliander-opensource/transformer-thermal-model/api_reference/cooler/</loc>
-         <lastmod>2025-12-02</lastmod>
+         <lastmod>2026-02-13</lastmod>
+    </url>
+    <url>
+         <loc>https://github.com/alliander-opensource/transformer-thermal-model/api_reference/cooling_switch_controller/</loc>
+         <lastmod>2026-02-13</lastmod>
     </url>
     <url>
          <loc>https://github.com/alliander-opensource/transformer-thermal-model/api_reference/hot-spot_calibration/</loc>
-         <lastmod>2025-12-02</lastmod>
+         <lastmod>2026-02-13</lastmod>
     </url>
     <url>
          <loc>https://github.com/alliander-opensource/transformer-thermal-model/api_reference/model/</loc>
-         <lastmod>2025-12-02</lastmod>
+         <lastmod>2026-02-13</lastmod>
     </url>
     <url>
          <loc>https://github.com/alliander-opensource/transformer-thermal-model/api_reference/model_input_output/</loc>
-         <lastmod>2025-12-02</lastmod>
+         <lastmod>2026-02-13</lastmod>
     </url>
     <url>
          <loc>https://github.com/alliander-opensource/transformer-thermal-model/api_reference/specifications/</loc>
-         <lastmod>2025-12-02</lastmod>
+         <lastmod>2026-02-13</lastmod>
     </url>
     <url>
          <loc>https://github.com/alliander-opensource/transformer-thermal-model/api_reference/toolbox/</loc>
-         <lastmod>2025-12-02</lastmod>
+         <lastmod>2026-02-13</lastmod>
     </url>
     <url>
          <loc>https://github.com/alliander-opensource/transformer-thermal-model/api_reference/transformer/</loc>
-         <lastmod>2025-12-02</lastmod>
+         <lastmod>2026-02-13</lastmod>
     </url>
     <url>
-         <loc>https://github.com/alliander-opensource/transformer-thermal-model/examples/example_initial_state/</loc>
-         <lastmod>2025-12-02</lastmod>
+         <loc>https://github.com/alliander-opensource/transformer-thermal-model/examples/example_ONAN_ONAF_switch/</loc>
+         <lastmod>2026-02-13</lastmod>
     </url>
     <url>
          <loc>https://github.com/alliander-opensource/transformer-thermal-model/examples/hot-spot_calibration/</loc>
-         <lastmod>2025-12-02</lastmod>
+         <lastmod>2026-02-13</lastmod>
+    </url>
+    <url>
+         <loc>https://github.com/alliander-opensource/transformer-thermal-model/examples/initial_temperature/</loc>
+         <lastmod>2026-02-13</lastmod>
     </url>
     <url>
          <loc>https://github.com/alliander-opensource/transformer-thermal-model/examples/power_transformer_example/</loc>
-         <lastmod>2025-12-02</lastmod>
+         <lastmod>2026-02-13</lastmod>
     </url>
     <url>
          <loc>https://github.com/alliander-opensource/transformer-thermal-model/examples/quickstart/</loc>
-         <lastmod>2025-12-02</lastmod>
+         <lastmod>2026-02-13</lastmod>
     </url>
     <url>
          <loc>https://github.com/alliander-opensource/transformer-thermal-model/examples/simple_thermal_profile_example_distribution/</loc>
-         <lastmod>2025-12-02</lastmod>
+         <lastmod>2026-02-13</lastmod>
     </url>
     <url>
          <loc>https://github.com/alliander-opensource/transformer-thermal-model/examples/three-winding-calculation/</loc>
-         <lastmod>2025-12-02</lastmod>
+         <lastmod>2026-02-13</lastmod>
     </url>
     <url>
          <loc>https://github.com/alliander-opensource/transformer-thermal-model/get_started/about/</loc>
-         <lastmod>2025-12-02</lastmod>
+         <lastmod>2026-02-13</lastmod>
     </url>
     <url>
          <loc>https://github.com/alliander-opensource/transformer-thermal-model/get_started/model_input/</loc>
-         <lastmod>2025-12-02</lastmod>
+         <lastmod>2026-02-13</lastmod>
+    </url>
+    <url>
+         <loc>https://github.com/alliander-opensource/transformer-thermal-model/theoretical_documentation/ONAN_ONAF_modelling/</loc>
+         <lastmod>2026-02-13</lastmod>
     </url>
     <url>
          <loc>https://github.com/alliander-opensource/transformer-thermal-model/theoretical_documentation/hotspot_calibration/</loc>
-         <lastmod>2025-12-02</lastmod>
+         <lastmod>2026-02-13</lastmod>
     </url>
     <url>
          <loc>https://github.com/alliander-opensource/transformer-thermal-model/theoretical_documentation/model_description/</loc>
-         <lastmod>2025-12-02</lastmod>
+         <lastmod>2026-02-13</lastmod>
     </url>
     <url>
          <loc>https://github.com/alliander-opensource/transformer-thermal-model/theoretical_documentation/model_improvements/</loc>
-         <lastmod>2025-12-02</lastmod>
+         <lastmod>2026-02-13</lastmod>
     </url>
     <url>
          <loc>https://github.com/alliander-opensource/transformer-thermal-model/theoretical_documentation/overview/</loc>
-         <lastmod>2025-12-02</lastmod>
+         <lastmod>2026-02-13</lastmod>
     </url>
     <url>
          <loc>https://github.com/alliander-opensource/transformer-thermal-model/theoretical_documentation/temperature_limits/</loc>
-         <lastmod>2025-12-02</lastmod>
+         <lastmod>2026-02-13</lastmod>
     </url>
     <url>
          <loc>https://github.com/alliander-opensource/transformer-thermal-model/theoretical_documentation/transformer_definition/</loc>
-         <lastmod>2025-12-02</lastmod>
+         <lastmod>2026-02-13</lastmod>
     </url>
 </urlset>

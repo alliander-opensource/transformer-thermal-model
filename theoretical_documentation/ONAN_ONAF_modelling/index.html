@@ -12,13 +12,11 @@
         <meta name="author" content="Contributors to the Transformer Thermal Model project">
       
       
-        <link rel="canonical" href="https://github.com/alliander-opensource/transformer-thermal-model/get_started/model_input/">
+        <link rel="canonical" href="https://github.com/alliander-opensource/transformer-thermal-model/theoretical_documentation/ONAN_ONAF_modelling/">
       
       
-        <link rel="prev" href="../about/">
+        <link rel="prev" href="../model_improvements/">
       
-      
-        <link rel="next" href="../../api_reference/architecture/">
       
       
       <link rel="icon" href="../../img/favicon.ico">
@@ -26,7 +24,7 @@
     
     
       
-        <title>Model input - Transformer Thermal Model</title>
+        <title>ONAN ONAF switch modelling - Transformer Thermal Model</title>
       
     
     
@@ -74,7 +72,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#model-input" class="md-skip">
+        <a href="#overview" class="md-skip">
           Skip to content
         </a>
       
@@ -109,7 +107,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Model input
+              ONAN ONAF switch modelling
             
           </span>
         </div>
@@ -223,20 +221,18 @@
       
   
   
-    
   
   
-  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
         
           
           <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
@@ -252,7 +248,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             Get Started
@@ -266,7 +262,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../about/" class="md-nav__link">
+      <a href="../../get_started/about/" class="md-nav__link">
         
   
   
@@ -286,32 +282,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Model input
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../get_started/model_input/" class="md-nav__link">
         
   
   
@@ -322,122 +296,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#relevant-transformer-specifications" class="md-nav__link">
-    <span class="md-ellipsis">
-      Relevant transformer specifications
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Relevant transformer specifications">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#nominal-secondary-current" class="md-nav__link">
-    <span class="md-ellipsis">
-      Nominal secondary current
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#no-load-loss" class="md-nav__link">
-    <span class="md-ellipsis">
-      No-load loss
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#short-circuit-loss" class="md-nav__link">
-    <span class="md-ellipsis">
-      Short-circuit loss
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#top-oil-temperature-rise" class="md-nav__link">
-    <span class="md-ellipsis">
-      Top-oil temperature rise
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#winding-oil-gradient" class="md-nav__link">
-    <span class="md-ellipsis">
-      Winding-oil gradient
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#hot-spot-factor" class="md-nav__link">
-    <span class="md-ellipsis">
-      Hot-spot factor
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#cooling-type" class="md-nav__link">
-    <span class="md-ellipsis">
-      Cooling type
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ambient-temperature-surcharge" class="md-nav__link">
-    <span class="md-ellipsis">
-      Ambient temperature surcharge
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#relevant-constants-for-winding-and-oil" class="md-nav__link">
-    <span class="md-ellipsis">
-      Relevant constants for winding and oil
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -958,18 +816,20 @@
       
   
   
+    
   
   
+  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
           <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
@@ -985,7 +845,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             Theoretical Documentation
@@ -999,7 +859,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../theoretical_documentation/overview/" class="md-nav__link">
+      <a href="../overview/" class="md-nav__link">
         
   
   
@@ -1022,7 +882,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../theoretical_documentation/transformer_definition/" class="md-nav__link">
+      <a href="../transformer_definition/" class="md-nav__link">
         
   
   
@@ -1045,7 +905,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../theoretical_documentation/model_description/" class="md-nav__link">
+      <a href="../model_description/" class="md-nav__link">
         
   
   
@@ -1068,7 +928,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../theoretical_documentation/temperature_limits/" class="md-nav__link">
+      <a href="../temperature_limits/" class="md-nav__link">
         
   
   
@@ -1091,7 +951,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../theoretical_documentation/hotspot_calibration/" class="md-nav__link">
+      <a href="../hotspot_calibration/" class="md-nav__link">
         
   
   
@@ -1114,7 +974,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../theoretical_documentation/model_improvements/" class="md-nav__link">
+      <a href="../model_improvements/" class="md-nav__link">
         
   
   
@@ -1134,10 +994,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../theoretical_documentation/ONAN_ONAF_modelling/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    ONAN ONAF switch modelling
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1148,6 +1030,44 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#cooling-mode-switch-feature" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cooling Mode Switch Feature
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validation-and-limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Validation and limitations
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1187,98 +1107,20 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#relevant-transformer-specifications" class="md-nav__link">
+  <a href="#cooling-mode-switch-feature" class="md-nav__link">
     <span class="md-ellipsis">
-      Relevant transformer specifications
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Relevant transformer specifications">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#nominal-secondary-current" class="md-nav__link">
-    <span class="md-ellipsis">
-      Nominal secondary current
+      Cooling Mode Switch Feature
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#no-load-loss" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#validation-and-limitations" class="md-nav__link">
     <span class="md-ellipsis">
-      No-load loss
+      Validation and limitations
     </span>
   </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#short-circuit-loss" class="md-nav__link">
-    <span class="md-ellipsis">
-      Short-circuit loss
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#top-oil-temperature-rise" class="md-nav__link">
-    <span class="md-ellipsis">
-      Top-oil temperature rise
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#winding-oil-gradient" class="md-nav__link">
-    <span class="md-ellipsis">
-      Winding-oil gradient
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#hot-spot-factor" class="md-nav__link">
-    <span class="md-ellipsis">
-      Hot-spot factor
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#cooling-type" class="md-nav__link">
-    <span class="md-ellipsis">
-      Cooling type
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ambient-temperature-surcharge" class="md-nav__link">
-    <span class="md-ellipsis">
-      Ambient temperature surcharge
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#relevant-constants-for-winding-and-oil" class="md-nav__link">
-    <span class="md-ellipsis">
-      Relevant constants for winding and oil
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1303,183 +1145,42 @@ SPDX-FileCopyrightText: Contributors to the Transformer Thermal Model project
 
 SPDX-License-Identifier: MPL-2.0
 -->
-
-<h1 id="model-input">Model input</h1>
-<p>The thermal model requires four inputs:</p>
-<ol>
-<li>Relevant transformer specifications</li>
-<li>Load profile</li>
-<li>Ambient temperature profile</li>
-<li>Initial value hot-spot and top-oil temperature</li>
-</ol>
-<h2 id="relevant-transformer-specifications">Relevant transformer specifications</h2>
-<p>Below are all transformer-specific properties that influence the thermal behavior of the transformer:</p>
-<h3 id="nominal-secondary-current">Nominal secondary current</h3>
+<h1 id="overview">Overview</h1>
+<p>Power transformers commonly operate in different cooling configurations depending on their thermal loading. Two widely
+used modes are:</p>
 <ul>
 <li>
-<p><strong>Unit:</strong> Ampère.</p>
+<p>ONAN (Oil Natural Air Natural):
+Cooling is provided by natural convection of oil and air</p>
 </li>
 <li>
-<p><strong>Description:</strong> The nominal current on the secondary side of the transformer. When the transformer carries this
-current on the secondary side, we refer to it as 100% loading of the transformer.</p>
-</li>
-<li>
-<p><strong>Source:</strong> Nameplate on the transformer or Factory Acceptance Test (FAT) report.</p>
-</li>
-<li>
-<p><strong>Fallback/guarantee value:</strong> n/a (always known)</p>
+<p>ONAF (Oil Natural Air Forced):
+Cooling fans are activated to increase the heat transfer from the radiator surfaces, allowing higher loading before
+reaching thermal limits.</p>
 </li>
 </ul>
-<h3 id="no-load-loss">No-load loss</h3>
-<ul>
-<li><strong>Unit:</strong> Watt.</li>
-<li><strong>Description:</strong> The no-load loss refers to the losses within a transformer that are always present when the
-transformer is energized, even when there is no load connected to the transformer. These losses occur in the core of the
-transformer, which is magnetized by the alternating current. For this reason, they are also called <em><strong>iron losses</strong></em> or
-<em><strong>core losses</strong></em>. These losses mostly translate into heat, making this parameter an important thermal property.</li>
-<li><strong>Source:</strong>  Factory Acceptance Test (FAT) report: during these tests, a no-load test is performed to determine these
-losses. This test is conducted individually for each transformer.</li>
-<li><strong>Fallback/guarantee value:</strong> This value is usually known.</li>
-</ul>
-<h3 id="short-circuit-loss">Short-circuit loss</h3>
-<ul>
-<li><strong>Unit:</strong> Watt.</li>
-<li><strong>Description:</strong> The short-circuit loss is the counterpart of the no-load loss. This type of loss is load-dependent
-and represents the losses in the windings due to resistance. For this reason, they are also called <em><strong>copper losses</strong></em>.
-These losses are quadratically dependent on the current.</li>
-<li><strong>Source:</strong> Factory Acceptance Test (FAT) report: during these tests, a short-circuit test is performed to determine
-the short-circuit losses at a nominal short-circuit current. This test is conducted individually for each transformer.</li>
-<li><strong>Fallback/guarantee value:</strong> This value is usually known.</li>
-</ul>
-<h3 id="top-oil-temperature-rise">Top-oil temperature rise</h3>
-<ul>
-<li><strong>Unit:</strong> Kelvin.</li>
-<li><strong>Description:</strong> The top-oil temperature is the temperature at the top of the transformer. During a heating test of
-the transformer, this temperature is measured under nominal and constant load. The top-oil temperature rise indicates
-how much the temperature of the top-oil rises above the ambient temperature when it stabilizes under these nominal
-conditions.</li>
-<li>
-<p><strong>Source:</strong> Factory Acceptance Test (FAT) report: during these tests, a temperature-rise test is performed on the
-transformer. Often, this test is only performed for one transformer per series. If the information is not available for
-a specific transformer, a temperature-rise test of a comparable transformer can be used.</p>
-</li>
-<li>
-<p><strong>Fallback/guarantee value:</strong> If no temperature-rise test is available for any transformer in the series, the
-guaranteed value of the top-oil temperature rise can be used. For all modern transformers, this is 60 Kelvin. For very
-old transformers, this can sometimes fall back to 55 or 50 Kelvin. These guaranteed values can always by found on the
-type plate.</p>
-</li>
-</ul>
-<h3 id="winding-oil-gradient">Winding-oil gradient</h3>
-<ul>
-<li><strong>Unit:</strong> Kelvin.</li>
-<li><strong>Description:</strong> To determine the temperature drop between the winding and the oil, the winding-oil gradient is an
-important thermal property of a transformer. This can also be determined during a temperature-rise test by taking the
-difference between the average oil temperature rise and the average winding temperature rise.</li>
-<li><strong>Source:</strong> Factory Acceptance Test (FAT) report: during these tests, a temperature-rise test is performed on the
-transformer. Often, this test is only performed for one transformer per series. If the information is not available for
-a specific transformer, a comparable transformer can be used.</li>
-<li><strong>Fallback/guarantee value:</strong> The average oil temperature rise is not always known from a heating test. In that case,
-the average oil temperature rise can be estimated at 80% of the top-oil temperature rise. If the average winding
-temperature rise is not known, the guarantee value can be used. For all modern transformers, this is 65 Kelvin. For very
-old transformers, this can sometimes fall back to 60 or 55 Kelvin. Assuming a 60 Kelvin top-oil temperature rise and a
-65 Kelvin average winding temperature rise, a gradient of 17 Kelvin can be assumed
-(gradient = (average winding temperature) - 0.8*(top-oil temperature)).</li>
-</ul>
-<h3 id="hot-spot-factor">Hot-spot factor</h3>
-<ul>
-<li><strong>Unit:</strong> unitless.</li>
-<li>
-<p><strong>Description:</strong> The hot-spot factor, together with the gradient, indicates the difference between the hot-spot
-temperature and the top-oil temperature.</p>
-</li>
-<li>
-<p><strong>Source:</strong> Factory Acceptance Test (FAT) report: during these tests, a temperature-rise test is performed on the
-transformer. Often, this test is only performed for one transformer per series. If the information is not available for
-a specific transformer, a comparable transformer can be used.</p>
-</li>
-<li>
-<p><strong>Fallback/guarantee value:</strong> The hot-spot factor is often not known from the temperature-rise test. In that case, the
-worst-case hot-spot factor of 1.3 can be used. It is generally expected that the hot-spot factor ranges between 1.1 and
-1.3. Whether these are indeed the most extreme limits is not certain. It should be noted that for older transformers,
-the hot-spot factor can be much higher. This is due to the use of solid wire, where eddy current losses in the upper
-regions of the windings are higher than with modern CTC wire (= continuously transposed conductor).</p>
-</li>
-<li>
-<p><strong>Hot-spot factor calibration</strong>: The hot-spot factor can be calibrated using the model. For more information, see
-<a href="../../theoretical_documentation/hotspot_calibration/">Hot-spot factor calibration</a>.</p>
-</li>
-</ul>
-<h3 id="cooling-type">Cooling type</h3>
-<ul>
-<li><strong>Unit:</strong> n/a</li>
-<li>
-<p><strong>Description:</strong> The transformer can generally be cooled in two ways:</p>
-</li>
-<li>
-<p><strong>ONAN</strong>: <em>Oil Natural, Air Natural</em>. In this type of transformer, both the flow of the oil and the flow of the
-  air along the radiators are natural. The oil is heated, rises, and is pushed into the radiators without actively
-  forcing this flow to appear. The oil then cools in the radiators, sinks down, and is pushed into the oil tank. The air
-  between the radiators is heated and rises. This creates a natural airflow along the radiators.</p>
-</li>
-<li>
-<p><strong>ONAF</strong>: <em>Oil Natural, Air Forced.</em> The difference with ONAN is that fans are placed under the radiators. These
-  force an active airflow between the radiators. This allows the oil to more easily transfer its heat to the
-  environment.</p>
-</li>
-<li>
-<p><strong>Source:</strong> Nameplate on the transformer.</p>
-</li>
-<li>
-<p><strong>Fallback/guarantee value:</strong> n/a</p>
-</li>
-</ul>
-<h3 id="ambient-temperature-surcharge">Ambient temperature surcharge</h3>
-<ul>
-<li><strong>Unit:</strong> Kelvin.</li>
-<li><strong>Description:</strong> This parameter is used differently for distribution and power transformers:</li>
-<li><strong>Power transformers</strong>: For this type of transformer it is expected to be placed outside. In that case, this
-    parameter should be set to 0 and does nothing. In some cases, however, power transformers are placed inside. In that
-    situation, it is more difficult for the heat to escape the surroundings of the transformer. Therefore, a 10 Kelvin
-    temperature surcharge can be filled in here, which will be added to the ambient temperature to compensate for this
-    phenomenon. Other values can of course also be chosen.</li>
-<li><strong>Distribution transformers</strong>: Distribution transformers are (in the Netherlands) always placed inside. Still, a
-    distinction can be made between compact and normal stations. As the name suggests, compact stations have a lot less
-    free space, which means the surroundings heat up a lot quicker. To take this phenomenon into account a temperature
-    surcharge can be added to the rated top-oil temperature rise, which is also a transformer specification.</li>
-<li><strong>Source:</strong>: n/a</li>
-<li><strong>Fallback/guarantee value:</strong> n/a</li>
-</ul>
-<h3 id="relevant-constants-for-winding-and-oil">Relevant constants for winding and oil</h3>
-<p>The transformer model uses several constants that characterize the thermal behavior of the windings and the oil in the
-transformer. Values for these constants can be experimentally determined. The loading guide also recommends some
-conservative values for these constants (IEC 60076-7, Table 4):</p>
+<p>Switching between these modes is typically based on temperature thresholds.</p>
+<h2 id="cooling-mode-switch-feature">Cooling Mode Switch Feature</h2>
+<p>Within the transformer model, a switch between ONAN and ONAF situation can be simulated based on either:</p>
 <ul>
 <li>
-<p><em><strong>Oil exponent x:</strong></em> Determines how the top-oil temperature depends on the load level and the losses of the
-transformer.</p>
+<p>deactivation/activation temperature</p>
 </li>
 <li>
-<p><em><strong>Winding exponent y</strong></em>: Determines how the gradient depends on the load level of the transformer.</p>
-</li>
-<li>
-<p><em><strong>Oil constant <span class="arithmatex">\(k_{11}\)</span></strong></em>: Empirical model parameter.</p>
-</li>
-<li>
-<p><em><strong>Winding constant <span class="arithmatex">\(k_{21}\)</span></strong></em>: Empirical model parameter.</p>
-</li>
-<li>
-<p><em><strong>Winding constant <span class="arithmatex">\(k_{22}\)</span></strong></em>: Empirical model parameter.</p>
-</li>
-<li>
-<p><em><strong>Oil time constant <span class="arithmatex">\(τ_o\)</span></strong></em>:  the tau time in minutes for the oil. This number governs the rate at which the oil
-reaches its final temperature.</p>
-</li>
-<li>
-<p><em><strong>Winding time constant <span class="arithmatex">\(τ_w\)</span></strong></em>: the tau time in minutes for the winding. This number governs the rate at with which
-the windings reach their final temperature.</p>
+<p>fan-operation schedule, allowing the user to force ONAF operation independently of temperature.</p>
 </li>
 </ul>
+<p>When the switch is triggered, the model updates the cooling parameters to reflect the increased heat-transfer capability
+in ONAF. This results in a lower thermal resistance and a faster removal of heat compared to the ONAN state.</p>
+<h2 id="validation-and-limitations">Validation and limitations</h2>
+<p>The feature was validated using one measurement dataset of a power transformer, with the fan (de)activation temperatures
+estimated from the data. From this validation, we concluded that the switch works well on a high level, keeping the
+top-oil temperature mostly within the (de)activation temperatures. Some modelled temperature peaks still occurred, but
+the measured temperature never exceeded the modelled temperature. On a timestep level, some “ping-pong” behaviour
+showed up in the modelled temperatures, which does not appear in the measurements. See the plot below.</p>
+<p><img alt="alt text" src="../graph_onan_onaf.png" /></p>
+<p>So based on our validation, the switch works well to model temperature on a high level, but timestep-level results
+should be used with some caution. Also, the switch has not been validated with an inputted fan schedule.</p>
 
 
 
