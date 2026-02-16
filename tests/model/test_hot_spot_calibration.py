@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Contributors to the Transformer Thermal Model project
 #
 # SPDX-License-Identifier: MPL-2.0
-
+import numpy as np
 import pytest
 
 from transformer_thermal_model.cooler import CoolerType
@@ -154,8 +154,10 @@ def test_hot_spot_factor_calibration_onan(transformer_onan_uncalibrated: PowerTr
         hot_spot_factor_max=1.3,
     )
 
-    assert transformer_calibrated.specs.hot_spot_fac == pytest.approx(1.3)  # type: ignore
-    assert transformer_calibrated.specs.amb_temp_surcharge == transformer_onan_uncalibrated.specs.amb_temp_surcharge
+    assert np.isclose(transformer_calibrated.specs.hot_spot_fac, 1.3)
+    assert np.isclose(
+        transformer_calibrated.specs.amb_temp_surcharge, transformer_onan_uncalibrated.specs.amb_temp_surcharge
+    )
 
 
 def test_hotspot_fac_calibration_onaf(transformer_onaf_uncalibrated: PowerTransformer):
@@ -168,8 +170,10 @@ def test_hotspot_fac_calibration_onaf(transformer_onaf_uncalibrated: PowerTransf
         hot_spot_factor_max=1.3,
     )
 
-    assert transformer_calibrated.specs.hot_spot_fac == pytest.approx(1.18)  # type: ignore
-    assert transformer_calibrated.specs.amb_temp_surcharge == transformer_onaf_uncalibrated.specs.amb_temp_surcharge
+    assert np.isclose(transformer_calibrated.specs.hot_spot_fac, 1.18)
+    assert np.isclose(
+        transformer_calibrated.specs.amb_temp_surcharge, transformer_onaf_uncalibrated.specs.amb_temp_surcharge
+    )
 
 
 def test_that_hot_spot_factor_calibration_caps_at_minimal_value(transformer_onaf_uncalibrated: PowerTransformer):
@@ -184,8 +188,10 @@ def test_that_hot_spot_factor_calibration_caps_at_minimal_value(transformer_onaf
         hot_spot_factor_max=1.3,
     )
 
-    assert transformer_calibrated.specs.hot_spot_fac == pytest.approx(1.1)  # type: ignore
-    assert transformer_calibrated.specs.amb_temp_surcharge == transformer_onaf_uncalibrated.specs.amb_temp_surcharge
+    assert np.isclose(transformer_calibrated.specs.hot_spot_fac, 1.1)
+    assert np.isclose(
+        transformer_calibrated.specs.amb_temp_surcharge, transformer_onaf_uncalibrated.specs.amb_temp_surcharge
+    )
 
 
 def test_that_hot_spot_factor_fails_with_wrong_limits(transformer_onaf_uncalibrated: PowerTransformer):
@@ -212,8 +218,10 @@ def test_hot_spot_factor_calibration_threewind_hs11(threewind_transformer_hs_11:
         hot_spot_factor_max=1.3,
     )
 
-    assert transformer_calibrated.specs.lv_winding.hot_spot_fac == pytest.approx(1.1)  # type: ignore
-    assert transformer_calibrated.specs.amb_temp_surcharge == threewind_transformer_hs_11.specs.amb_temp_surcharge
+    assert np.isclose(transformer_calibrated.specs.lv_winding.hot_spot_fac, 1.1)
+    assert np.isclose(
+        transformer_calibrated.specs.amb_temp_surcharge, threewind_transformer_hs_11.specs.amb_temp_surcharge
+    )
 
 
 def test_hot_spot_factor_calibration_threewind_hs12(threewind_transformer_hs_12: ThreeWindingTransformer):
@@ -226,8 +234,10 @@ def test_hot_spot_factor_calibration_threewind_hs12(threewind_transformer_hs_12:
         hot_spot_factor_max=1.3,
     )
 
-    assert transformer_calibrated.specs.lv_winding.hot_spot_fac == pytest.approx(1.16)  # type: ignore
-    assert transformer_calibrated.specs.amb_temp_surcharge == threewind_transformer_hs_12.specs.amb_temp_surcharge
+    assert np.isclose(transformer_calibrated.specs.lv_winding.hot_spot_fac, 1.16)
+    assert np.isclose(
+        transformer_calibrated.specs.amb_temp_surcharge, threewind_transformer_hs_12.specs.amb_temp_surcharge
+    )
 
 
 def test_hot_spot_factor_calibration_threewind_hs13(threewind_transformer_hs_13: ThreeWindingTransformer):
@@ -240,8 +250,10 @@ def test_hot_spot_factor_calibration_threewind_hs13(threewind_transformer_hs_13:
         hot_spot_factor_max=1.3,
     )
 
-    assert transformer_calibrated.specs.lv_winding.hot_spot_fac == pytest.approx(1.3)  # type: ignore
-    assert transformer_calibrated.specs.amb_temp_surcharge == threewind_transformer_hs_13.specs.amb_temp_surcharge
+    assert np.isclose(transformer_calibrated.specs.lv_winding.hot_spot_fac, 1.3)
+    assert np.isclose(
+        transformer_calibrated.specs.amb_temp_surcharge, threewind_transformer_hs_13.specs.amb_temp_surcharge
+    )
 
 
 def test_that_hot_spot_factor_fails_with_wrong_limits_threewind(threewind_transformer_hs_11: ThreeWindingTransformer):
@@ -277,5 +289,7 @@ def test_that_hot_spot_factor_calibration_caps_at_minimal_value_threewind(
         hot_spot_factor_max=1.3,
     )
 
-    assert transformer_calibrated.specs.lv_winding.hot_spot_fac == pytest.approx(1.1)  # type: ignore
-    assert transformer_calibrated.specs.amb_temp_surcharge == threewind_transformer_hs_13.specs.amb_temp_surcharge
+    assert np.isclose(transformer_calibrated.specs.lv_winding.hot_spot_fac, 1.1)
+    assert np.isclose(
+        transformer_calibrated.specs.amb_temp_surcharge, threewind_transformer_hs_13.specs.amb_temp_surcharge
+    )
