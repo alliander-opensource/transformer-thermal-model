@@ -545,7 +545,7 @@ def test_integration_three_winding_transformer():
 
     The top_oil validation data comes from the original Dep three-winding-excel Excel model. The hotspot validation
     data was generated using this three_winding_model (TTM). Because we are using a newer IEC hotspot calculation
-    method than the Excel uses we cannot
+    method than the Excel uses we cannot compare these directly.
     """
     # Instead of using the above hardcoded validation data, we load it from a CSV file for better maintainability
     validation_data = pd.read_csv(
@@ -598,7 +598,7 @@ def test_integration_three_winding_transformer():
     model = Model(temperature_profile=profile_input, transformer=transformer)
     results = model.run()
 
-    # Test if results don't deviate more than 0.01 degree Celsius from validation data for the top oil temperature,
+    # Test if results don't deviate more than 0.1 degree Celsius from validation data for the top oil temperature,
     # and 1e-6 degree Celsius for the hot-spot temperature.
     # The top oil temperature is compared against the DEP Excel model, which is only 0.1 degree Celsius accurate.
     # Note that the hot-spot is modeled with the TTM 0.1.5 (IEC-2018) hotspot formula
@@ -617,7 +617,7 @@ def test_integration_three_winding_transformer():
     )
 
     # Test whether the results can be converted to a dataframe, this should raise an error.
-    with pytest.raises(ValueError, match="Cannot convert output to Dataframe for a Three Winding Transformer."):
+    with pytest.raises(ValueError, match="Cannot convert output to DataFrame for a Three Winding Transformer."):
         results.convert_to_dataframe()
 
 
