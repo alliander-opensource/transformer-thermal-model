@@ -20,6 +20,9 @@ class OutputProfile(BaseModel):
 
     def convert_to_dataframe(self) -> pd.DataFrame:
         """Process the two pandas Series and convert them to a single dataframe, linked by the timestamp."""
+        # Check whether there is a single or there are multiple hot-spot temperature profile(s).
+        if isinstance(self.hot_spot_temp_profile, pd.DataFrame):
+            raise ValueError("Cannot convert output to Dataframe for a Three Winding Transformer.")
         df = pd.DataFrame(
             {
                 "timestamp": self.top_oil_temp_profile.index,

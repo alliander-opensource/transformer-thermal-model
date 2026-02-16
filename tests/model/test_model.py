@@ -616,6 +616,10 @@ def test_integration_three_winding_transformer():
         "Hot-spot temperature profile LV does not match validation data"
     )
 
+    # Test whether the results can be converted to a dataframe, this should raise an error.
+    with pytest.raises(ValueError, match="Cannot convert output to Dataframe for a Three Winding Transformer."):
+        results.convert_to_dataframe()
+
 
 def test_top_oil_input(onan_power_transformer, onan_power_sample_profile_dataframe):
     """Test if the temperature rise matches the expected one."""
