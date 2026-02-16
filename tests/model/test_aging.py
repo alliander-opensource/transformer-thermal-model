@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Contributors to the Transformer Thermal Model project
 #
 # SPDX-License-Identifier: MPL-2.0
-
+import numpy as np
 import pandas as pd
 import pytest
 
@@ -16,7 +16,7 @@ def test_paper_aging_98():
     hotspot_profile = pd.Series(98, index=datetime_index)
 
     total_aging = days_aged(hotspot_profile, PaperInsulationType.NORMAL)
-    assert total_aging == pytest.approx(1, rel=1e-2)
+    assert np.isclose(total_aging, 1.0)
 
 
 def test_paper_aging():
@@ -25,10 +25,10 @@ def test_paper_aging():
     datetime_index = pd.date_range("2020-01-01", periods=one_day, freq="15min", tz="UTC")
     hotspot_profile = pd.Series(100, index=datetime_index)
     total_aging = days_aged(hotspot_profile, PaperInsulationType.NORMAL)
-    assert total_aging == pytest.approx(1.26, rel=1e-2)
+    assert np.isclose(total_aging, 1.259921, rtol=1e-5)
 
     total_aging = days_aged(hotspot_profile, PaperInsulationType.THERMAL_UPGRADED)
-    assert total_aging == pytest.approx(0.35, rel=1e-2)
+    assert np.isclose(total_aging, 0.349942, rtol=1e-5)
 
 
 def test_assert_never_is_reached_with_invalid_values():
