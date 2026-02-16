@@ -67,7 +67,7 @@ def calibrate_hotspot_factor(
     ambient_temp_profile = np.ones(one_week_steps, dtype=float) * ambient_temp
     calibrated_transformer = copy.deepcopy(uncalibrated_transformer)
     # Because the transformer should be calibrated to have a max hot-spot temperature at a constant
-    # ambient temperature (generally 20 degrees celsius), the transformer.temp_verh should not be used
+    # ambient temperature (generally 20 degrees Celsius), the transformer.temp_verh should not be used
     # during calibration.
     calibrated_transformer.specs.amb_temp_surcharge = 0.0
 

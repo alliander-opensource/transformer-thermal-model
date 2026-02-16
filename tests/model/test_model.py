@@ -54,7 +54,7 @@ def test_temp_rise_with_zero_load(transformer: PowerTransformer):
 
 
 def test_temp_rise_with_losses_and_zero_load(onan_power_transformer: PowerTransformer):
-    """Test if the temperature rise is non zero when the load is zero but the losses are not."""
+    """Test if the temperature rise is non-zero when the load is zero but the losses are not."""
     profile = pd.DataFrame(
         {
             "timestamp": pd.to_datetime(
