@@ -527,14 +527,14 @@ def test_three_winding_equals_power():
 
 
 def create_step_load_profile(max_load, datetime_index):
-    """Create a step load profile with max_load for 1 day and 0% load for the next day.
+    """Create a step load profile with max_load for 1/2 day and 0% load for the rest of the day.
 
     Function is used in the test_integration_three_winding_transformer test.
     """
     load_values = np.concatenate(
         [
-            np.full(48, max_load),  # max load for 1 day (48 intervals of 15 minutes in 24 hours)
-            np.full(48, 0.0),  # 0% load for the next day
+            np.full(48, max_load),  # max load for 1/2 day (48 intervals of 15 minutes in 12 hours)
+            np.full(48, 0.0),  # 0% load for the rest of the day
         ]
     )
     return pd.Series(load_values, index=datetime_index)
@@ -543,18 +543,22 @@ def create_step_load_profile(max_load, datetime_index):
 def test_integration_three_winding_transformer():
     """Here we test the three-winding transformer model against validation results for a step load profile.
 
-    The top_oil validation data comes from the original Dep three-winding-excel excel model. The hotspot validation
+    The top_oil validation data comes from the original Dep three-winding-excel Excel model. The hotspot validation
     data was generated using this three_winding_model (TTM). Because we are using a newer IEC hotspot calculation
-    method than the excel uses we cannot
+    method than the Excel uses we cannot
     """
     # Instead of using the above hardcoded validation data, we load it from a CSV file for better maintainability
     validation_data = pd.read_csv(
-        "tests/model/three_winding_validation_data.csv", parse_dates=["datetime"], index_col="datetime", comment="#"
+        "tests/model/three_winding_validation_data.csv",
+        parse_dates=["datetime"],
+        index_col="datetime",
+        comment="#",
+        sep=";",
     )
 
     # Define the step load profile (120% load to 0% load)
     step_load_profile_hv = create_step_load_profile(461.88, validation_data.index)
-    step_load_profile_mv = create_step_load_profile(1319.64, validation_data.index)
+    step_load_profile_mv = create_step_load_profile(1055.73, validation_data.index)
     step_load_profile_lv = create_step_load_profile(1979.52, validation_data.index)
 
     ambient_series = pd.Series(data=20, index=step_load_profile_hv.index)
@@ -571,12 +575,12 @@ def test_integration_three_winding_transformer():
     # Define transformer specifications
     user_specs_three_winding = UserThreeWindingTransformerSpecifications(
         no_load_loss=51740,
-        amb_temp_surcharge=0,
+        amb_temp_surcharge=5,
         hv_winding=WindingSpecifications(
             nom_load=384.9, winding_oil_gradient=17.6, hot_spot_fac=1.3, time_const_winding=7, nom_power=100
         ),
         mv_winding=WindingSpecifications(
-            nom_load=1099.7, winding_oil_gradient=18.6, hot_spot_fac=1.3, time_const_winding=7, nom_power=100
+            nom_load=879.8, winding_oil_gradient=18.6, hot_spot_fac=1.3, time_const_winding=7, nom_power=80
         ),
         lv_winding=WindingSpecifications(
             nom_load=1649.6, winding_oil_gradient=25.4, hot_spot_fac=1.3, time_const_winding=7, nom_power=30
@@ -594,19 +598,21 @@ def test_integration_three_winding_transformer():
     model = Model(temperature_profile=profile_input, transformer=transformer)
     results = model.run()
 
-    # test if results don't deviate more than 0.05 degree Celsius from validation data,
-    # note that the hot-spot is modelled with the TTM 0.1.5 (IEC-2018) hotspot formula
-    # TTM 0.1.4 would yeald slightly different results for the hotspot
-    assert max(abs(results.top_oil_temp_profile - validation_data.top_oil)) < 0.05, (
+    # Test if results don't deviate more than 0.01 degree Celsius from validation data for the top oil temperature,
+    # and 1e-6 degree Celsius for the hot-spot temperature.
+    # The top oil temperature is compared against the DEP Excel model, which is only 0.1 degree Celsius accurate.
+    # Note that the hot-spot is modeled with the TTM 0.1.5 (IEC-2018) hotspot formula
+    # TTM 0.1.4 would yield slightly different results for the hotspot
+    assert max(abs(results.top_oil_temp_profile - validation_data.top_oil)) < 0.1, (
         "Top-oil temperature profile does not match validation data"
     )
-    assert max(abs(results.hot_spot_temp_profile.high_voltage_side - validation_data.hotspot_hs)) < 0.05, (
+    assert max(abs(results.hot_spot_temp_profile.high_voltage_side - validation_data.hotspot_hs)) < 1e-6, (
         "Hot-spot temperature profile HV does not match validation data"
     )
-    assert max(abs(results.hot_spot_temp_profile.middle_voltage_side - validation_data.hotspot_ms)) < 0.05, (
+    assert max(abs(results.hot_spot_temp_profile.middle_voltage_side - validation_data.hotspot_ms)) < 1e-6, (
         "Hot-spot temperature profile MV does not match validation data"
     )
-    assert max(abs(results.hot_spot_temp_profile.low_voltage_side - validation_data.hotspot_ls)) < 0.05, (
+    assert max(abs(results.hot_spot_temp_profile.low_voltage_side - validation_data.hotspot_ls)) < 1e-6, (
         "Hot-spot temperature profile LV does not match validation data"
     )
 
