@@ -111,7 +111,7 @@ class ThreeWindingTransformer(Transformer):
         )
 
         super().__init__(
-            cooling_type=cooling_type,
+            cooling_type=self.cooling_type,
             cooling_controller=self.cooling_controller,
         )
 
