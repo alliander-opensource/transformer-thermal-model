@@ -229,6 +229,7 @@ class Model:
                 top_k = self.transformer._end_temperature_top_oil(load[:, i])
             top_oil_temp_profile[i] = self._update_top_oil_temp(top_oil_temp_profile[i - 1], t_internal[i], top_k, f1)
 
+            # Check whether we need to activate/deactivate cooling and update specifications accordingly
             new_specs = self.transformer.set_cooling_switch_controller_specs(
                 top_oil_temp_profile[i], top_oil_temp_profile[i - 1], i
             )
@@ -288,6 +289,7 @@ class Model:
                 hot_spot_temp_profile[i] = (
                     top_oil_temp_profile[i] + hot_spot_increase_windings[i] - hot_spot_increase_oil[i]
                 )
+                # Check whether we need to activate/deactivate cooling and update specifications accordingly
                 new_specs = self.transformer.set_cooling_switch_controller_specs(
                     top_oil_temp_profile[i], top_oil_temp_profile[i - 1], i
                 )
@@ -322,6 +324,7 @@ class Model:
                     hot_spot_temp_profile[profile, i] = (
                         top_oil_temp_profile[i] + hot_spot_increase_windings[i] - hot_spot_increase_oil[i]
                     )
+                    # Check whether we need to activate/deactivate cooling and update specifications accordingly
                     new_specs = self.transformer.set_cooling_switch_controller_specs(
                         top_oil_temp_profile[i], top_oil_temp_profile[i - 1], i
                     )

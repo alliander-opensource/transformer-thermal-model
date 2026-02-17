@@ -19,14 +19,33 @@ class OutputProfile(BaseModel):
     hot_spot_temp_profile: pd.Series | pd.DataFrame
 
     def convert_to_dataframe(self) -> pd.DataFrame:
-        """Process the two pandas Series and convert them to a single dataframe, linked by the timestamp."""
-        df = pd.DataFrame(
-            {
-                "timestamp": self.top_oil_temp_profile.index,
-                "top_oil_temperature": self.top_oil_temp_profile,
-                "hot_spot_temperature": self.hot_spot_temp_profile,
-            }
-        )
+        """Convert the output profiles to a single pandas DataFrame.
+
+        The resulting DataFrame will have the following columns:
+        - 'timestamp': The datetime index of the profiles.
+        - 'top_oil_temperature': The top-oil temperature profile.
+        - 'hot_spot_temperature': The hot-spot temperature profile (if it's a Series)
+        or separate columns for each winding (if it's a DataFrame).
+        """
+        # Check whether there is a single or there are multiple hot-spot temperature profile(s).
+        if isinstance(self.hot_spot_temp_profile, pd.DataFrame):
+            df = pd.DataFrame(
+                {
+                    "timestamp": self.top_oil_temp_profile.index,
+                    "top_oil_temperature": self.top_oil_temp_profile,
+                    "hot_spot_temperature_low_voltage_side": self.hot_spot_temp_profile.low_voltage_side,
+                    "hot_spot_temperature_middle_voltage_side": self.hot_spot_temp_profile.middle_voltage_side,
+                    "hot_spot_temperature_high_voltage_side": self.hot_spot_temp_profile.high_voltage_side,
+                }
+            )
+        else:
+            df = pd.DataFrame(
+                {
+                    "timestamp": self.top_oil_temp_profile.index,
+                    "top_oil_temperature": self.top_oil_temp_profile,
+                    "hot_spot_temperature": self.hot_spot_temp_profile,
+                }
+            )
         return df
 
     model_config = ConfigDict(arbitrary_types_allowed=True)

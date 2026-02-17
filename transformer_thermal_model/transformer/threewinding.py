@@ -103,7 +103,7 @@ class ThreeWindingTransformer(Transformer):
         self.cooling_type: CoolerType = cooling_type
         self.specs = ThreeWindingTransformerSpecifications.create(self.defaults, user_specs)
 
-        # Use CoolingSwitchController if onaf_switch is provided
+        # Use CoolingSwitchController if cooling_switch_settings is provided
         self.cooling_controller = (
             CoolingSwitchController(onaf_switch=cooling_switch_settings, specs=self.specs)
             if cooling_switch_settings
@@ -132,7 +132,7 @@ class ThreeWindingTransformer(Transformer):
         return ambient_temperature + self.specs.amb_temp_surcharge
 
     def _end_temperature_top_oil(self, load_profile: np.ndarray) -> float:
-        """Calculate the end temperature of the top-oil."""
+        """Calculate the steady-state temperature of the top-oil."""
         lv_rise = self.specs._get_loss_lc() * np.power(load_profile[0] / self.specs.lv_winding.nom_load, 2)
         mv_rise = self.specs._get_loss_mc() * np.power(load_profile[1] / self.specs.mv_winding.nom_load, 2)
         hv_rise = self.specs._get_loss_hc() * np.power(load_profile[2] / self.specs.hv_winding.nom_load, 2)

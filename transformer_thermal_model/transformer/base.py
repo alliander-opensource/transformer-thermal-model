@@ -39,7 +39,7 @@ class Transformer(ABC):
                 switching logic.
         """
         self.cooling_type: CoolerType = cooling_type
-        if cooling_type == CoolerType.ONAN and cooling_controller is not None:
+        if cooling_type != CoolerType.ONAF and cooling_controller is not None:
             raise ValueError("ONAF switch only works when the cooling type is ONAF.")
         self.cooling_controller = cooling_controller
 
