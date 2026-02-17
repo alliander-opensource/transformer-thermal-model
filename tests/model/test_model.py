@@ -598,27 +598,36 @@ def test_integration_three_winding_transformer():
     model = Model(temperature_profile=profile_input, transformer=transformer)
     results = model.run()
 
+    # Verify that the dataframe has the expected columns
+    results_dataframe = results.convert_to_dataframe()
+    assert all(
+        results_dataframe.columns.array
+        == [
+            "timestamp",
+            "top_oil_temperature",
+            "hot_spot_temperature_low_voltage_side",
+            "hot_spot_temperature_middle_voltage_side",
+            "hot_spot_temperature_high_voltage_side",
+        ]
+    )
+
     # Test if results don't deviate more than 0.1 degree Celsius from validation data for the top oil temperature,
     # and 1e-6 degree Celsius for the hot-spot temperature.
     # The top oil temperature is compared against the DEP Excel model, which is only 0.1 degree Celsius accurate.
     # Note that the hot-spot is modeled with the TTM 0.1.5 (IEC-2018) hotspot formula
     # TTM 0.1.4 would yield slightly different results for the hotspot
-    assert max(abs(results.top_oil_temp_profile - validation_data.top_oil)) < 0.1, (
+    assert max(abs(results_dataframe.top_oil_temperature - validation_data.top_oil)) < 0.1, (
         "Top-oil temperature profile does not match validation data"
     )
-    assert max(abs(results.hot_spot_temp_profile.high_voltage_side - validation_data.hotspot_hs)) < 1e-6, (
+    assert max(abs(results_dataframe.hot_spot_temperature_high_voltage_side - validation_data.hotspot_hs)) < 1e-6, (
         "Hot-spot temperature profile HV does not match validation data"
     )
-    assert max(abs(results.hot_spot_temp_profile.middle_voltage_side - validation_data.hotspot_ms)) < 1e-6, (
+    assert max(abs(results_dataframe.hot_spot_temperature_middle_voltage_side - validation_data.hotspot_ms)) < 1e-6, (
         "Hot-spot temperature profile MV does not match validation data"
     )
-    assert max(abs(results.hot_spot_temp_profile.low_voltage_side - validation_data.hotspot_ls)) < 1e-6, (
+    assert max(abs(results_dataframe.hot_spot_temperature_low_voltage_side - validation_data.hotspot_ls)) < 1e-6, (
         "Hot-spot temperature profile LV does not match validation data"
     )
-
-    # Test whether the results can be converted to a dataframe, this should raise an error.
-    with pytest.raises(ValueError, match="Cannot convert output to DataFrame for a Three Winding Transformer."):
-        results.convert_to_dataframe()
 
 
 def test_top_oil_input(onan_power_transformer, onan_power_sample_profile_dataframe):
