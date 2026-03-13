@@ -47,7 +47,7 @@ the following for details on how to contribute:
     - for contributions to the documentation page, make sure you install
       the correct dependencies using `poetry install --with docs`, too.
 4. Activate the poetry shell: `poetry shell`.
-5. Set up pre-commit hooks: `pre-commit install`. Every time you commit, this
+5. Set up prek hooks: `prek install`. Every time you commit, this
    will run hooks to ensure your code is properly formatted.
 6. Make a new branch from `main`
    - If your branch will be related to a Jira ticket (which we recommend), you
@@ -57,13 +57,15 @@ the following for details on how to contribute:
 
 ### During development
 
-To check if `pre-commit` was properly installed, run `pre-commit run -a`. You
+To check if `prek` was properly installed, run `prek run -a`. You
 should see the following:
 
 ```bash
-$ pre-commit run -a
-ruff.....................................................................Passed
-ruff-format..............................................................Passed
+$ prek run -a
+pre-commit-update........................................................Passed
+reuse lint...............................................................Passed
+ruff (legacy alias)......................................................Passed
+ruff format..............................................................Passed
 mypy.....................................................................Passed
 codespell................................................................Passed
 Poetry check.............................................................Passed
@@ -159,7 +161,7 @@ changes in the squashed commit, which is also fine.
 
 So, in short:
 
-1. Run `pre-commit -a` locally.
+1. Run `prek -a` locally.
 2. Run `pytest` locally.
 3. Check your local commit messages before pushing.
 4. `git push`
