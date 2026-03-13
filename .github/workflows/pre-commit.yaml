@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MPL-2.0
 
 name: |
-  (CI) Pre-commit
+  (CI) prek
 permissions:
   contents: read
   pull-requests: write
@@ -19,7 +19,7 @@ on:
 
 
 jobs:
-  pre-commit:
+  prek:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -31,12 +31,12 @@ jobs:
       - name: Install Poetry
         if: ${{ hashFiles('.pre-commit-config.yaml') != '' }}
         run: pipx install --python python${{ inputs.python-version }} poetry
-      - name: Install pre-commit
+      - name: Install prek
         if: ${{ hashFiles('.pre-commit-config.yaml') != '' }}
         run: |
-          pip install pre-commit
-          pre-commit install
-      - name: Run pre-commit
+          pip install prek
+          prek install
+      - name: Run prek
         if: ${{ hashFiles('.pre-commit-config.yaml') != '' }}
         shell: bash
-        run: pre-commit run -a
+        run: prek run -a
