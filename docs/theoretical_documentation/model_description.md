@@ -106,7 +106,7 @@ Based on formula (12), (15) and  (16) from IEC-60076-7-2018, the hot-spot temper
 at time _t_ can be calculated as follows:
 
 $$
-\Delta\theta_{\text{h}}[t] = \Delta\theta_{\text{h1}}[t] + \Delta\theta_{\text{h2}}[t]
+\Delta\theta_{\text{h}}[t] = \Delta\theta_{\text{h1}}[t] - \Delta\theta_{\text{h2}}[t]
 $$
 
 where
