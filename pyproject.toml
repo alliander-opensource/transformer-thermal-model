@@ -25,13 +25,13 @@ optional = true
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^9.0.2"
-ruff = "^0.15.1"
+ruff = "^0.15.7"
 mypy = "^1.18.0"
-pytest-cov = "^7.0.0"
+pytest-cov = "^7.1.0"
 pre-commit = "^4.1.0"
 codespell = "^2.4.1"
 ipython = "^9.3.0"
-isort = "^7.0.0"
+isort = "^8.0.1"
 mutmut = "^3.3.1"
 
 [tool.poetry.group.docs]
@@ -42,9 +42,9 @@ mkdocs = "^1.6.1"
 mkdocstrings-python = "^2.0.0"
 mkdocs-exclude = "^1.0.2"
 mkdocs-llmstxt = "^0.5.0"
-mkdocs-material = "^9.6.11"
+mkdocs-material = "^9.7.6"
 mkdocs-mermaid2-plugin = "^1.2.1"
-mkdocs-jupyter = "^0.25.1"
+mkdocs-jupyter = "^0.26.0"
 matplotlib = "^3.10.3"
 
 [build-system]
