@@ -8,7 +8,7 @@ from .enums import (
     PaperInsulationType,
     TransformerType,
 )
-from .power import PowerTransformer, PowerTransformerComponents
+from .power import PowerTransformer
 from .threewinding import ThreeWindingTransformer
 
 __all__ = [
@@ -17,6 +17,5 @@ __all__ = [
     "PowerTransformer",
     "Transformer",
     "TransformerType",
-    "PowerTransformerComponents",
     "ThreeWindingTransformer",
 ]

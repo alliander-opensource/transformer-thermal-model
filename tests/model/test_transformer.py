@@ -7,10 +7,8 @@ import copy
 import numpy as np
 import pytest
 
-from transformer_thermal_model.components import BushingConfig, TransformerSide, VectorConfig
 from transformer_thermal_model.cooler import CoolerType
 from transformer_thermal_model.schemas import (
-    TransformerComponentSpecifications,
     UserTransformerSpecifications,
 )
 from transformer_thermal_model.transformer import DistributionTransformer, PowerTransformer, ThreeWindingTransformer
@@ -105,114 +103,6 @@ def test_that_creating_an_onan_trafo_after_onaf_trafo_does_not_affect_the_classv
     assert onan_transformer._onan_defaults == PowerTransformer._onan_defaults
     assert onan_transformer.defaults != PowerTransformer.defaults
     assert first_defaults == PowerTransformer.defaults
-
-
-@pytest.mark.parametrize(
-    "tc_configuration,tc_side,primary_bushing_config,secondary_bushing_config,ct_configuration,ct_side,expected_result",
-    [
-        (
-            VectorConfig.TRIANGLE_OUTSIDE,
-            TransformerSide.SECONDARY,
-            BushingConfig.SINGLE_BUSHING,
-            BushingConfig.SINGLE_BUSHING,
-            VectorConfig.STAR,
-            TransformerSide.PRIMARY,
-            {
-                "tap_changer": 0.4,
-                "primary_bushings": 1.0909090909090908,
-                "secondary_bushings": 1.2,
-                "current_transformer": 2.3636363636363638,
-            },
-        ),
-        (
-            VectorConfig.STAR,
-            TransformerSide.PRIMARY,
-            BushingConfig.SINGLE_BUSHING,
-            BushingConfig.DOUBLE_BUSHING,
-            VectorConfig.TRIANGLE_OUTSIDE,
-            TransformerSide.SECONDARY,
-            {
-                "tap_changer": 1.0909090909090908,
-                "primary_bushings": 1.0909090909090908,
-                "secondary_bushings": 2.4,
-                "current_transformer": 0.8666666666666667,
-            },
-        ),
-    ],
-)
-def test_that_the_calculated_component_properties_are_correctly_calculated(
-    default_user_trafo_specs,
-    tc_configuration,
-    tc_side,
-    primary_bushing_config,
-    secondary_bushing_config,
-    ct_configuration,
-    ct_side,
-    expected_result,
-):
-    """Test the component capacities properties of the PowerTransformer class."""
-    comp_specs = TransformerComponentSpecifications(
-        tap_chang_capacity=600,  # Tap changer nominal current [A]
-        nom_load_prim_side=550,  # Transformer nominal current primary side [A]
-        tap_chang_conf=tc_configuration,  # Tap Changer configuration
-        tap_chang_side=tc_side,  # Tap changer side
-        prim_bush_capacity=600,  # Primary bushing nominal current [A]
-        prim_bush_conf=primary_bushing_config,  # Primary bushing configuration
-        sec_bush_capacity=1800,  # Secondary bushing nominal current [A]
-        sec_bush_conf=secondary_bushing_config,  # Secondary bushing configuration
-        cur_trans_capacity=1300,  # Current transformer nominal current [A]
-        cur_trans_conf=ct_configuration,  # Current transformer configuration
-        cur_trans_side=ct_side,  # Current transformer side
-    )
-    power_transformer = PowerTransformer(
-        user_specs=default_user_trafo_specs, cooling_type=CoolerType.ONAF, internal_component_specs=comp_specs
-    )
-    assert pytest.approx(power_transformer.component_capacities, rel=1e-2) == expected_result
-
-
-def test_component_properties_when_only_one_component_is_defined(default_user_trafo_specs):
-    """Test the component properties when only one component is defined."""
-    comp_specs = TransformerComponentSpecifications(
-        tap_chang_capacity=600,  # Tap changer nominal current [A]
-        nom_load_prim_side=550,  # Transformer nominal current primary side [A]
-        tap_chang_conf=VectorConfig.TRIANGLE_OUTSIDE,  # Tap Changer configuration
-        tap_chang_side=TransformerSide.SECONDARY,  # Tap changer side
-    )
-    power_transformer = PowerTransformer(
-        user_specs=default_user_trafo_specs, cooling_type=CoolerType.ONAF, internal_component_specs=comp_specs
-    )
-    assert power_transformer.component_capacities == {
-        "tap_changer": 0.4,
-        "primary_bushings": None,
-        "secondary_bushings": None,
-        "current_transformer": None,
-    }
-
-
-def test_internal_components_not_set():
-    """Test that ValueError is raised when internal components are not set."""
-    user_specs = UserTransformerSpecifications(
-        load_loss=1000,  # Transformer load loss [W]
-        nom_load_sec_side=1500,  # Transformer nominal current secondary side [A]
-        no_load_loss=200,  # Transformer no-load loss [W]
-        amb_temp_surcharge=20,
-    )
-    transformer = PowerTransformer(user_specs=user_specs, cooling_type=CoolerType.ONAN)
-
-    with pytest.raises(ValueError, match="Internal components are not set"):
-        _ = transformer.tap_changer_capacity_ratio
-
-    with pytest.raises(ValueError, match="Internal components are not set"):
-        _ = transformer.primary_bushing_capacity_ratio
-
-    with pytest.raises(ValueError, match="Internal components are not set"):
-        _ = transformer.secondary_bushing_capacity_ratio
-
-    with pytest.raises(ValueError, match="Internal components are not set"):
-        _ = transformer.int_cur_trans_capacity_ratio
-
-    with pytest.raises(ValueError, match="Internal components are not set"):
-        _ = transformer.component_capacities
 
 
 def check_dif_onan_onaf(onan_power_transformer, onaf_power_transformer):
