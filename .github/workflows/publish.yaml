@@ -12,10 +12,10 @@ jobs:
       contents: read
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: 3.13
 
@@ -27,7 +27,7 @@ jobs:
         run: poetry build
 
       - name: Upload package artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f #v7.0.0
         with:
           name: transformer-thermal-model-package
           path: dist/
@@ -48,7 +48,7 @@ jobs:
         name: transformer-thermal-model-package
         path: dist/
     - name: Publish distribution 📦 to PyPI
-      uses: pypa/gh-action-pypi-publish@76f52bc884231f62b9a034ebfe128415bbaabdfc #v1.12.4
+      uses: pypa/gh-action-pypi-publish@ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e #v1.13.0
   publish-to-github:
     name: Publish to GitHub Releases
     needs:
@@ -58,7 +58,7 @@ jobs:
       contents: write
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       
     - name: Download all the dists
       uses: actions/download-artifact@v4
@@ -107,7 +107,7 @@ jobs:
         GH_TOKEN: ${{ github.token }}
         
     - name: Create GitHub Release
-      uses: softprops/action-gh-release@72f2c25fcb47643c292f7107632f7a47c1df5cd8 #v2.3.2
+      uses: softprops/action-gh-release@153bb8e04406b158c6c84fc1615b65b24149a1fe #v2.6.1
       with:
         tag_name: ${{ steps.get_version.outputs.version }}
         name: Release ${{ steps.get_version.outputs.version }}
