@@ -44,7 +44,7 @@ mkdocs-exclude = "^1.0.2"
 mkdocs-llmstxt = "^0.5.0"
 mkdocs-material = "^9.7.6"
 mkdocs-mermaid2-plugin = "^1.2.1"
-mkdocs-jupyter = "^0.26.0"
+mkdocs-jupyter = "^0.26.2"
 matplotlib = "^3.10.3"
 
 [build-system]
