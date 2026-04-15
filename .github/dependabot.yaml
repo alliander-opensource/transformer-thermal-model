@@ -9,7 +9,22 @@
 
 version: 2
 updates:
+  # enable version updates for our dependencies
   - package-ecosystem: "pip" # `pip` also enables Poetry
     directory: "/" # Location of package manifests
+    schedule:
+      interval: "weekly"
+
+  # enable version updates for our pre-commit hooks.
+  - package-ecosystem: "pre-commit"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # enable version updates for our pre-commit hooks
+  - package-ecosystem: "github-actions"
+    # Workflow files stored in the default location of `.github/workflows`
+    # You don't need to specify `/.github/workflows` for `directory`. You can use `directory: "/"`.
+    directory: "/"
     schedule:
       interval: "weekly"
