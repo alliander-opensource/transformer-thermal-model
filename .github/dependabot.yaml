@@ -21,7 +21,7 @@ updates:
     schedule:
       interval: "weekly"
 
-  # enable version updates for our pre-commit hooks
+  # enable version updates for our github-actions
   - package-ecosystem: "github-actions"
     # Workflow files stored in the default location of `.github/workflows`
     # You don't need to specify `/.github/workflows` for `directory`. You can use `directory: "/"`.
