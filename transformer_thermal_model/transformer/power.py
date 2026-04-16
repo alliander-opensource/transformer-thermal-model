@@ -75,8 +75,6 @@ class PowerTransformer(Transformer):
         end_temp_reduction=0,
         amb_temp_surcharge=0,
     )
-    _err = "Internal components are not set. Please provide these if you wish to calculate the limiting component."
-
     def __init__(
         self,
         user_specs: UserTransformerSpecifications,
