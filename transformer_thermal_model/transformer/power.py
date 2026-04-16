@@ -75,6 +75,7 @@ class PowerTransformer(Transformer):
         end_temp_reduction=0,
         amb_temp_surcharge=0,
     )
+
     def __init__(
         self,
         user_specs: UserTransformerSpecifications,
