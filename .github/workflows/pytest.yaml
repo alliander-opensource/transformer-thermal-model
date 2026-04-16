@@ -22,9 +22,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
       - name: Install python${{ inputs.python-version }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version:  ${{ inputs.python-version }}
       - name: Install Poetry
@@ -37,7 +37,7 @@ jobs:
         shell: bash
         run: poetry run pytest
       - name: Upload coverage.xml as artifact
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a #v7.0.1
         if: ${{ hashFiles('coverage.xml') != '' }}
         with:
           name: coverage.xml
@@ -48,6 +48,6 @@ jobs:
         # for more info. We need this SonarQube scan for the coverage report,
         # so we still want it here for our own pushes.
         if: github.actor != 'dependabot[bot]'
-        uses: SonarSource/sonarqube-scan-action@1a6d90ebcb0e6a6b1d87e37ba693fe453195ae25 #v5.3.1
+        uses: SonarSource/sonarqube-scan-action@299e4b793aaa83bf2aba7c9c14bedbb485688ec4 #v7.1.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
