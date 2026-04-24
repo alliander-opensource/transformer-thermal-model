@@ -159,7 +159,7 @@ changes in the squashed commit, which is also fine.
 
 So, in short:
 
-1. Run `pre-commit -a` locally.
+1. Run `pre-commit run -a` locally.
 2. Run `pytest` locally.
 3. Check your local commit messages before pushing.
 4. `git push`

@@ -85,6 +85,36 @@ class BaseInputProfile(BaseModel):
         """Require subclasses to define a load_profile property."""
         raise NotImplementedError("Subclasses must define a load_profile field or property.")
 
+    @classmethod
+    def _to_datetime_array(cls, obj: pd.DatetimeIndex | pd.Series | list | tuple | np.ndarray) -> np.typing.NDArray:
+        """Convert a pandas DatetimeIndex or iterable of datetimes to a NumPy array.
+
+        - Preserves timezone if present.
+        - Handles tz-naive efficiently.
+        - Falls back for lists or other iterables.
+        """
+        if isinstance(obj, (list, tuple, np.ndarray, pd.Series)):
+            # Convert list-like to array, preserving tz if present
+            if all(hasattr(x, "tzinfo") for x in obj):
+                return np.array(obj, dtype=object)
+            else:
+                # Try except it to check if the obj in the iterable is something that
+                # can be interpreted as a datetime with preserving original type
+                # else raise error
+                try:
+                    [pd.to_datetime(x) for x in obj]
+                except Exception as e:
+                    raise ValueError("Provided array is not a datetime type") from e
+                return np.array(obj, dtype=type(obj))
+        elif isinstance(obj, pd.DatetimeIndex) and obj.tz is not None:
+            # tz-aware: preserve original timezone
+            return np.array(obj.to_pydatetime(), dtype=object)
+        elif isinstance(obj, pd.DatetimeIndex) and obj.tz is None:
+            # Not tz-aware: convert to normal datetime
+            return obj.to_numpy(dtype="datetime64[ns]")
+        else:
+            raise TypeError("Input must be a pandas DatetimeIndex or an iterable of datetime objects.")
+
 
 class InputProfile(BaseInputProfile):
     """Class containing the temperature and load profiles of two winding transformers for the thermal model `Model()`.
@@ -138,9 +168,10 @@ class InputProfile(BaseInputProfile):
             ...     ambient_temperature_profile=ambient_temperature_profile,
             ... )
             >>> input_profile
-            InputProfile(datetime_index=array(['2023-01-01T00:00:00.000000',
-            '2023-01-01T01:00:00.000000', '2023-01-01T02:00:00.000000'],
-            dtype='datetime64[us]'), ambient_temperature_profile=array([25. , 24.5, 24. ]),
+            InputProfile(datetime_index=array([datetime.datetime(2023, 1, 1, 0, 0),
+                    datetime.datetime(2023, 1, 1, 1, 0),
+                    datetime.datetime(2023, 1, 1, 2, 0)],
+            dtype=object), ambient_temperature_profile=array([25. , 24.5, 24. ]),
             top_oil_temperature_profile=None, load_profile=array([0.8, 0.9, 1. ]))
 
             ```
@@ -189,15 +220,17 @@ class InputProfile(BaseInputProfile):
             ...     top_oil_temperature_profile=top_oil_temperature,
             ... )
             >>> input_profile
-            InputProfile(datetime_index=array(['2023-01-01T00:00:00.000000', '2023-01-01T01:00:00.000000',
-            '2023-01-01T02:00:00.000000'], dtype='datetime64[us]'),
+            InputProfile(datetime_index=array([datetime.datetime(2023, 1, 1, 0, 0),
+                    datetime.datetime(2023, 1, 1, 1, 0),
+                    datetime.datetime(2023, 1, 1, 2, 0)],
+            dtype=object),
             ambient_temperature_profile=array([25. , 24.5, 24. ]),
             top_oil_temperature_profile=array([37. , 36.5, 36. ]), load_profile=array([0.8, 0.9, 1. ]))
 
             ```
         """
         return cls(
-            datetime_index=np.array(datetime_index, dtype=np.datetime64),
+            datetime_index=cls._to_datetime_array(datetime_index),
             load_profile=np.array(load_profile, dtype=float),
             ambient_temperature_profile=np.array(ambient_temperature_profile, dtype=float),
             top_oil_temperature_profile=(
@@ -243,7 +276,11 @@ class InputProfile(BaseInputProfile):
             An InputProfile object.
 
         """
-        required_columns = {"datetime_index", "load_profile", "ambient_temperature_profile"}
+        required_columns = {
+            "datetime_index",
+            "load_profile",
+            "ambient_temperature_profile",
+        }
         missing_columns = required_columns - set(df.columns)
         if missing_columns:
             raise ValueError(f"The dataframe is missing the following required columns: {', '.join(missing_columns)}")
@@ -252,9 +289,9 @@ class InputProfile(BaseInputProfile):
             datetime_index=df["datetime_index"].to_numpy(),
             load_profile=df["load_profile"].to_numpy(),
             ambient_temperature_profile=df["ambient_temperature_profile"].to_numpy(),
-            top_oil_temperature_profile=df["top_oil_temperature_profile"].to_numpy()
-            if "top_oil_temperature_profile" in df.columns
-            else None,
+            top_oil_temperature_profile=(
+                df["top_oil_temperature_profile"].to_numpy() if "top_oil_temperature_profile" in df.columns else None
+            ),
         )
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
@@ -341,7 +378,7 @@ class ThreeWindingInputProfile(BaseInputProfile):
             ... )
             >>> input_profile
             ThreeWindingInputProfile(datetime_index=array(['2023-01-01T00:00:00.000000', '2023-01-01T01:00:00.000000',
-            '2023-01-01T02:00:00.000000'], dtype='datetime64[us]'),
+            '2023-01-01T02:00:00.000000'], dtype='datetime64[ns]'),
             ambient_temperature_profile=array([25. , 24.5, 24. ]),
             top_oil_temperature_profile=None,
             load_profile_high_voltage_side=array([0.8, 0.9, 1. ]),
@@ -351,14 +388,14 @@ class ThreeWindingInputProfile(BaseInputProfile):
             ```
         """
         return cls(
-            datetime_index=np.array(datetime_index, dtype=np.datetime64),
+            datetime_index=cls._to_datetime_array(datetime_index),
             ambient_temperature_profile=np.array(ambient_temperature_profile, dtype=float),
             load_profile_high_voltage_side=np.array(load_profile_high_voltage_side, dtype=float),
             load_profile_middle_voltage_side=np.array(load_profile_middle_voltage_side, dtype=float),
             load_profile_low_voltage_side=np.array(load_profile_low_voltage_side, dtype=float),
-            top_oil_temperature_profile=np.array(top_oil_temperature_profile, dtype=float)
-            if top_oil_temperature_profile is not None
-            else None,
+            top_oil_temperature_profile=(
+                np.array(top_oil_temperature_profile, dtype=float) if top_oil_temperature_profile is not None else None
+            ),
         )
 
     @model_validator(mode="after")
