@@ -40,18 +40,18 @@ the following for details on how to contribute:
 ### Set up
 
 1. Fork the repository
-1. Make sure you have `poetry` installed
+2. Make sure you have `poetry` installed
    ([documentation](https://python-poetry.org/docs/))
-1. Make sure you are on the correctly supported Python version (check
+3. Make sure you are on the correctly supported Python version (check
    `pyproject.toml`).
-1. Install dependencies using `poetry install --with dev`.
+4. Install dependencies using `poetry install --with dev`.
     - for contributions to the documentation page, make sure you install
       the correct dependencies using `poetry install --with docs`, too.
-1. Activate the poetry shell: `poetry shell`.
-1. Set up pre-commit hooks: `pre-commit install`. Every time you commit, this
+5. Activate the poetry shell: `poetry shell`.
+6. Set up pre-commit hooks: `pre-commit install`. Every time you commit, this
    will run hooks to ensure your code is properly formatted.
-1. Work on your contribution.
-1. [Make a PR with your fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork).
+7. Work on your contribution.
+8. [Make a PR with your fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork).
 
 ### During development
 
@@ -272,17 +272,17 @@ The process for a code change and pull request you should follow:
 
 1. Create a topic branch in your local repository, following the naming format
 "feature-[description]". For more information see the Git branching guideline.
-1. Make changes, compile, and test thoroughly. Ensure any install or build
+2. Make changes, compile, and test thoroughly. Ensure any install or build
    dependencies are removed before the end of the layer when doing a build. Code
    style should match existing style and conventions, and changes should be
    focused on the topic the pull request will be addressed. For more information
    see the style guide.
-1. Push commits to your fork.
-1. Create a Github pull request from your topic branch.
-1. Pull requests will be reviewed by one of the maintainers who may discuss,
+3. Push commits to your fork.
+4. Create a Github pull request from your topic branch.
+5. Pull requests will be reviewed by one of the maintainers who may discuss,
 offer constructive feedback, request changes, or approve the work. For more
 information see the Code review guideline.
-1. Upon receiving the sign-off of one of the maintainers you may merge your
+6. Upon receiving the sign-off of one of the maintainers you may merge your
    changes, or if you do not have permission to do that, you may request a
    maintainer to merge it for you.
 
