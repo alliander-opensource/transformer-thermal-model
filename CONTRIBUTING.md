@@ -39,21 +39,19 @@ the following for details on how to contribute:
 
 ### Set up
 
+1. Fork the repository
 1. Make sure you have `poetry` installed
    ([documentation](https://python-poetry.org/docs/))
-2. Make sure you are on the correctly supported Python version (check
+1. Make sure you are on the correctly supported Python version (check
    `pyproject.toml`).
-3. Install dependencies using `poetry install --with dev`.
+1. Install dependencies using `poetry install --with dev`.
     - for contributions to the documentation page, make sure you install
       the correct dependencies using `poetry install --with docs`, too.
-4. Activate the poetry shell: `poetry shell`.
-5. Set up pre-commit hooks: `pre-commit install`. Every time you commit, this
+1. Activate the poetry shell: `poetry shell`.
+1. Set up pre-commit hooks: `pre-commit install`. Every time you commit, this
    will run hooks to ensure your code is properly formatted.
-6. Make a new branch from `main`
-   - If your branch will be related to a Jira ticket (which we recommend), you
-     can use the option `Create branch` from there. Make sure that your work is
-     small enough so that your branch can be merged within 2 to 3 days.
-7. Make a PR for your branch (yes, immediately!) and put it in *Draft*.
+1. Work on your contribution.
+1. [Make a PR with your fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork).
 
 ### During development
 
