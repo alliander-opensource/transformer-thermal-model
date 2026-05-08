@@ -46,7 +46,7 @@ Please read the following for details on how to contribute:
 
 - Contributions started, opened, and fully made by AI are automatically rejected.
 - Contributions started and made by someone with the help of AI are accepted,
-with some caveats.
+  with some caveats.
 
 As a contributor, you are fully responsible for the work that is delivered. As such, you should be able to motivate all
 decisions made and the work that is delivered. We spend our time and effort in reviewing the work made, and hope that
