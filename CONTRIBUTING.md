@@ -38,8 +38,7 @@ You can help to improve the project with developing new features. If you are cur
 like to contribute, but do not know what to contribute, you can refer to our
 [issue list](https://github.com/alliander-opensource/transformer-thermal-model/issues). If you are new to this project,
 you might consider starting with the
-[issues labeled as `good-first-issue`](https://github.com/alliander-opensource/transformer-thermal-model/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22good%20first%20issue%22)
-.
+[issues labeled as `good-first-issue`](https://github.com/alliander-opensource/transformer-thermal-model/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22good%20first%20issue%22).
 
 Please read the following for details on how to contribute:
 
