@@ -51,7 +51,7 @@ Please read the following for details on how to contribute:
 As a contributor, you are fully responsible for the work that is delivered. As such, you should be able to motivate all
 decisions made and the work that is delivered. We spend our time and effort in reviewing the work made, and hope that
 this will be met with a similar effort. We believe that AI can greatly improve the quality of work delivered, and
-accalerate the learning of any developer in this process. To prevent these learning opportunities from being quickly
+accelerate the learning of any developer in this process. To prevent these learning opportunities from being quickly
 solved by AI, we opted to reject contributions fully made by it.
 
 ### Set up
