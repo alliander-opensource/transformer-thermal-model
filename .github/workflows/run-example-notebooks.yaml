@@ -1,0 +1,39 @@
+# SPDX-FileCopyrightText: Contributors to the Transformer Thermal Model project
+#
+# SPDX-License-Identifier: MPL-2.0
+
+# This workflow is used to run the example notebooks and check if they execute without raising any exceptions.
+name: Run Example Notebooks
+permissions:
+  contents: read
+  pull-requests: read
+
+on:
+  push:
+    inputs:
+      python-version:
+        required: false
+        default: '3.12'
+        type: string
+        description: 'Python version used.'
+
+jobs:
+  check-notebooks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+      - name: Install python${{ inputs.python-version }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ github.event.inputs.python-version }}
+      - name: Install Poetry
+        run: pipx install --python python${{ github.event.inputs.python-version }} poetry
+      - name: Install the library using poetry
+        shell: bash
+        run: poetry install --with docs
+      - name: Run example notebooks
+        run: |
+          for notebook in docs/examples/*.ipynb; do
+            poetry run jupyter nbconvert --to notebook --execute "$notebook"
+          done
