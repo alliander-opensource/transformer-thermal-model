@@ -41,6 +41,7 @@ docs = [
     "mkdocs-mermaid2-plugin>=1.2.1,<2",
     "mkdocs-jupyter>=0.26.2,<0.27",
     "matplotlib>=3.10.3,<4",
+    "jupyter (>=1.1.1,<2.0.0)",
 ]
 
 [tool.poetry.group.dev]
