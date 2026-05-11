@@ -8,14 +8,14 @@ permissions:
   contents: read
   pull-requests: read
 
+env:
+  python-version: '3.12'
+
 on:
-  push:
-    inputs:
-      python-version:
-        required: false
-        default: '3.12'
-        type: string
-        description: 'Python version used.'
+  push:  
+    branches: [ "main" ]  
+  pull_request:  
+    branches: [ "main" ]
 
 jobs:
   check-notebooks:
