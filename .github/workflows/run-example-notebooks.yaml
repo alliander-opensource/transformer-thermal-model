@@ -23,12 +23,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-      - name: Install python${{ inputs.python-version }}
+      - name: Install python${{ env.python-version }}
         uses: actions/setup-python@v6
         with:
-          python-version: ${{ github.event.inputs.python-version }}
+          python-version: ${{ env.python-version }}
       - name: Install Poetry
-        run: pipx install --python python${{ github.event.inputs.python-version }} poetry
+        run: pipx install --python python${{ env.python-version }} poetry
       - name: Install the library using poetry
         shell: bash
         run: poetry install --with docs

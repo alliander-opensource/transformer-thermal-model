@@ -42,8 +42,8 @@ docs = [
     "mkdocs-jupyter>=0.26.2,<0.27",
     "matplotlib>=3.10.3,<4",
     "nbconvert>=7.16.6,<8",
-     "jupyter-core>=5.8.1,<6",
-     "ipykernel>=6.29.5,<7",
+    "jupyter-core>=5.8.1,<6",
+    "ipykernel>=6.29.5,<7",
 ]
 
 [tool.poetry.group.dev]
