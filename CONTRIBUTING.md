@@ -42,17 +42,23 @@ you might consider starting with the
 
 Please read the following for details on how to contribute:
 
-### Contributions partially or fully made by AI
+### Regarding AI and LLM's
 
-- Contributions started, opened, and fully made by AI are automatically rejected.
-- Contributions started and made by someone with the help of AI are accepted,
-  with some caveats.
+Regarding contributions made
+by AI we feel inspired by the contributing rules from
+[FastAPI](https://fastapi.tiangolo.com/contributing/#automated-code-and-ai):
 
-As a contributor, you are fully responsible for the work that is delivered. As such, you should be able to motivate all
-decisions made and the work that is delivered. We spend our time and effort in reviewing the work made, and hope that
-this will be met with a similar effort. We believe that AI can greatly improve the quality of work delivered, and
-accelerate the learning of any developer in this process. To prevent these learning opportunities from being quickly
-solved by AI, we opted to reject contributions fully made by it.
+> If the human effort put in a PR, e.g. writing LLM prompts, is less than the effort we would need to put to review it,
+> please don't submit the PR.
+>
+> Think of it this way: we can already write LLM prompts or run automated tools ourselves, and that would be faster
+> than reviewing external PRs.
+>
+> _Copied on 11th of May, 2026 from <https://fastapi.tiangolo.com/contributing/#automated-code-and-ai>_
+
+and the
+[Python Developer's Guide](https://devguide.python.org/getting-started/generative-ai/#generative-ai).
+Please consider those requirements when contributing to our project.
 
 ### Set up
 
