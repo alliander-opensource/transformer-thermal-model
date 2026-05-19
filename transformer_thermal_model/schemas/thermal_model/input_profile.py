@@ -36,7 +36,7 @@ class BaseInputProfile(BaseModel):
         """
         # Calculate time steps in minutes
         time_deltas = (
-            np.diff(self.datetime_index, prepend=self.datetime_index[0]).astype("timedelta64[s]").astype(float) / 60
+            np.diff(self.datetime_index, prepend=self.datetime_index[0]).astype("timedelta64[m]").astype(float)
         )
         return time_deltas
 
