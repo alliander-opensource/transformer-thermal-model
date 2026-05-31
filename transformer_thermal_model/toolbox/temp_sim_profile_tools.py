@@ -52,5 +52,5 @@ def create_temp_sim_profile_from_df(profile_as_dataframe: pd.DataFrame) -> Input
         datetime_index=profile_as_dataframe["timestamp"],
         load_profile=profile_as_dataframe["load"],
         ambient_temperature_profile=profile_as_dataframe["ambient_temperature"],
-        top_oil_temperature_profile=profile_as_dataframe.get("top_oil_temperature_profile"),
+        top_oil_temperature_profile=profile_as_dataframe.get("top_oil_temperature") or profile_as_dataframe.get("top_oil_temperature_profile"),
     )
