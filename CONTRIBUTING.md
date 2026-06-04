@@ -46,7 +46,7 @@ Please read the following for details on how to contribute:
 
 Regarding contributions made
 by AI we feel inspired by the contributing rules from
-[FastAPI](https://tiangolo.com/open-source/contributing/#automated-code-and-ai):
+[FastAPI (tiangolo.com)](https://tiangolo.com/open-source/contributing/#automated-code-and-ai):
 
 > If the human effort put in a PR, e.g. writing LLM prompts, is less than the effort we would need to put to review it,
 > please don't submit the PR.
