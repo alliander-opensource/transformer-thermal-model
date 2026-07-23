@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MPL-2.0
 
 name: |
-  (CI) Pre-commit
+  (CI) Prek
 permissions:
   contents: read
   pull-requests: write
@@ -26,18 +26,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
-        if: ${{ hashFiles('.pre-commit-config.yaml') != '' }}
         with:
           python-version:  ${{ inputs.python-version }}
-      - name: Install Poetry
-        if: ${{ hashFiles('.pre-commit-config.yaml') != '' }}
-        run: pipx install --python python${{ inputs.python-version }} poetry
-      - name: Install pre-commit
-        if: ${{ hashFiles('.pre-commit-config.yaml') != '' }}
-        run: |
-          pip install pre-commit
-          pre-commit install
-      - name: Run pre-commit
-        if: ${{ hashFiles('.pre-commit-config.yaml') != '' }}
+      - name: Install uv
+        run: pipx install --python python${{ inputs.python-version }} uv==0.11.31
+      - name: Install prek
+        run: uv sync --group dev --no-install-project --no-build --frozen
+      - name: Run prek
         shell: bash
-        run: pre-commit run -a
+        run: PYTHONPATH=. uv run --no-sync --no-build prek run -a
