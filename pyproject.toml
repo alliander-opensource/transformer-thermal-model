@@ -26,11 +26,11 @@ dev = [
     "ruff>=0.15.15,<0.16",
     "mypy>=2.0.0",
     "pytest-cov>=7.1.0,<8",
-    "pre-commit>=4.1.0,<5",
     "codespell>=2.4.2,<3",
     "ipython>=9.14.0,<10",
     "isort>=8.0.1,<9",
     "mutmut>=3.6.0,<4",
+    "prek>=0.4.9",
 ]
 docs = [
     "mkdocs>=1.6.1,<2",
@@ -46,15 +46,16 @@ docs = [
     "ipykernel>=6.29.5,<7",
 ]
 
-[tool.poetry.group.dev]
-optional = true
+[tool.uv]
+exclude-newer = "7 days"
 
-[tool.poetry.group.docs]
-optional = true
+[tool.uv.build-backend]
+module-name = "transformer_thermal_model"
+module-root = "."
 
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["uv_build>=0.11.21,<0.12.0"]
+build-backend = "uv_build"
 
 [tool.isort]
 profile = "black"

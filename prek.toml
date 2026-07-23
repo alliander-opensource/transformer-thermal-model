@@ -1,0 +1,42 @@
+# SPDX-FileCopyrightText: Contributors to the Switchgear Thermal Model project
+#
+# SPDX-License-Identifier: MPL-2.0
+
+# This prek config can be installed by running
+# 'pip install prek'.
+# 'prek install'.
+
+[[repos]]
+repo = "https://github.com/astral-sh/ruff-pre-commit"
+rev = "v0.15.12"
+
+[[repos.hooks]]
+id = "ruff"
+args = ["--fix"]
+
+[[repos.hooks]]
+id = "ruff-format"
+
+[[repos]]
+repo = "https://github.com/pre-commit/mirrors-mypy"
+rev = "v1.20.2"
+
+[[repos.hooks]]
+id = "mypy"
+additional_dependencies = ["pytest", "pytest-cov"]
+
+[[repos]]
+repo = "https://github.com/codespell-project/codespell"
+rev = "v2.4.2"
+
+[[repos.hooks]]
+id = "codespell"
+exclude = "pyproject.toml|docs/theoretical_documentation/model.md|docs/examples/"
+
+[[repos]]
+repo = "https://github.com/igorshubovych/markdownlint-cli"
+rev = "v0.48.0"
+
+[[repos.hooks]]
+id = "markdownlint"
+args = ["--ignore", "docs/theoretical_documentation/model.md"]

@@ -44,11 +44,11 @@ Typically, this means that you follow the structure of:
 1. release candidate (rc), to (e.g. 2.0.0-rc)
 1. final version (e.g. 2.0.0)
 
-We also use [Poetry](https://python-poetry.org/), and
-there is a built-in command to update the version of your package, called poetry
-version. We use this to update our versions, and also follow the structure that
-Poetry provides to increment our versions using premajor, preminor, etc. Check
-out the [documentation](https://python-poetry.org/docs/cli#version) for more info.
+We also use [uv](https://docs.astral.sh/uv/), and
+there is a built-in command to update the version of your package, called
+`uv version`. We use this to update our versions, and also follow the structure
+that uv provides to increment our versions using premajor, preminor, etc. Check
+out the [documentation](https://docs.astral.sh/uv/reference/cli/#uv-version) for more info.
 
 Here follow which parts we mainly focus on using the definitions from the
 Wikipedia article.
@@ -60,7 +60,7 @@ e.g. `1.4.5-a2`
 Alpha software is not thoroughly tested by the developer before it is released
 to customers.
 
-Alpha software may not contain all of the features that are planned for the
+Alpha software may not contain all the features that are planned for the
 final version
 
 ### Beta
