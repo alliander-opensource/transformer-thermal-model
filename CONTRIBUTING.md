@@ -63,18 +63,17 @@ Please consider those requirements when contributing to our project.
 ### Set up
 
 1. Fork the repository
-2. Make sure you have `poetry` installed
-   ([documentation](https://python-poetry.org/docs/))
+2. Make sure you have `uv` installed
+   ([documentation](https://docs.astral.sh/uv/getting-started/installation/))
 3. Make sure you are on the correctly supported Python version (check
    `pyproject.toml`).
-4. Install dependencies using `poetry install --with dev`.
+4. Install dependencies using `uv sync --group dev`.
     - for contributions to the documentation page, make sure you install
-      the correct dependencies using `poetry install --with docs`, too.
-5. Activate the poetry shell: `poetry shell`.
 6. Set up pre-commit hooks: `pre-commit install`. Every time you commit, this
+      the correct dependencies using `uv sync --group docs`, too.
    will run hooks to ensure your code is properly formatted.
-7. Work on your contribution.
-8. [Make a PR with your fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork).
+6. Work on your contribution.
+7. [Make a PR with your fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork).
 
 ### During development
 
@@ -143,10 +142,10 @@ making in this PR), because ... .
 #### Working on the documentation
 
 Transformer Thermal Model uses [MkDocs](https://www.mkdocs.org/) for documentation. To install the dependencies with
-poetry, run:
+uv, run:
 
 ```bash
-poetry install --with docs
+uv sync --group docs
 ```
 
 Then you can run a local version of our documentation page with:

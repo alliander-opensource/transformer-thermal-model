@@ -46,15 +46,16 @@ docs = [
     "ipykernel>=6.29.5,<7",
 ]
 
-[tool.poetry.group.dev]
-optional = true
+[tool.uv]
+exclude-newer = "7 days"
 
-[tool.poetry.group.docs]
-optional = true
+[tool.uv.build-backend]
+module-name = "transformer_thermal_model"
+module-root = "."
 
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["uv_build>=0.11.21,<0.12.0"]
+build-backend = "uv_build"
 
 [tool.isort]
 profile = "black"
