@@ -60,7 +60,7 @@ e.g. `1.4.5-a2`
 Alpha software is not thoroughly tested by the developer before it is released
 to customers.
 
-Alpha software may not contain all of the features that are planned for the
+Alpha software may not contain all the features that are planned for the
 final version
 
 ### Beta
