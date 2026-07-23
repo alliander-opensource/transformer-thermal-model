@@ -69,15 +69,15 @@ Please consider those requirements when contributing to our project.
    `pyproject.toml`).
 4. Install dependencies using `uv sync --group dev`.
     - for contributions to the documentation page, make sure you install
-6. Set up pre-commit hooks: `pre-commit install`. Every time you commit, this
       the correct dependencies using `uv sync --group docs`, too.
+5. Set up pre-commit hooks: `uv run prek install`. Every time you commit, this
    will run hooks to ensure your code is properly formatted.
 6. Work on your contribution.
 7. [Make a PR with your fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork).
 
 ### During development
 
-To check if `pre-commit` was properly installed, run `pre-commit run -a`. You
+To check if `prek` was properly installed, run `prek run -a`. You
 should see the following:
 
 ```bash
@@ -86,7 +86,6 @@ ruff.....................................................................Passed
 ruff-format..............................................................Passed
 mypy.....................................................................Passed
 codespell................................................................Passed
-Poetry check.............................................................Passed
 markdownlint.............................................................Passed
 ```
 
