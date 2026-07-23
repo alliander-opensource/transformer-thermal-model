@@ -26,15 +26,6 @@ id = "mypy"
 additional_dependencies = ["pytest", "pytest-cov"]
 
 [[repos]]
-repo = "https://github.com/compilerla/conventional-pre-commit"
-rev = "v4.4.0"
-
-[[repos.hooks]]
-id = "conventional-pre-commit"
-stages = ["commit-msg"]
-args = []
-
-[[repos]]
 repo = "https://github.com/codespell-project/codespell"
 rev = "v2.4.2"
 
