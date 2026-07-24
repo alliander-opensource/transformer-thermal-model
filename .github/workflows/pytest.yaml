@@ -30,9 +30,12 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install uv
         run: pipx install --python python${{ env.PYTHON_VERSION }} uv==0.11.31
-      - name: Install the library using uv
+      - name: Install dependencies using uv
         shell: bash
-        run: uv sync --group dev --no-install-project --no-build --frozen
+        run: uv sync --group dev --group docs --no-install-project --no-build --frozen
+      - name: Show dependencies
+        shell: bash
+        run: uv tree --group dev --group docs --no-build --frozen
       - name: Unit tests
         if: ${{ hashFiles('tests/') != '' }}
         shell: bash
