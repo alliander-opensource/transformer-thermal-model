@@ -2934,7 +2934,7 @@ wheels = [
 
 [[package]]
 name = "transformer-thermal-model"
-version = "0.6.0"
+version = "0.6.1"
 source = { editable = "." }
 dependencies = [
     { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
@@ -2979,7 +2979,7 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "codespell", specifier = ">=2.4.2,<3" },
-    { name = "ipython", specifier = ">=9.14.0,<10" },
+    { name = "ipython", specifier = ">=9.14.1,<10" },
     { name = "isort", specifier = ">=8.0.1,<9" },
     { name = "mutmut", specifier = ">=3.6.0,<4" },
     { name = "mypy", specifier = ">=2.0.0" },
@@ -2991,14 +2991,14 @@ dev = [
 docs = [
     { name = "ipykernel", specifier = ">=6.29.5,<7" },
     { name = "jupyter-core", specifier = ">=5.8.1,<6" },
-    { name = "matplotlib", specifier = ">=3.10.3,<4" },
+    { name = "matplotlib", specifier = ">=3.11.0,<4" },
     { name = "mkdocs", specifier = ">=1.6.1,<2" },
     { name = "mkdocs-exclude", specifier = "==1.0.0" },
-    { name = "mkdocs-jupyter", specifier = ">=0.26.2,<0.27" },
+    { name = "mkdocs-jupyter", specifier = ">=0.26.3,<0.27" },
     { name = "mkdocs-llmstxt", specifier = ">=0.5.0,<0.6" },
     { name = "mkdocs-material", specifier = ">=9.7.6,<10" },
     { name = "mkdocs-mermaid2-plugin", specifier = ">=1.2.1,<2" },
-    { name = "mkdocstrings-python", specifier = ">=2.0.0,<3" },
+    { name = "mkdocstrings-python", specifier = ">=2.0.4,<3" },
     { name = "nbconvert", specifier = ">=7.16.6,<8" },
 ]
 
