@@ -8,7 +8,7 @@ on:
 jobs:
   build-package:
     runs-on:
-      group: managed
+      group: managed-linux
     permissions:
       contents: read
     steps:
@@ -36,7 +36,7 @@ jobs:
     needs:
     - build-package
     runs-on:
-      group: managed
+      group: managed-linux
     environment:
       name: pypi
       url: https://pypi.org/p/transformer-thermal-model
@@ -55,7 +55,7 @@ jobs:
     needs:
     - build-package
     runs-on:
-      group: managed
+      group: managed-linux
     permissions:
       contents: write
     steps:
