@@ -94,7 +94,7 @@ Please read
 [CODE_OF_CONDUCT](https://github.com/alliander-opensource/transformer-thermal-model/blob/main/CODE_OF_CONDUCT.md),
 [CONTRIBUTING](https://github.com/alliander-opensource/transformer-thermal-model/blob/main/CONTRIBUTING.md)
 and
-[PROJECT GOVERNANCE](https://github.com/alliander-opensource/transformer-thermal-model/blob/main/GOVERNANCE.md)
+[PROJECT GOVERNANCE](https://github.com/alliander-opensource/transformer-thermal-model/blob/main/PROJECT_GOVERNANCE.md)
 for details on the process
 for submitting pull requests to us.
 
