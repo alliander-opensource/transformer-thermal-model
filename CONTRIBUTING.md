@@ -89,7 +89,8 @@ codespell................................................................Passed
 markdownlint.............................................................Passed
 ```
 
-If any of these checks fail, make sure to make a new issue and notify us via
+If any of these checks fail try to clean your local prek with `prek clean`.
+If this does not resolve the issue make sure to make a new issue and notify us via
 the contact information below.
 
 Make sure to regularly run `pytest` during your work and after your changes.
