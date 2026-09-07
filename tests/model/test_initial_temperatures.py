@@ -190,6 +190,15 @@ def test_initial_load_stabilizes_temperature_threewindingtransformer(
     results_default = model_default.run()
 
     assert results.top_oil_temp_profile.iloc[0] > results_default.top_oil_temp_profile.iloc[0]
-    assert results.hot_spot_temp_profile.low_voltage_side.iloc[0] > results_default.top_oil_temp_profile.iloc[0]
-    assert results.hot_spot_temp_profile.middle_voltage_side.iloc[0] > results_default.top_oil_temp_profile.iloc[0]
-    assert results.hot_spot_temp_profile.high_voltage_side.iloc[0] > results_default.top_oil_temp_profile.iloc[0]
+    assert (
+        results.hot_spot_temp_profile.low_voltage_side.iloc[0]
+        > results_default.hot_spot_temp_profile.low_voltage_side.iloc[0]
+    )
+    assert (
+        results.hot_spot_temp_profile.middle_voltage_side.iloc[0]
+        > results_default.hot_spot_temp_profile.middle_voltage_side.iloc[0]
+    )
+    assert (
+        results.hot_spot_temp_profile.high_voltage_side.iloc[0]
+        > results_default.hot_spot_temp_profile.high_voltage_side.iloc[0]
+    )
