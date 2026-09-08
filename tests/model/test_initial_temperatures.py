@@ -12,7 +12,11 @@ import pytest
 
 from transformer_thermal_model.model import Model
 from transformer_thermal_model.schemas import InputProfile
-from transformer_thermal_model.schemas.thermal_model.initial_state import InitialLoad, InitialTopOilTemp
+from transformer_thermal_model.schemas.thermal_model.initial_state import (
+    InitialLoad,
+    InitialThreeWindingLoad,
+    InitialTopOilTemp,
+)
 
 
 @pytest.fixture
@@ -23,7 +27,9 @@ def base_input_profile():
     ambient_series = pd.Series(data=20, index=datetime_index)
 
     return InputProfile.create(
-        datetime_index=datetime_index, load_profile=load_series, ambient_temperature_profile=ambient_series
+        datetime_index=datetime_index,
+        load_profile=load_series,
+        ambient_temperature_profile=ambient_series,
     )
 
 
@@ -84,7 +90,9 @@ def test_multiple_init_temperatures_convergence(distribution_transformer):
     ambient_series = pd.Series(data=20, index=datetime_index)
 
     profile = InputProfile.create(
-        datetime_index=datetime_index, load_profile=load_series, ambient_temperature_profile=ambient_series
+        datetime_index=datetime_index,
+        load_profile=load_series,
+        ambient_temperature_profile=ambient_series,
     )
 
     init_temps = [20.0, 50.0, 80.0]
@@ -161,3 +169,36 @@ def test_initial_load_matches_profile_load(base_input_profile, distribution_tran
     top_oil_temps = results.top_oil_temp_profile.values
     temp_range = np.max(top_oil_temps) - np.min(top_oil_temps)
     assert temp_range < 0.001, "Temperature should not vary when initial load matches profile"
+
+
+def test_initial_load_stabilizes_temperature_threewindingtransformer(
+    three_winding_input_profile, threewinding_transformer
+):
+    """Test that initial_load parameter stabilizes the temperature at that load level."""
+    model = Model(
+        temperature_profile=three_winding_input_profile,
+        transformer=threewinding_transformer,
+        initial_condition=InitialThreeWindingLoad(lv_winding=0, mv_winding=1000, hv_winding=1000),
+    )
+    results = model.run()
+
+    # The initial temperatures should be higher than with default init
+    model_default = Model(
+        temperature_profile=three_winding_input_profile,
+        transformer=threewinding_transformer,
+    )
+    results_default = model_default.run()
+
+    assert results.top_oil_temp_profile.iloc[0] > results_default.top_oil_temp_profile.iloc[0]
+    assert (
+        results.hot_spot_temp_profile.low_voltage_side.iloc[0]
+        > results_default.hot_spot_temp_profile.low_voltage_side.iloc[0]
+    )
+    assert (
+        results.hot_spot_temp_profile.middle_voltage_side.iloc[0]
+        > results_default.hot_spot_temp_profile.middle_voltage_side.iloc[0]
+    )
+    assert (
+        results.hot_spot_temp_profile.high_voltage_side.iloc[0]
+        > results_default.hot_spot_temp_profile.high_voltage_side.iloc[0]
+    )

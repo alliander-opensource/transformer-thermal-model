@@ -15,15 +15,27 @@ from transformer_thermal_model.schemas import (
     UserTransformerSpecifications,
     WindingSpecifications,
 )
-from transformer_thermal_model.schemas.thermal_model.initial_state import InitialTopOilTemp
-from transformer_thermal_model.toolbox.temp_sim_profile_tools import create_temp_sim_profile_from_df
+from transformer_thermal_model.schemas.thermal_model.initial_state import (
+    InitialLoad,
+    InitialThreeWindingLoad,
+    InitialTopOilTemp,
+)
+from transformer_thermal_model.schemas.thermal_model.onaf_switch import (
+    ThreeWindingCoolingSwitchSettings,
+    ThreeWindingONANParameters,
+)
+from transformer_thermal_model.toolbox.temp_sim_profile_tools import (
+    create_temp_sim_profile_from_df,
+)
 from transformer_thermal_model.transformer import PowerTransformer
 from transformer_thermal_model.transformer.distribution import DistributionTransformer
 from transformer_thermal_model.transformer.threewinding import ThreeWindingTransformer
 
 
 @pytest.fixture
-def transformer(default_user_trafo_specs: UserTransformerSpecifications) -> PowerTransformer:
+def transformer(
+    default_user_trafo_specs: UserTransformerSpecifications,
+) -> PowerTransformer:
     """Create a transformer object with 0 losses."""
     zero_loss_transformer_specs = default_user_trafo_specs.model_copy(
         update={
@@ -46,7 +58,10 @@ def test_temp_rise_with_zero_load(transformer: PowerTransformer):
         }
     )
 
-    model = Model(temperature_profile=create_temp_sim_profile_from_df(profile), transformer=transformer)
+    model = Model(
+        temperature_profile=create_temp_sim_profile_from_df(profile),
+        transformer=transformer,
+    )
     result = model.run().convert_to_dataframe()
 
     assert result["top_oil_temperature"].equals(pd.Series([5.0, 5.0, 5.0], index=profile["timestamp"]))
@@ -70,7 +85,10 @@ def test_temp_rise_with_losses_and_zero_load(onan_power_transformer: PowerTransf
             "ambient_temperature": [5, 5, 5, 5, 5],
         }
     )
-    model = Model(temperature_profile=create_temp_sim_profile_from_df(profile), transformer=onan_power_transformer)
+    model = Model(
+        temperature_profile=create_temp_sim_profile_from_df(profile),
+        transformer=onan_power_transformer,
+    )
     result = model.run()
     top_oil_temp = np.array(result.top_oil_temp_profile)
     hot_spot_temp = np.array(result.hot_spot_temp_profile)
@@ -96,7 +114,10 @@ def test_temp_rise_to_ambient_temperature(transformer: PowerTransformer):
         }
     )
 
-    model = Model(temperature_profile=create_temp_sim_profile_from_df(profile), transformer=transformer)
+    model = Model(
+        temperature_profile=create_temp_sim_profile_from_df(profile),
+        transformer=transformer,
+    )
     result = model.run().convert_to_dataframe()
 
     assert result["top_oil_temperature"].equals(pd.Series([20.0, 30.0, 50.0], index=profile["timestamp"]))
@@ -113,7 +134,10 @@ def test_temp_rise_zero_timesteps(transformer: PowerTransformer):
         }
     )
 
-    model = Model(temperature_profile=create_temp_sim_profile_from_df(profile), transformer=transformer)
+    model = Model(
+        temperature_profile=create_temp_sim_profile_from_df(profile),
+        transformer=transformer,
+    )
     result = model.run().convert_to_dataframe()
 
     assert result["top_oil_temperature"].equals(pd.Series([20.0, 20.0, 20.0], index=profile["timestamp"]))
@@ -138,12 +162,19 @@ def test_good_result_with_large_time_steps(transformer: PowerTransformer):
         }
     )
 
-    model = Model(temperature_profile=create_temp_sim_profile_from_df(profile), transformer=transformer)
+    model = Model(
+        temperature_profile=create_temp_sim_profile_from_df(profile),
+        transformer=transformer,
+    )
     result = model.run().convert_to_dataframe()
 
     assert result["top_oil_temperature"].equals(
         pd.Series(
-            [20, 20 + transformer.specs.top_oil_temp_rise, 20 + transformer.specs.top_oil_temp_rise],
+            [
+                20,
+                20 + transformer.specs.top_oil_temp_rise,
+                20 + transformer.specs.top_oil_temp_rise,
+            ],
             index=profile["timestamp"],
         )
     )
@@ -154,7 +185,11 @@ def test_good_result_with_large_time_steps(transformer: PowerTransformer):
 
     assert result["hot_spot_temperature"].equals(
         pd.Series(
-            [20.0, 20.0 + flat_increase_for_long_period, 20.0 + flat_increase_for_long_period],
+            [
+                20.0,
+                20.0 + flat_increase_for_long_period,
+                20.0 + flat_increase_for_long_period,
+            ],
             index=profile["timestamp"],
         )
     )
@@ -170,12 +205,30 @@ def test_expected_rise_distribution(distribution_transformer: DistributionTransf
     profile = pd.DataFrame(
         {
             "timestamp": time_step_list,
-            "load": [1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 0, 0, 0, 0, 0, 0, 0, 0],
+            "load": [
+                1000,
+                1000,
+                1000,
+                1000,
+                1000,
+                1000,
+                1000,
+                1000,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+            ],
             "ambient_temperature": [ambient_temp] * len(time_step_list),
         }
     )
     thermal_model = Model(
-        temperature_profile=create_temp_sim_profile_from_df(profile), transformer=distribution_transformer
+        temperature_profile=create_temp_sim_profile_from_df(profile),
+        transformer=distribution_transformer,
     )
     results = thermal_model.run()
     top_oil_temp = np.array(results.top_oil_temp_profile)
@@ -231,7 +284,8 @@ def test_expected_rise_distribution(distribution_transformer: DistributionTransf
 
 
 def test_expected_rise_onan(
-    onan_power_transformer: PowerTransformer, onan_power_sample_profile_dataframe: pd.DataFrame
+    onan_power_transformer: PowerTransformer,
+    onan_power_sample_profile_dataframe: pd.DataFrame,
 ):
     """Test if the temperature rise matches the expected one."""
     thermal_model = Model(
@@ -306,12 +360,30 @@ def test_expected_rise_onaf(onaf_power_transformer: PowerTransformer):
     profile = pd.DataFrame(
         {
             "timestamp": time_step_list,
-            "load": [1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 0, 0, 0, 0, 0, 0, 0, 0],
+            "load": [
+                1000,
+                1000,
+                1000,
+                1000,
+                1000,
+                1000,
+                1000,
+                1000,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+            ],
             "ambient_temperature": [ambient_temp] * len(time_step_list),
         }
     )
     thermal_model = Model(
-        temperature_profile=create_temp_sim_profile_from_df(profile), transformer=onaf_power_transformer
+        temperature_profile=create_temp_sim_profile_from_df(profile),
+        transformer=onaf_power_transformer,
     )
     results = thermal_model.run()
     top_oil_temp = np.array(results.top_oil_temp_profile)
@@ -479,13 +551,25 @@ def test_three_winding_equals_power():
         no_load_loss=10000,
         amb_temp_surcharge=0,
         lv_winding=WindingSpecifications(
-            nom_load=1600, winding_oil_gradient=23, hot_spot_fac=1.3, time_const_winding=10, nom_power=150
+            nom_load=1600,
+            winding_oil_gradient=23,
+            hot_spot_fac=1.3,
+            time_const_winding=10,
+            nom_power=150,
         ),
         mv_winding=WindingSpecifications(
-            nom_load=1600, winding_oil_gradient=23, hot_spot_fac=1.3, time_const_winding=10, nom_power=150
+            nom_load=1600,
+            winding_oil_gradient=23,
+            hot_spot_fac=1.3,
+            time_const_winding=10,
+            nom_power=150,
         ),
         hv_winding=WindingSpecifications(
-            nom_load=1600, winding_oil_gradient=23, hot_spot_fac=1.3, time_const_winding=10, nom_power=150
+            nom_load=1600,
+            winding_oil_gradient=23,
+            hot_spot_fac=1.3,
+            time_const_winding=10,
+            nom_power=150,
         ),
         load_loss_hv_lv=20000,
         load_loss_hv_mv=20000,
@@ -504,7 +588,10 @@ def test_three_winding_equals_power():
     )
     power_transformer = PowerTransformer(user_specs=user_specs_power, cooling_type=CoolerType.ONAN)
 
-    model_three_winding = Model(temperature_profile=three_winding_profile_input, transformer=three_winding_transformer)
+    model_three_winding = Model(
+        temperature_profile=three_winding_profile_input,
+        transformer=three_winding_transformer,
+    )
     results_three_winding = model_three_winding.run()
 
     model_power = Model(temperature_profile=power_input_profile, transformer=power_transformer)
@@ -577,13 +664,25 @@ def test_integration_three_winding_transformer():
         no_load_loss=51740,
         amb_temp_surcharge=5,
         hv_winding=WindingSpecifications(
-            nom_load=384.9, winding_oil_gradient=17.6, hot_spot_fac=1.3, time_const_winding=7, nom_power=100
+            nom_load=384.9,
+            winding_oil_gradient=17.6,
+            hot_spot_fac=1.3,
+            time_const_winding=7,
+            nom_power=100,
         ),
         mv_winding=WindingSpecifications(
-            nom_load=879.8, winding_oil_gradient=18.6, hot_spot_fac=1.3, time_const_winding=7, nom_power=80
+            nom_load=879.8,
+            winding_oil_gradient=18.6,
+            hot_spot_fac=1.3,
+            time_const_winding=7,
+            nom_power=80,
         ),
         lv_winding=WindingSpecifications(
-            nom_load=1649.6, winding_oil_gradient=25.4, hot_spot_fac=1.3, time_const_winding=7, nom_power=30
+            nom_load=1649.6,
+            winding_oil_gradient=25.4,
+            hot_spot_fac=1.3,
+            time_const_winding=7,
+            nom_power=30,
         ),
         load_loss_hv_lv=63130.50999999999,
         load_loss_hv_mv=93661 + 184439,
@@ -685,3 +784,64 @@ def test_top_oil_input_three_winding(user_three_winding_transformer_specs, three
     assert sum(abs(top_oil_results.top_oil_temp_profile - results.top_oil_temp_profile)) > 1
     for side in ["high_voltage_side", "middle_voltage_side", "low_voltage_side"]:
         assert sum(abs(top_oil_results.hot_spot_temp_profile[side] - results.hot_spot_temp_profile[side])) > 1
+
+
+def test_check_config(
+    user_three_winding_transformer_specs: UserThreeWindingTransformerSpecifications,
+    distribution_transformer: DistributionTransformer,
+    threewinding_transformer: ThreeWindingTransformer,
+    three_winding_input_profile: ThreeWindingInputProfile,
+    iec_load_profile: InputProfile,
+    three_winding_onan_parameters: ThreeWindingONANParameters,
+):
+    """Test if the model raises errors for invalid configurations."""
+    with pytest.raises(
+        ValueError,
+        match="A ThreeWindingTransformer requires a ThreeWindingInputProfile.",
+    ):
+        Model(temperature_profile=iec_load_profile, transformer=threewinding_transformer)
+    with pytest.raises(ValueError, match="A DistributionTransformer requires an InputProfile"):
+        Model(
+            temperature_profile=three_winding_input_profile,
+            transformer=distribution_transformer,
+        )
+
+    with pytest.raises(
+        ValueError,
+        match="The length of the fan_on list in the cooling_switch_settings must be equal to the length of the "
+        "temperature profile.",
+    ):
+        onaf_switch = ThreeWindingCoolingSwitchSettings(
+            fan_on=np.array([0, 3, 2]),  # This is too short
+            temperature_threshold=None,
+            onan_parameters=three_winding_onan_parameters,
+        )
+        three_winding_onaf_transformer = ThreeWindingTransformer(
+            user_specs=user_three_winding_transformer_specs,
+            cooling_type=CoolerType.ONAF,
+            cooling_switch_settings=onaf_switch,
+        )
+        Model(
+            temperature_profile=three_winding_input_profile,
+            transformer=three_winding_onaf_transformer,
+        )
+
+    with pytest.raises(
+        ValueError,
+        match="An InitialThreeWindingLoad requires a ThreeWindingTransformer",
+    ):
+        Model(
+            temperature_profile=iec_load_profile,
+            transformer=distribution_transformer,
+            initial_condition=InitialThreeWindingLoad(hv_winding=200, mv_winding=200, lv_winding=0),
+        )
+
+    with pytest.raises(
+        ValueError,
+        match="The InitialLoad is not made for a ThreeWindingTransformers, use InitialThreeWindingLoad instead.",
+    ):
+        Model(
+            temperature_profile=three_winding_input_profile,
+            transformer=threewinding_transformer,
+            initial_condition=InitialLoad(initial_load=500.0),
+        )

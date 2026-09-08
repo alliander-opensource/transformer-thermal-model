@@ -13,8 +13,12 @@ from transformer_thermal_model.schemas import (
     ThreeWindingTransformerSpecifications,
     UserThreeWindingTransformerSpecifications,
 )
-from transformer_thermal_model.schemas.thermal_model.onaf_switch import ThreeWindingCoolingSwitchSettings
-from transformer_thermal_model.transformer.cooling_switch_controller import CoolingSwitchController
+from transformer_thermal_model.schemas.thermal_model.onaf_switch import (
+    ThreeWindingCoolingSwitchSettings,
+)
+from transformer_thermal_model.transformer.cooling_switch_controller import (
+    CoolingSwitchController,
+)
 
 from .base import Transformer
 
@@ -48,7 +52,7 @@ class ThreeWindingTransformer(Transformer):
     >>> # the combination of the user specifications and the default specifications
     >>> print(transformer.specs)
     no_load_loss=20.0 amb_temp_surcharge=10.0 time_const_oil=210.0 top_oil_temp_rise=60.0
-    oil_const_k11=0.5 winding_const_k21=2 winding_const_k22=2 oil_exp_x=0.8 winding_exp_y=1.3
+    oil_const_k11=0.5 winding_const_k21=2.0 winding_const_k22=2.0 oil_exp_x=0.8 winding_exp_y=1.3
     end_temp_reduction=0.0
     lv_winding=WindingSpecifications(winding_oil_gradient=20.0, time_const_winding=1.0, hot_spot_fac=1.2,
       nom_load=1000.0, nom_power=1000.0)
@@ -131,11 +135,11 @@ class ThreeWindingTransformer(Transformer):
         """Calculate the internal temperature of the transformer."""
         return ambient_temperature + self.specs.amb_temp_surcharge
 
-    def _end_temperature_top_oil(self, load_profile: np.ndarray) -> float:
+    def _end_temperature_top_oil(self, load: np.ndarray) -> float:
         """Calculate the steady-state temperature of the top-oil."""
-        lv_rise = self.specs._get_loss_lc() * np.power(load_profile[0] / self.specs.lv_winding.nom_load, 2)
-        mv_rise = self.specs._get_loss_mc() * np.power(load_profile[1] / self.specs.mv_winding.nom_load, 2)
-        hv_rise = self.specs._get_loss_hc() * np.power(load_profile[2] / self.specs.hv_winding.nom_load, 2)
+        lv_rise = self.specs._get_loss_lc() * np.power(load[0] / self.specs.lv_winding.nom_load, 2)
+        mv_rise = self.specs._get_loss_mc() * np.power(load[1] / self.specs.mv_winding.nom_load, 2)
+        hv_rise = self.specs._get_loss_hc() * np.power(load[2] / self.specs.hv_winding.nom_load, 2)
 
         total_loss_ratio = (self.specs.no_load_loss + hv_rise + mv_rise + lv_rise) / self.specs.load_loss_total
 
