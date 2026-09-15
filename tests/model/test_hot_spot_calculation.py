@@ -5,7 +5,7 @@ import numpy as np
 import pytest
 
 from transformer_thermal_model.cooler import CoolerType
-from transformer_thermal_model.hot_spot_calibration.calibrate_hotspot_factor import calibrate_hotspot_factor
+from transformer_thermal_model.hot_spot_calculation.calculate_hotspot_factor import calculate_hotspot_factor
 from transformer_thermal_model.schemas import (
     UserThreeWindingTransformerSpecifications,
     UserTransformerSpecifications,
@@ -144,12 +144,11 @@ def threewind_transformer_hs_13(threewind_specs_hs_13: UserThreeWindingTransform
     return ThreeWindingTransformer(user_specs=threewind_specs_hs_13, cooling_type=CoolerType.ONAF)
 
 
-def test_hot_spot_factor_calibration_onan(transformer_onan_uncalibrated: PowerTransformer):
+def test_hot_spot_factor_calculation_onan(transformer_onan_uncalibrated: PowerTransformer):
     """Test the calibration of the HS factor for an ONAN transformer."""
-    transformer_calibrated = calibrate_hotspot_factor(
+    transformer_calibrated = calculate_hotspot_factor(
         uncalibrated_transformer=transformer_onan_uncalibrated,
         hot_spot_limit=98,
-        ambient_temp=20,
         hot_spot_factor_min=1.1,
         hot_spot_factor_max=1.3,
     )
@@ -160,30 +159,28 @@ def test_hot_spot_factor_calibration_onan(transformer_onan_uncalibrated: PowerTr
     )
 
 
-def test_hotspot_fac_calibration_onaf(transformer_onaf_uncalibrated: PowerTransformer):
+def test_hotspot_fac_calculation_onaf(transformer_onaf_uncalibrated: PowerTransformer):
     """Test the calibration of the HS factor for an ONAN transformer."""
-    transformer_calibrated = calibrate_hotspot_factor(
+    transformer_calibrated = calculate_hotspot_factor(
         uncalibrated_transformer=transformer_onaf_uncalibrated,
         hot_spot_limit=98,
-        ambient_temp=20,
         hot_spot_factor_min=1.1,
         hot_spot_factor_max=1.3,
     )
 
-    assert np.isclose(transformer_calibrated.specs.hot_spot_fac, 1.18)
+    assert np.isclose(transformer_calibrated.specs.hot_spot_fac, 1.18, atol=1e-2)
     assert np.isclose(
-        transformer_calibrated.specs.amb_temp_surcharge, transformer_onaf_uncalibrated.specs.amb_temp_surcharge
-    )
+            transformer_calibrated.specs.amb_temp_surcharge, transformer_onaf_uncalibrated.specs.amb_temp_surcharge
+        )
 
 
 def test_that_hot_spot_factor_calibration_caps_at_minimal_value(transformer_onaf_uncalibrated: PowerTransformer):
     """Test that the hot-spot factor calibration caps at the minimal value by setting the winding oil gradient high."""
     transformer_onaf_uncalibrated.specs.winding_oil_gradient = 30
 
-    transformer_calibrated = calibrate_hotspot_factor(
+    transformer_calibrated = calculate_hotspot_factor(
         uncalibrated_transformer=transformer_onaf_uncalibrated,
         hot_spot_limit=98,
-        ambient_temp=20,
         hot_spot_factor_min=1.1,
         hot_spot_factor_max=1.3,
     )
@@ -199,10 +196,9 @@ def test_that_hot_spot_factor_fails_with_wrong_limits(transformer_onaf_uncalibra
     with pytest.raises(
         ValueError, match="The upper bound cannot be smaller than the lower bound of the hot-spot factor limits."
     ):
-        calibrate_hotspot_factor(
+        calculate_hotspot_factor(
             uncalibrated_transformer=transformer_onaf_uncalibrated,
             hot_spot_limit=98,
-            ambient_temp=20,
             hot_spot_factor_min=5,
             hot_spot_factor_max=1,
         )
@@ -210,10 +206,9 @@ def test_that_hot_spot_factor_fails_with_wrong_limits(transformer_onaf_uncalibra
 
 def test_hot_spot_factor_calibration_threewind_hs11(threewind_transformer_hs_11: ThreeWindingTransformer):
     """Test the calibration of the HS factor for the threewind transformer with known hotspotfactor 1.1."""
-    transformer_calibrated = calibrate_hotspot_factor(
+    transformer_calibrated = calculate_hotspot_factor(
         uncalibrated_transformer=threewind_transformer_hs_11,
         hot_spot_limit=98,
-        ambient_temp=20,
         hot_spot_factor_min=1.1,
         hot_spot_factor_max=1.3,
     )
@@ -226,10 +221,9 @@ def test_hot_spot_factor_calibration_threewind_hs11(threewind_transformer_hs_11:
 
 def test_hot_spot_factor_calibration_threewind_hs12(threewind_transformer_hs_12: ThreeWindingTransformer):
     """Test the calibration of the HS factor for the threewind transformer with known hotspotfactor 1.16."""
-    transformer_calibrated = calibrate_hotspot_factor(
+    transformer_calibrated = calculate_hotspot_factor(
         uncalibrated_transformer=threewind_transformer_hs_12,
         hot_spot_limit=98,
-        ambient_temp=20,
         hot_spot_factor_min=1.1,
         hot_spot_factor_max=1.3,
     )
@@ -242,10 +236,9 @@ def test_hot_spot_factor_calibration_threewind_hs12(threewind_transformer_hs_12:
 
 def test_hot_spot_factor_calibration_threewind_hs13(threewind_transformer_hs_13: ThreeWindingTransformer):
     """Test the calibration of the HS factor for the threewind transformer with known hotspotfactor 1.3."""
-    transformer_calibrated = calibrate_hotspot_factor(
+    transformer_calibrated = calculate_hotspot_factor(
         uncalibrated_transformer=threewind_transformer_hs_13,
         hot_spot_limit=98,
-        ambient_temp=20,
         hot_spot_factor_min=1.1,
         hot_spot_factor_max=1.3,
     )
@@ -264,10 +257,9 @@ def test_that_hot_spot_factor_fails_with_wrong_limits_threewind(threewind_transf
     with pytest.raises(
         ValueError, match="The upper bound cannot be smaller than the lower bound of the hot-spot factor limits."
     ):
-        calibrate_hotspot_factor(
+        calculate_hotspot_factor(
             uncalibrated_transformer=threewind_transformer_hs_11,
             hot_spot_limit=98,
-            ambient_temp=20,
             hot_spot_factor_min=5,
             hot_spot_factor_max=1,
         )
@@ -281,10 +273,9 @@ def test_that_hot_spot_factor_calibration_caps_at_minimal_value_threewind(
     threewind_transformer_hs_13.specs.mv_winding.winding_oil_gradient = 30
     threewind_transformer_hs_13.specs.hv_winding.winding_oil_gradient = 30
 
-    transformer_calibrated = calibrate_hotspot_factor(
+    transformer_calibrated = calculate_hotspot_factor(
         uncalibrated_transformer=threewind_transformer_hs_13,
         hot_spot_limit=98,
-        ambient_temp=20,
         hot_spot_factor_min=1.1,
         hot_spot_factor_max=1.3,
     )

@@ -30,7 +30,7 @@ the thermal model;
 - `transformer_thermal_model.cooler`: a module containing the enumerators to define the cooler type of the transformer;
 - `transformer_thermal_model.schemas`: in schemas one can find a.o. the definition of the model interfaces and how the
 transformer specificitations should be specified;
-- `transformer_thermal_model.hot_spot_calibration`: a module that is used to
+- `transformer_thermal_model.hot_spot_calculation`: a module that is used to
 determine the transformer hot-spot factor to be used in the thermal model.
 
 The following modules contain elements that are not required for thermal modelling but are used to get more insight in
@@ -103,7 +103,7 @@ transformer-specifically defined (_the ones with a '*' are mandatory_):
 winding and average oil temperature under nominal conditions
 - `hot_spot_fac`: factor determining the temperature difference
 between top-oil and hot-spot. Only specify when known, otherwise see [hot-spot
-factor calibration](#hot-spot-factor-calibration-for-power-transformers).
+factor calculation](#hot-spot-factor-calculation-for-power-transformers).
 
 #### Cooler
 
@@ -130,26 +130,26 @@ onaf_trafo = PowerTransformer(user_specs = tr_specs, cooling_type = CoolerType.O
 onan_trafo = PowerTransformer(user_specs = tr_specs, cooling_type = CoolerType.ONAN)
 ```
 
-#### Hot-spot factor calibration for power transformers
+#### Hot-spot factor calculation for power transformers
 
 When the hot-spot factor of a transformer is known, it can be given as a
-specification as `hot_spot_fact` in a `UserTransformerSpecifications`
+specification as `hot_spot_fac` in a `UserTransformerSpecifications`
 object.
 
 It often occurs, however, that a transformer hot-spot factor is not
-known. If this is the case, a hot-spot factor calibration can be performed to determine
+known. If this is the case, a hot-spot factor calculation can be performed to determine
 the hot-spot factor of a given `PowerTransformer` object. Note that for
-`DistributionTransformer` objects, hot-spot calibrations _**should not be performed**_ and the
+`DistributionTransformer` objects, hot-spot calculations _**should not be performed**_ and the
 default value can be used. For both the `PowerTransformer` and the `DistributionTransformer` the `hot_spot_fac`
 in the specification is set to the default value of no hot-spot factor is provided via the `UserTransformerSpecifications`.
 
-The following example shows how to calibrate a `PowerTransformer` object.
+The following example shows how to calculate a `PowerTransformer` object.
 
 ```Python
 from transformer_thermal_model.cooler import CoolerType
 from transformer_thermal_model.schemas import UserTransformerSpecifications
 from transformer_thermal_model.transformer import PowerTransformer
-from transformer_thermal_model.hot_spot_calibration import calibrate_hotspot_factor
+from transformer_thermal_model.hot_spot_calculation import calculate_hotspot_factor
 
 tr_specs = UserTransformerSpecifications(
    load_loss=1000,  # Transformer load loss [W]
@@ -158,9 +158,8 @@ tr_specs = UserTransformerSpecifications(
    amb_temp_surcharge=20,  # Ambient temperature surcharge [K]
 )
 uncalibrated_transformer = PowerTransformer(user_specs=tr_specs, cooling_type=CoolerType.ONAF)
-calibrated_trafo = calibrate_hotspot_factor(
+calibrated_trafo = calculate_hotspot_factor(
    uncalibrated_transformer=uncalibrated_transformer,
-   ambient_temp=20.0,
    hot_spot_limit=98, # in most cases a hot-spot temperature limit of 98 can be used
    hot_spot_factor_min=1.1,
    hot_spot_factor_max=1.3,

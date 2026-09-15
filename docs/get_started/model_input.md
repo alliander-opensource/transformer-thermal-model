@@ -97,8 +97,8 @@ worst-case hot-spot factor of 1.3 can be used. It is generally expected that the
 the hot-spot factor can be much higher. This is due to the use of solid wire, where eddy current losses in the upper
 regions of the windings are higher than with modern CTC wire (= continuously transposed conductor).
 
-- **Hot-spot factor calibration**: The hot-spot factor can be calibrated using the model. For more information, see
-[Hot-spot factor calibration](../theoretical_documentation/hotspot_calibration.md).
+- **Hot-spot factor calculation**: The hot-spot factor can be calculated using the model. For more information, see
+[Hot-spot factor calculation](../theoretical_documentation/hotspot_calculation.md).
 
 ### Cooling type
 

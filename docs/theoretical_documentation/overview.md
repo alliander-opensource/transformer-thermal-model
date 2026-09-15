@@ -15,7 +15,7 @@ used in the package.
 - [Thermal limits](temperature_limits.md): definitions of thermal limits as prescribed by the loading guide.
 - [Model input](../get_started/model_input.md): Detailed descriptions of all the transformer specifications needed for thermal
 modelling.
-- [Hot-spot factor calibration](hotspot_calibration.md): method for determining the hot-spot factor when unknown.
+- [Hot-spot factor calculation](hotspot_calculation.md): method for determining the hot-spot factor when unknown.
 - [Potential model improvements](model_improvements.md): Ideas for increasing model accuracy that have not yet been
 implemented.
 
