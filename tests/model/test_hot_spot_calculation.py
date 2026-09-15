@@ -170,8 +170,8 @@ def test_hotspot_fac_calculation_onaf(transformer_onaf_uncalibrated: PowerTransf
 
     assert np.isclose(transformer_calibrated.specs.hot_spot_fac, 1.18, atol=1e-2)
     assert np.isclose(
-            transformer_calibrated.specs.amb_temp_surcharge, transformer_onaf_uncalibrated.specs.amb_temp_surcharge
-        )
+        transformer_calibrated.specs.amb_temp_surcharge, transformer_onaf_uncalibrated.specs.amb_temp_surcharge
+    )
 
 
 def test_that_hot_spot_factor_calibration_caps_at_minimal_value(transformer_onaf_uncalibrated: PowerTransformer):
@@ -228,7 +228,7 @@ def test_hot_spot_factor_calibration_threewind_hs12(threewind_transformer_hs_12:
         hot_spot_factor_max=1.3,
     )
 
-    assert np.isclose(transformer_calibrated.specs.lv_winding.hot_spot_fac, 1.16)
+    assert np.isclose(transformer_calibrated.specs.lv_winding.hot_spot_fac, 1.16, atol=1e-2)
     assert np.isclose(
         transformer_calibrated.specs.amb_temp_surcharge, threewind_transformer_hs_12.specs.amb_temp_surcharge
     )

@@ -45,17 +45,22 @@ def calculate_hotspot_factor(
         )
 
     if isinstance(uncalibrated_transformer, ThreeWindingTransformer):
-        winding_oil_gradient = min(uncalibrated_transformer.specs.lv_winding.winding_oil_gradient, 
-                                   uncalibrated_transformer.specs.mv_winding.winding_oil_gradient, 
-                                   uncalibrated_transformer.specs.hv_winding.winding_oil_gradient)
+        lv_winding_gradient = uncalibrated_transformer.specs.lv_winding.winding_oil_gradient
+        mv_winding_gradient = uncalibrated_transformer.specs.mv_winding.winding_oil_gradient
+        hv_winding_gradient = uncalibrated_transformer.specs.hv_winding.winding_oil_gradient
+        if lv_winding_gradient is None or mv_winding_gradient is None or hv_winding_gradient is None:
+            raise ValueError("Winding oil gradients must be specified for all three windings.")
+        winding_oil_gradient = max(
+            lv_winding_gradient,
+            mv_winding_gradient,
+            hv_winding_gradient,
+        )
 
     else:
         winding_oil_gradient = uncalibrated_transformer.specs.winding_oil_gradient
     reference_ambient_temperature = 20.0
     hot_spot_factor = (
-        hot_spot_limit
-        - reference_ambient_temperature
-        - uncalibrated_transformer.specs.top_oil_temp_rise
+        hot_spot_limit - reference_ambient_temperature - uncalibrated_transformer.specs.top_oil_temp_rise
     ) / winding_oil_gradient
 
     calibrated_hot_spot_factor = np.clip(hot_spot_factor, a_min=hot_spot_factor_min, a_max=hot_spot_factor_max)
