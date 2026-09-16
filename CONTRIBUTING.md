@@ -73,7 +73,8 @@ Please consider those requirements when contributing to our project.
 5. Set up pre-commit hooks: `uv run prek install`. Every time you commit, this
    will run hooks to ensure your code is properly formatted.
 6. Work on your contribution.
-7. [Make a PR with your fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork).
+7. Commit using commit signoff (-s)
+8. [Make a PR with your fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork).
 
 ### During development
 
@@ -89,7 +90,8 @@ codespell................................................................Passed
 markdownlint.............................................................Passed
 ```
 
-If any of these checks fail, make sure to make a new issue and notify us via
+If any of these checks fail try to clean your local prek with `prek clean`.
+If this does not resolve the issue make sure to make a new issue and notify us via
 the contact information below.
 
 Make sure to regularly run `pytest` during your work and after your changes.

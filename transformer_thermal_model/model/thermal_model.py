@@ -12,6 +12,7 @@ from transformer_thermal_model.schemas.thermal_model.initial_state import (
     ColdStart,
     InitialLoad,
     InitialState,
+    InitialThreeWindingLoad,
     InitialTopOilTemp,
 )
 from transformer_thermal_model.schemas.thermal_model.input_profile import (
@@ -107,15 +108,15 @@ class Model:
         self.check_config()
 
     def check_config(self) -> None:
-        """Check if the combination of the transformer and input profile are valid."""
+        """Check if the combination of the transformer, initial load and input profile are valid."""
         if isinstance(self.transformer, ThreeWindingTransformer) and not isinstance(
             self.data, ThreeWindingInputProfile
         ):
             raise ValueError("A ThreeWindingTransformer requires a ThreeWindingInputProfile.")
-        elif isinstance(self.transformer, PowerTransformer) and not isinstance(self.data, InputProfile):
-            raise ValueError("A PowerTransformer requires an InputProfile.")
-        elif isinstance(self.transformer, DistributionTransformer) and not isinstance(self.data, InputProfile):
-            raise ValueError("A DistributionTransformer requires an InputProfile.")
+        elif isinstance(self.transformer, (PowerTransformer, DistributionTransformer)) and not isinstance(
+            self.data, InputProfile
+        ):
+            raise ValueError(f"A {type(self.transformer).__name__} requires an InputProfile.")
         if (
             self.transformer.cooling_controller
             and self.transformer.cooling_controller.onaf_switch.fan_on is not None
@@ -124,6 +125,14 @@ class Model:
             raise ValueError(
                 "The length of the fan_on list in the cooling_switch_settings must be equal to the length of the "
                 "temperature profile."
+            )
+        if isinstance(self.initial_condition, InitialThreeWindingLoad) and not isinstance(
+            self.transformer, ThreeWindingTransformer
+        ):
+            raise ValueError("An InitialThreeWindingLoad requires a ThreeWindingTransformer")
+        if isinstance(self.initial_condition, InitialLoad) and isinstance(self.transformer, ThreeWindingTransformer):
+            raise ValueError(
+                "The InitialLoad is not made for a ThreeWindingTransformers, use InitialThreeWindingLoad instead."
             )
 
     def _get_time_step(self) -> np.ndarray:
@@ -183,17 +192,26 @@ class Model:
                 top_k = self.transformer._end_temperature_top_oil(load=np.array([self.initial_condition.initial_load]))
 
                 return top_k + first_surrounding_temp
+            case InitialThreeWindingLoad():
+                top_k = self.transformer._end_temperature_top_oil(load=self.initial_condition.initial_load)
+                return top_k + first_surrounding_temp
+
             case ColdStart():
                 return first_surrounding_temp
             case _:
                 raise TypeError(f"Unsupported type: {type(self.initial_condition)}")
 
-    def get_initial_hot_spot_increase(self) -> float:
+    def get_initial_hot_spot_increase(self, profile: int | None = None) -> float:
         """Function that returns the hot spot temp for the first timestep."""
         match self.initial_condition:
             case InitialLoad():
                 static_hot_spot_incr = self._calculate_static_hot_spot_increase(
                     np.array([self.initial_condition.initial_load])
+                )[0]
+                return static_hot_spot_incr
+            case InitialThreeWindingLoad():
+                static_hot_spot_incr = self._calculate_static_hot_spot_increase(
+                    self.initial_condition.initial_load[profile]
                 )[0]
                 return static_hot_spot_incr
             case _:
@@ -224,9 +242,9 @@ class Model:
         for i in range(1, len(t_internal)):
             f1 = self._calculate_f1(dt[i], self.transformer.specs.time_const_oil)
             if load.ndim == 1:
-                top_k = self.transformer._end_temperature_top_oil(np.array([load[i]]))
+                top_k = self.transformer._end_temperature_top_oil(load=np.array([load[i]]))
             else:
-                top_k = self.transformer._end_temperature_top_oil(load[:, i])
+                top_k = self.transformer._end_temperature_top_oil(load=load[:, i])
             top_oil_temp_profile[i] = self._update_top_oil_temp(top_oil_temp_profile[i - 1], t_internal[i], top_k, f1)
 
             # Check whether we need to activate/deactivate cooling and update specifications accordingly
@@ -257,23 +275,28 @@ class Model:
                 - For three-winding transformers, returns a 2D array of shape (3, n_steps),
                   where each row corresponds to one winding: [low_voltage_side, middle_voltage_side, high_voltage_side].
         """
-        hot_spot_temp_profile = np.zeros_like(load, dtype=np.float64)
-
-        # For a two winding transformer:
+        # For a two winding transformer, loaf is 1D, change to 2D for consistency in calculations:
         if load.ndim == 1:
-            self.transformer.set_ONAN_ONAF_first_timestamp(init_top_oil_temp=top_oil_temp_profile[0])
-            hot_spot_increase_windings = np.zeros_like(load)
-            hot_spot_increase_oil = np.zeros_like(load)
+            load = np.array([load])
+        n_steps = load.shape[1]
+        n_profiles = load.shape[0]
 
-            init_hot_spot_incr = self.get_initial_hot_spot_increase()
+        hot_spot_temp_profile = np.zeros_like(load, dtype=np.float64)
+        self.transformer.set_ONAN_ONAF_first_timestamp(init_top_oil_temp=top_oil_temp_profile[0])
+
+        for profile in range(n_profiles):
+            hot_spot_increase_windings = np.zeros(n_steps)
+            hot_spot_increase_oil = np.zeros(n_steps)
+
+            init_hot_spot_incr = self.get_initial_hot_spot_increase(profile)
             hot_spot_increase_windings[0] = init_hot_spot_incr * self.transformer.specs.winding_const_k21
             hot_spot_increase_oil[0] = init_hot_spot_incr * (self.transformer.specs.winding_const_k21 - 1)
-            hot_spot_temp_profile[0] = (
+            hot_spot_temp_profile[profile, 0] = (
                 top_oil_temp_profile[0] + hot_spot_increase_windings[0] - hot_spot_increase_oil[0]
             )
 
-            for i in range(1, len(load)):
-                static_hot_spot_incr = self._calculate_static_hot_spot_increase(np.array([load[i]]))[0]
+            for i in range(1, n_steps):
+                static_hot_spot_incr = self._calculate_static_hot_spot_increase(load[profile, i])
                 static_hot_spot_incr_windings = static_hot_spot_incr * self.transformer.specs.winding_const_k21
                 static_hot_spot_incr_oil = static_hot_spot_incr * (self.transformer.specs.winding_const_k21 - 1)
 
@@ -281,12 +304,16 @@ class Model:
                 f2_oil = self._calculate_f2_oil(dt[i], self.transformer.specs.time_const_oil)
 
                 hot_spot_increase_windings[i] = self._update_hot_spot_increase(
-                    hot_spot_increase_windings[i - 1], static_hot_spot_incr_windings, f2_windings[0]
+                    hot_spot_increase_windings[i - 1],
+                    static_hot_spot_incr_windings[profile],
+                    f2_windings[profile],
                 )
                 hot_spot_increase_oil[i] = self._update_hot_spot_increase(
-                    hot_spot_increase_oil[i - 1], static_hot_spot_incr_oil, f2_oil
+                    hot_spot_increase_oil[i - 1],
+                    static_hot_spot_incr_oil[profile],
+                    f2_oil,
                 )
-                hot_spot_temp_profile[i] = (
+                hot_spot_temp_profile[profile, i] = (
                     top_oil_temp_profile[i] + hot_spot_increase_windings[i] - hot_spot_increase_oil[i]
                 )
                 # Check whether we need to activate/deactivate cooling and update specifications accordingly
@@ -295,41 +322,6 @@ class Model:
                 )
                 if new_specs:
                     self.transformer.specs = new_specs
-
-        # For a three winding transformer with multiple load profiles:
-        else:
-            hot_spot_temp_profile[:, 0] = top_oil_temp_profile[0]
-            n_profiles = load.shape[0]
-            n_steps = load.shape[1]
-            for profile in range(n_profiles):
-                self.transformer.set_ONAN_ONAF_first_timestamp(init_top_oil_temp=top_oil_temp_profile[0])
-                hot_spot_increase_windings = np.zeros(n_steps)
-                hot_spot_increase_oil = np.zeros(n_steps)
-                for i in range(1, n_steps):
-                    static_hot_spot_incr = self._calculate_static_hot_spot_increase(load[:, i])
-                    static_hot_spot_incr_windings = static_hot_spot_incr * self.transformer.specs.winding_const_k21
-                    static_hot_spot_incr_oil = static_hot_spot_incr * (self.transformer.specs.winding_const_k21 - 1)
-
-                    f2_windings = self._calculate_f2_winding(dt[i], self.transformer.specs.time_const_windings_array)
-                    f2_oil = self._calculate_f2_oil(dt[i], self.transformer.specs.time_const_oil)
-
-                    hot_spot_increase_windings[i] = self._update_hot_spot_increase(
-                        hot_spot_increase_windings[i - 1],
-                        static_hot_spot_incr_windings[profile],
-                        f2_windings[profile].item(),
-                    )
-                    hot_spot_increase_oil[i] = self._update_hot_spot_increase(
-                        hot_spot_increase_oil[i - 1], static_hot_spot_incr_oil[profile], f2_oil
-                    )
-                    hot_spot_temp_profile[profile, i] = (
-                        top_oil_temp_profile[i] + hot_spot_increase_windings[i] - hot_spot_increase_oil[i]
-                    )
-                    # Check whether we need to activate/deactivate cooling and update specifications accordingly
-                    new_specs = self.transformer.set_cooling_switch_controller_specs(
-                        top_oil_temp_profile[i], top_oil_temp_profile[i - 1], i
-                    )
-                    if new_specs:
-                        self.transformer.specs = new_specs
 
         return hot_spot_temp_profile
 
@@ -386,7 +378,11 @@ class Model:
                 top_oil_temp_profile=pd.Series(top_oil_temp_profile, index=self.data.datetime_index),
                 hot_spot_temp_profile=pd.DataFrame(
                     hot_spot_temp_profile.transpose(),
-                    columns=["low_voltage_side", "middle_voltage_side", "high_voltage_side"],
+                    columns=[
+                        "low_voltage_side",
+                        "middle_voltage_side",
+                        "high_voltage_side",
+                    ],
                     index=self.data.datetime_index,
                 ),
             )
@@ -394,5 +390,5 @@ class Model:
             # For a two winding transformer, hot_spot_temp_profile is a Series
             return OutputProfile(
                 top_oil_temp_profile=pd.Series(top_oil_temp_profile, index=self.data.datetime_index),
-                hot_spot_temp_profile=pd.Series(hot_spot_temp_profile, index=self.data.datetime_index),
+                hot_spot_temp_profile=pd.Series(hot_spot_temp_profile[0], index=self.data.datetime_index),
             )

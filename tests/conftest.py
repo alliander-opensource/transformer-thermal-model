@@ -13,7 +13,14 @@ from transformer_thermal_model.schemas import (
     UserTransformerSpecifications,
     WindingSpecifications,
 )
-from transformer_thermal_model.transformer import DistributionTransformer, PowerTransformer
+from transformer_thermal_model.schemas.thermal_model.onaf_switch import (
+    ThreeWindingONANParameters,
+)
+from transformer_thermal_model.transformer import (
+    DistributionTransformer,
+    PowerTransformer,
+    ThreeWindingTransformer,
+)
 
 
 @pytest.fixture(scope="function")
@@ -120,6 +127,14 @@ def user_three_winding_transformer_specs() -> UserThreeWindingTransformerSpecifi
 
 
 @pytest.fixture(scope="function")
+def threewinding_transformer(
+    user_three_winding_transformer_specs,
+) -> ThreeWindingTransformer:
+    """Create a threewinding transformer object."""
+    return ThreeWindingTransformer(user_specs=user_three_winding_transformer_specs, cooling_type=CoolerType.ONAN)
+
+
+@pytest.fixture(scope="function")
 def three_winding_input_profile() -> ThreeWindingInputProfile:
     """Create a three-winding input profile."""
     data_points = 4 * 24 * 7
@@ -146,7 +161,24 @@ def onan_power_sample_profile_dataframe(onan_power_transformer):
     profile = pd.DataFrame(
         {
             "timestamp": time_step_list,
-            "load": [1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 0, 0, 0, 0, 0, 0, 0, 0],
+            "load": [
+                1000,
+                1000,
+                1000,
+                1000,
+                1000,
+                1000,
+                1000,
+                1000,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+            ],
             "ambient_temperature": [ambient_temp] * len(time_step_list),
         }
     )
@@ -178,4 +210,37 @@ def constant_load_profile_minutes():
         datetime_index=datetime_index,
         ambient_temperature_profile=ambient_temperature_profile,
         load_profile=load_profile,
+    )
+
+
+@pytest.fixture(scope="function")
+def three_winding_onan_parameters():
+    """Example of onan three winding alternative parameters."""
+    return ThreeWindingONANParameters(
+        lv_winding=WindingSpecifications(
+            time_const_winding=10,
+            nom_load=500,
+            winding_oil_gradient=18,
+            hot_spot_fac=1.1,
+            nom_power=30,
+        ),
+        mv_winding=WindingSpecifications(
+            time_const_winding=10,
+            nom_load=500,
+            winding_oil_gradient=18,
+            hot_spot_fac=1.1,
+            nom_power=100,
+        ),
+        hv_winding=WindingSpecifications(
+            time_const_winding=10,
+            nom_load=50,
+            winding_oil_gradient=18,
+            hot_spot_fac=1.1,
+            nom_power=100,
+        ),
+        top_oil_temp_rise=55,
+        time_const_oil=160,
+        load_loss_mv_lv=100,
+        load_loss_hv_lv=100,
+        load_loss_hv_mv=100,
     )
