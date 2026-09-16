@@ -89,8 +89,6 @@ class PowerTransformer(Transformer):
                 provide to build the transformer. Any optional specifications not provided will be taken from the
                 default specifications.
             cooling_type (CoolerType): The cooling type. Can be ONAN or ONAF.
-            internal_component_specs (TransformerComponentSpecifications, optional): The internal component
-                specifications, which are used to calculate the limiting component. Defaults to None.
             cooling_switch_settings (CoolingSwitchSettings, optional): The ONAF switch settings.
                 Only used when the cooling type is ONAF.
 

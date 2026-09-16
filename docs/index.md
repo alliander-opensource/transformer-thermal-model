@@ -19,7 +19,6 @@ In short, it has the following features:
 * model the heat generation based on a static or dynamic load profile and ambient temperature profile;
 * calculate the aging based on the hot-spot temperature;
 * perform hot-spot factor, being one of the transformer specifications, calculation;
-* calculate the relative component capacities.
 
 ## Example of a model of a power transformer
 

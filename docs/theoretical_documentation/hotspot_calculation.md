@@ -12,13 +12,7 @@ in IEC 60076-1 paragraph 4.2 and IEC 60076-2 Table 1 (see also [Thermal
 limits](temperature_limits.md)) and derives the hot-spot factor from the
 steady-state temperature conditions associated with nominal load.
 
-For transformers with normal paper insulation, IEC 60076 specifies a maximum
-hot-spot temperature of 98°C when the load is 100% and the ambient temperature
-is 20°C. This corresponds to a hot-spot temperature rise above ambient of:
-
-Δθ_h = 98°C - 20°C = 78 K
-
-At nominal loading, the hot-spot temperature rise can also be expressed as:
+At nominal loading, the hot-spot temperature rise can be expressed as:
 
 Δθ_h = Δθ_or + H · g_r
 
@@ -29,13 +23,21 @@ where:
 - H is the hot-spot factor [-]
 - g_r is the rated winding-to-oil gradient [K]
 
-Substituting Δθ_h = 78 K and solving for the hot-spot factor yields:
+Assuming that the hot-spot temperature rise reaches a specified steady-state
+
+limit Δθ_h,lim, the hot-spot factor can be calculated as:
+
+H = (Δθ_h,lim - Δθ_or) / g_r
+
+The calculated hot-spot factor represents the value required to reach the
+specified steady-state hot-spot temperature rise limit at nominal load.
+
+According to IEC 60076-7, a hot-spot temperature rise limit of 78 K can be used
+for transformers with normal Kraft insulation paper. For transformers with
+thermally upgraded paper, a value of 90 K can be used. For normal Kraft paper,
+the equation therefore becomes:
 
 H = (78 K - Δθ_or) / g_r
-
-The calculated hot-spot factor represents the value required to reach a
-steady-state hot-spot temperature of 98°C at nominal load and an ambient
-temperature of 20°C.
 
 The resulting hot-spot factor is then clipped between the values 1.1 and 1.3
 as these are considered realistic values

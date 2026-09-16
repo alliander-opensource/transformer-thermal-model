@@ -55,7 +55,6 @@ nav:
     - Specifications: api_reference/specifications.md
     - Hot-spot factor calculation: api_reference/hot-spot_calculation.md
     - Aging: api_reference/aging.md
-    - Components: api_reference/components.md
     - Cooler: api_reference/cooler.md
     - ONAN/ONAF Switch: api_reference/cooling_switch_controller.md
     - Toolbox: api_reference/toolbox.md

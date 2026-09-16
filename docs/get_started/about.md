@@ -38,8 +38,6 @@ aging and load capacity:
 
 - `transformer_thermal_model.aging`: a module to calculate the aging of a transformer according to IEC 60076-7
 paragraph 6.3;
-- `transformer_thermal_model.components`: a module containing enumerators to define components of a power transformer if
-one wants to calculate the relative load capacity of each component in the transformer.
 
 ## How to create a transformer
 
@@ -158,95 +156,19 @@ tr_specs = UserTransformerSpecifications(
    amb_temp_surcharge=20,  # Ambient temperature surcharge [K]
 )
 uncalibrated_transformer = PowerTransformer(user_specs=tr_specs, cooling_type=CoolerType.ONAF)
-calibrated_trafo = calculate_hotspot_factor(
+calculated_trafo = calculate_hotspot_factor(
    uncalibrated_transformer=uncalibrated_transformer,
-   hot_spot_limit=98, # in most cases a hot-spot temperature limit of 98 can be used
+  hot_spot_temp_rise_limit=78, # in most cases a hot-spot temperature rise limit of 78 K can be used
    hot_spot_factor_min=1.1,
    hot_spot_factor_max=1.3,
 )
 ```
 
-The new hot-spot factor is available via `calibrated_trafo.specs.hot_spot_fac`, and from now on used in the thermal model.
+The new hot-spot factor is available via `calculated_trafo.specs.hot_spot_fac`, and from now on used in the thermal model.
 
 ```text
->>> print(calibrated_trafo.specs.hot_spot_fac)
+>>> print(calculated_trafo.specs.hot_spot_fac)
 1.1
-```
-
-#### Component capacities of a power transformer
-
-For load capacity calculations it can be required to take into account the capacity of the different components of a
-power transformers.
-Therefore a functionality is available to calculate the relative capacity of the tap changers, the bushings (primary and
-secondary) and the internal current transformer. The capacity is defined as the ratio of the component capacity and the
-nominal load of the transformer.
-
-The capacities are properties of the `PowerTransformer` and require the `TransformerComponentSpecifications` to be given
-during initiating a PowerTransformer object.
-
-In the following example for all components the required information is provided.
-
-``` python
-from transformer_thermal_model.components import BushingConfig, TransformerSide, VectorConfig
-from transformer_thermal_model.cooler import CoolerType
-from transformer_thermal_model.schemas import (
-    TransformerComponentSpecifications,
-    UserTransformerSpecifications,
-)
-from transformer_thermal_model.transformer import PowerTransformer
-
-comp_specs = TransformerComponentSpecifications(
-        tap_chang_capacity=600,  # Tap changer nominal current [A]
-        nom_load_prim_side=550,  # Transformer nominal current primary side [A]
-        tap_chang_conf=VectorConfig.TRIANGLE_OUTSIDE,  # Tap Changer configuration
-        tap_chang_side=TransformerSide.SECONDARY,  # Tap changer side
-        prim_bush_capacity=600,  # Primary bushing nominal current [A]
-        prim_bush_conf=BushingConfig.SINGLE_BUSHING,  # Primary bushing configuration
-        sec_bush_capacity=1800,  # Secondary bushing nominal current [A]
-        sec_bush_conf=BushingConfig.SINGLE_BUSHING,  # Secondary bushing configuration
-        cur_trans_capacity=1300,  # Current transformer nominal current [A]
-        cur_trans_conf=VectorConfig.STAR,  # Current transformer configuration
-        cur_trans_side=TransformerSide.PRIMARY,  # Current transformer side
-    )
-user_specs = UserTransformerSpecifications(
-        load_loss=1000,  # Transformer load loss [W]
-        nom_load_sec_side=1500,  # Transformer nominal current secondary side [A]
-        no_load_loss=200,  # Transformer no-load loss [W]
-        amb_temp_surcharge=20,
-    )
-power_transformer = PowerTransformer(
-        user_specs=user_specs, cooling_type=CoolerType.ONAF, internal_component_specs=comp_specs
-    )
-```
-
-The resulting component capacities are available in `power_transformer.component_capacities`:
-
-```text
->>> print(power_transformer.component_capacities)
-{'tap_changer': 0.4, 'primary_bushings': 1.0909090909090908, 'secondary_bushings': 1.2, 'current_transformer': 2.3636363636363638}
-```
-
-Note that it is also possible to
-only define a subset of the components if not all components are present. Then only the component capacities of the
-provided components are available:
-
-``` python
-comp_specs = TransformerComponentSpecifications(
-    tap_chang_capacity=600,  # Tap changer nominal current [A]
-    nom_load_prim_side=550,  # Transformer nominal current primary side [A]
-    tap_chang_conf=VectorConfig.TRIANGLE_OUTSIDE,  # Tap Changer configuration
-    tap_chang_side=TransformerSide.SECONDARY,  # Tap changer side
-)
-power_transformer = PowerTransformer(
-        user_specs=user_specs, cooling_type=CoolerType.ONAF, internal_component_specs=comp_specs
-    )
-```
-
-This will generate the following result:
-
-``` text
->>> print(power_transformer.component_capacities)
-{'tap_changer': 0.4, 'primary_bushings': None, 'secondary_bushings': None, 'current_transformer': None}
 ```
 
 ### Thermal modelling
