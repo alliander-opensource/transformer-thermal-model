@@ -64,7 +64,7 @@ C4Component
 
     Boundary(b0, "Transformer Thermal Model"){
         System_Boundary(s0, "Thermal Modeling"){
-            Container(hs_calibration, "Hot-spot calibration", "Python module", "Calibrates hot spot factor as a replacement<br/> if this value is unknown to the user.")
+            Container(hs_calculation, "Hot-spot calculation", "Python module", "Calculates hot spot factor as a replacement<br/> if this value is unknown to the user.")
             Container(model, "Model", "Python module", "Calculate transformer temperatures under specified load<br/> and ambient temperature profiles.")
             Container(transformer, "Transformer", "Python module", "Data class (containing logic) with specifications and calculated properties<br/> of a transformer. Can build a PowerTransformer, DistributionTransformer<br/> and ThreeWindingTransformer.")
         }
@@ -74,14 +74,14 @@ C4Component
         }
     }
     Rel(scientist, transformer, "Provides asset specifications to build a")
-    Rel(scientist, hs_calibration, "Calibrates hot-spot factor (when unknown) with")
+    Rel(scientist, hs_calculation, "Calculates hot-spot factor (when unknown) with")
     Rel(cyclops, model, "Finds thermal limits of Transformer using")
     Rel(scientist, model, "Finds thermal values of a Transformer using")
     Rel(model, transformer, "Simulates thermal values of the provided")
 
     Rel(model, numpy, "Represents data with")
     Rel(transformer, numpy, "Represents data with")
-    Rel(hs_calibration, numpy, "Represents data with")
+    Rel(hs_calculation, numpy, "Represents data with")
 
     UpdateLayoutConfig($c4BoundaryInRow="3", $c4ShapeInRow="1")
 ```

@@ -64,7 +64,7 @@ For more examples, see the [documentation](https://alliander-opensource.github.i
 - **Temperature modeling**: Calculate top-oil and hot-spot temperatures according to IEC 60076-7
 - **Multiple transformer types**: Power, distribution, and three-winding transformers are supported
 - **ONAN/ONAF modelling**: Model with different cooling types
-- **Hot-spot calibration**: Automatic calibration of hot-spot factors
+- **Hot-spot calculation**: Automatic calculation of hot-spot factors
 - **Aging calculations**: Analyze transformer aging
 
 ## Documentation

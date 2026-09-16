@@ -53,9 +53,8 @@ nav:
     - Transformer: api_reference/transformer.md
     - Model input and output: api_reference/model_input_output.md
     - Specifications: api_reference/specifications.md
-    - Hot-spot factor calibration: api_reference/hot-spot_calibration.md
+    - Hot-spot factor calculation: api_reference/hot-spot_calculation.md
     - Aging: api_reference/aging.md
-    - Components: api_reference/components.md
     - Cooler: api_reference/cooler.md
     - ONAN/ONAF Switch: api_reference/cooling_switch_controller.md
     - Toolbox: api_reference/toolbox.md
@@ -64,7 +63,7 @@ nav:
     - A distribution transformer with a dynamic profile: examples/simple_thermal_profile_example_distribution.ipynb
     - A power transformer with a dynamic profile: examples/power_transformer_example.ipynb
     - A three winding transformer: examples/three-winding-calculation.ipynb
-    - Hot-spot factor calibration: examples/hot-spot_calibration.ipynb
+    - Hot-spot factor calculation: examples/hot-spot_calculation.ipynb
     - Modelling with an initial state: examples/initial_temperature.ipynb
     - Switch between ONAN and ONAF state: examples/example_ONAN_ONAF_switch.ipynb
   - Theoretical Documentation:
@@ -72,7 +71,7 @@ nav:
     - Transformer definition: theoretical_documentation/transformer_definition.md
     - Model description: theoretical_documentation/model_description.md
     - Thermal limits: theoretical_documentation/temperature_limits.md
-    - Hot-spot factor calibration: theoretical_documentation/hotspot_calibration.md
+    - Hot-spot factor calculation: theoretical_documentation/hotspot_calculation.md
     - Potential model improvements: theoretical_documentation/model_improvements.md
     - ONAN ONAF switch modelling: theoretical_documentation/ONAN_ONAF_modelling.md
 

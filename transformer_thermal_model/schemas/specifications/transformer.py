@@ -7,7 +7,7 @@ from copy import deepcopy
 from typing import Self
 
 import numpy as np
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 class DefaultWindingSpecifications(BaseModel):
     """The default specifications for a single winding of a transformer."""
 
-    winding_oil_gradient: float | None = Field(default=None, description="Winding oil temperature gradient [K]", ge=0)
+    winding_oil_gradient: float | None = Field(default=None, description="Winding oil temperature gradient [K]", gt=0)
     time_const_winding: float | None = Field(default=None, description="Time constant windings [min]", gt=0)
     hot_spot_fac: float | None = Field(default=None, description="Hot-spot factor [-]", ge=0)
 
@@ -81,7 +81,7 @@ class UserTransformerSpecifications(BaseUserTransformerSpecifications):
     nom_load_sec_side: float = Field(
         ..., description="Transformer nominal current secondary side from the type plate [A]"
     )
-    winding_oil_gradient: float | None = Field(default=None, description="Winding oil gradient (worst case) [K]", ge=0)
+    winding_oil_gradient: float | None = Field(default=None, description="Winding oil gradient (worst case) [K]", gt=0)
     hot_spot_fac: float | None = Field(default=None, description="Hot-spot factor [-]", ge=0)
     time_const_windings: float | None = Field(default=None, description="Time constant windings [min]", gt=0)
 
@@ -208,6 +208,13 @@ class TransformerSpecifications(BaseTransformerSpecifications):
     time_const_windings: float
     hot_spot_fac: float
 
+    @model_validator(mode="after")
+    def validate_winding_oil_gradient(self) -> Self:
+        """Validate that the winding oil gradient is positive."""
+        if self.winding_oil_gradient <= 0:
+            raise ValueError("Winding oil gradient must be greater than zero.")
+        return self
+
     @classmethod
     def create(
         cls, defaults: DefaultTransformerSpecifications, user: UserTransformerSpecifications
@@ -255,6 +262,18 @@ class ThreeWindingTransformerSpecifications(BaseTransformerSpecifications):
     load_loss_hv_mv: float
     load_loss_mv_lv: float
     load_loss_total_user: float | None = None
+
+    @model_validator(mode="after")
+    def validate_winding_oil_gradients(self) -> Self:
+        """Validate that all three windings have a positive oil gradient."""
+        gradients = (
+            self.lv_winding.winding_oil_gradient,
+            self.mv_winding.winding_oil_gradient,
+            self.hv_winding.winding_oil_gradient,
+        )
+        if any(gradient is None or gradient <= 0 for gradient in gradients):
+            raise ValueError("Winding oil gradients must be specified and greater than zero for all three windings.")
+        return self
 
     @classmethod
     def create(

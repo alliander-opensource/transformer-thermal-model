@@ -2,6 +2,6 @@
 #
 # SPDX-License-Identifier: MPL-2.0
 
-from .calibrate_hotspot_factor import calibrate_hotspot_factor
+from .calculate_hotspot_factor import calculate_hotspot_factor
 
-__all__ = ["calibrate_hotspot_factor"]
+__all__ = ["calculate_hotspot_factor"]

@@ -20,11 +20,4 @@ is created to make sure the `UserTransformerSpecifications` and the
         summary: true
         heading_level: 3
 
-### Transformer component specifications
-
-::: transformer_thermal_model.schemas.specifications.transformer_component
-    options:
-        summary: true
-        heading_level: 4
-
 [1]: ./transformer.md#transformer_thermal_model.transformer.Transformer.defaults
