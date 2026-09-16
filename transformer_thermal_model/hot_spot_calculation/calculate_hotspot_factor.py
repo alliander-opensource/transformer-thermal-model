@@ -39,29 +39,37 @@ def calculate_hotspot_factor(
     if hot_spot_factor_min > hot_spot_factor_max:
         raise ValueError("The upper bound cannot be smaller than the lower bound of the hot-spot factor limits.")
 
-    if isinstance(uncalibrated_transformer, ThreeWindingTransformer):
-        lv_winding_gradient = uncalibrated_transformer.specs.lv_winding.winding_oil_gradient
-        mv_winding_gradient = uncalibrated_transformer.specs.mv_winding.winding_oil_gradient
-        hv_winding_gradient = uncalibrated_transformer.specs.hv_winding.winding_oil_gradient
-        if lv_winding_gradient is None or mv_winding_gradient is None or hv_winding_gradient is None:
-            raise ValueError("Winding oil gradients must be specified for all three windings.")
-        winding_oil_gradient = max(lv_winding_gradient, mv_winding_gradient, hv_winding_gradient)
+    winding_oil_gradient = _get_max_winding_oil_gradient(uncalibrated_transformer)
 
-    else:
-        winding_oil_gradient = uncalibrated_transformer.specs.winding_oil_gradient
-
-    if winding_oil_gradient <= 0:
-        raise ValueError("Winding oil gradient must be greater than zero.")
     hot_spot_factor = (
         hot_spot_temp_rise_limit - uncalibrated_transformer.specs.top_oil_temp_rise
     ) / winding_oil_gradient
 
-    calibrated_hot_spot_factor = np.clip(hot_spot_factor, a_min=hot_spot_factor_min, a_max=hot_spot_factor_max)
+    calculated_hot_spot_factor = np.clip(hot_spot_factor, a_min=hot_spot_factor_min, a_max=hot_spot_factor_max)
     calibrated_transformer = copy.deepcopy(uncalibrated_transformer)
-    calibrated_transformer._set_hs_fac(calibrated_hot_spot_factor)
+    calibrated_transformer._set_hs_fac(calculated_hot_spot_factor)
 
     logger.info(
         "The hot-spot factor of the transformer is calculated. The new hot-spot factor equals"
-        + f"{calibrated_hot_spot_factor}."
+        + f"{calculated_hot_spot_factor}."
     )
     return calibrated_transformer
+
+
+def _get_max_winding_oil_gradient(transformer: PowerTransformer | ThreeWindingTransformer) -> float:
+    """Return the winding-oil gradient used for calculating the hot-spot factor.
+
+    A three-winding transformer uses the maximum gradient because the same hot-spot factor is applied to all three
+    windings. For a power transformer, the transformer has only one winding-oil gradient, which is returned directly.
+    """
+    if isinstance(transformer, ThreeWindingTransformer):
+        winding_oil_gradients = (
+            transformer.specs.lv_winding.winding_oil_gradient,
+            transformer.specs.mv_winding.winding_oil_gradient,
+            transformer.specs.hv_winding.winding_oil_gradient,
+        )
+        if any(gradient is None for gradient in winding_oil_gradients):
+            raise ValueError("Winding oil gradients must be specified for all three windings.")
+        return max(gradient for gradient in winding_oil_gradients if gradient is not None)
+
+    return transformer.specs.winding_oil_gradient

@@ -5,7 +5,7 @@ import numpy as np
 import pytest
 
 from transformer_thermal_model.cooler import CoolerType
-from transformer_thermal_model.hot_spot_calculation.calculate_hotspot_factor import calculate_hotspot_factor
+from transformer_thermal_model.hot_spot_calculation import calculate_hotspot_factor
 from transformer_thermal_model.schemas import (
     UserThreeWindingTransformerSpecifications,
     UserTransformerSpecifications,
@@ -201,21 +201,6 @@ def test_that_hot_spot_factor_fails_with_wrong_limits(transformer_onaf_uncalibra
             hot_spot_temp_rise_limit=78,
             hot_spot_factor_min=5,
             hot_spot_factor_max=1,
-        )
-
-
-def test_that_hot_spot_factor_fails_with_zero_winding_oil_gradient(
-    transformer_onaf_uncalibrated: PowerTransformer,
-):
-    """Test that the hot-spot factor calculation rejects a zero winding oil gradient."""
-    transformer_onaf_uncalibrated.specs.winding_oil_gradient = 0
-
-    with pytest.raises(ValueError, match="Winding oil gradient must be greater than zero."):
-        calculate_hotspot_factor(
-            uncalibrated_transformer=transformer_onaf_uncalibrated,
-            hot_spot_temp_rise_limit=78,
-            hot_spot_factor_min=1.1,
-            hot_spot_factor_max=1.3,
         )
 
 

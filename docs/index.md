@@ -18,7 +18,7 @@ In short, it has the following features:
 * Creating a power or distribution transformer based on user specifications or IEC prescribed specifications;
 * model the heat generation based on a static or dynamic load profile and ambient temperature profile;
 * calculate the aging based on the hot-spot temperature;
-* perform hot-spot factor, being one of the transformer specifications, calculation;
+* determine the transformer's hot-spot factor via calculation, should this be unknown;
 
 ## Example of a model of a power transformer
 

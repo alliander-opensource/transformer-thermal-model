@@ -42,7 +42,7 @@ H = (78 K - Δθ_or) / g_r
 The resulting hot-spot factor is then clipped between the values 1.1 and 1.3
 as these are considered realistic values
 for the hot-spot factor. Note that it is also possible to choose other values
-for the end temperature and the hot-spot factor bounds.
+for the temperature-rise limit and the hot-spot factor bounds.
 
 This method is intended for power transformers only and should not be applied
 to distribution transformers.
