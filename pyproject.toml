@@ -43,7 +43,7 @@ docs = [
     "matplotlib>=3.11.0,<4",
     "nbconvert>=7.16.6,<8",
     "jupyter-core>=5.8.1,<6",
-    "ipykernel>=6.29.5,<7",
+    "ipykernel>=6.29.5,<8",
 ]
 
 [tool.uv]
