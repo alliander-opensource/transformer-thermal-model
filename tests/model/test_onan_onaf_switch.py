@@ -268,7 +268,7 @@ def test_complete_onan_onaf_switch_temp_threshold(
     assert output.top_oil_temp_profile.max() < 65
 
 
-def test_threewinding_onan_onaf_switch(
+def test_three_winding_onan_onaf_switch(
     user_three_winding_transformer_specs: UserThreeWindingTransformerSpecifications,
     three_winding_input_profile: ThreeWindingInputProfile,
     three_winding_onan_parameters: ThreeWindingONANParameters,

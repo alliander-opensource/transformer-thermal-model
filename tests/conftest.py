@@ -127,10 +127,10 @@ def user_three_winding_transformer_specs() -> UserThreeWindingTransformerSpecifi
 
 
 @pytest.fixture(scope="function")
-def threewinding_transformer(
+def three_winding_transformer(
     user_three_winding_transformer_specs,
 ) -> ThreeWindingTransformer:
-    """Create a threewinding transformer object."""
+    """Create a three_winding transformer object."""
     return ThreeWindingTransformer(user_specs=user_three_winding_transformer_specs, cooling_type=CoolerType.ONAN)
 
 

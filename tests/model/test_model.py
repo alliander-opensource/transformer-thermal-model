@@ -789,7 +789,7 @@ def test_top_oil_input_three_winding(user_three_winding_transformer_specs, three
 def test_check_config(
     user_three_winding_transformer_specs: UserThreeWindingTransformerSpecifications,
     distribution_transformer: DistributionTransformer,
-    threewinding_transformer: ThreeWindingTransformer,
+    three_winding_transformer: ThreeWindingTransformer,
     three_winding_input_profile: ThreeWindingInputProfile,
     iec_load_profile: InputProfile,
     three_winding_onan_parameters: ThreeWindingONANParameters,
@@ -799,7 +799,7 @@ def test_check_config(
         ValueError,
         match="A ThreeWindingTransformer requires a ThreeWindingInputProfile.",
     ):
-        Model(temperature_profile=iec_load_profile, transformer=threewinding_transformer)
+        Model(temperature_profile=iec_load_profile, transformer=three_winding_transformer)
     with pytest.raises(ValueError, match="A DistributionTransformer requires an InputProfile"):
         Model(
             temperature_profile=three_winding_input_profile,
@@ -842,6 +842,6 @@ def test_check_config(
     ):
         Model(
             temperature_profile=three_winding_input_profile,
-            transformer=threewinding_transformer,
+            transformer=three_winding_transformer,
             initial_condition=InitialLoad(initial_load=500.0),
         )
