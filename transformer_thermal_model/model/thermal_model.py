@@ -275,7 +275,7 @@ class Model:
                 - For three-winding transformers, returns a 2D array of shape (3, n_steps),
                   where each row corresponds to one winding: [low_voltage_side, middle_voltage_side, high_voltage_side].
         """
-        # For a two winding transformer, loaf is 1D, change to 2D for consistency in calculations:
+        # For a two winding transformer, load is 1D, change to 2D for consistency in calculations:
         if load.ndim == 1:
             load = np.array([load])
         n_steps = load.shape[1]
