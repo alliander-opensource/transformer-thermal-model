@@ -171,13 +171,13 @@ def test_initial_load_matches_profile_load(base_input_profile, distribution_tran
     assert temp_range < 0.001, "Temperature should not vary when initial load matches profile"
 
 
-def test_initial_load_stabilizes_temperature_threewindingtransformer(
-    three_winding_input_profile, threewinding_transformer
+def test_initial_load_stabilizes_temperature_three_windingtransformer(
+    three_winding_input_profile, three_winding_transformer
 ):
     """Test that initial_load parameter stabilizes the temperature at that load level."""
     model = Model(
         temperature_profile=three_winding_input_profile,
-        transformer=threewinding_transformer,
+        transformer=three_winding_transformer,
         initial_condition=InitialThreeWindingLoad(lv_winding=0, mv_winding=1000, hv_winding=1000),
     )
     results = model.run()
@@ -185,7 +185,7 @@ def test_initial_load_stabilizes_temperature_threewindingtransformer(
     # The initial temperatures should be higher than with default init
     model_default = Model(
         temperature_profile=three_winding_input_profile,
-        transformer=threewinding_transformer,
+        transformer=three_winding_transformer,
     )
     results_default = model_default.run()
 
