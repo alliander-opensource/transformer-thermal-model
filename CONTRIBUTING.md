@@ -74,8 +74,8 @@ Please consider those requirements when contributing to our project.
    will run hooks to ensure your code is properly formatted.
 6. Work on your contribution.
 7. Make sure you have a GPG verification in place on the machine that you are working on. [Generating a new GPG key](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key).
-And set `git config commit.gpgsign true`
-8. Commit using commit signoff (-s)
+And set `git config commit.gpgsign true`.
+8. Commit using commit signoff (-s). If you get an GPG error, try setting `export GPG_TTY=$(tty)` and try again.
 9. [Make a PR with your fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork).
 
 ### During development
