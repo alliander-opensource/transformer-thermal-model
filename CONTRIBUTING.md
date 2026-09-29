@@ -73,7 +73,10 @@ Please consider those requirements when contributing to our project.
 5. Set up pre-commit hooks: `uv run prek install`. Every time you commit, this
    will run hooks to ensure your code is properly formatted.
 6. Work on your contribution.
-7. [Make a PR with your fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork).
+7. Make sure you have a GPG verification in place on the machine that you are working on. [Generating a new GPG key](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key).
+And set `git config commit.gpgsign true`.
+8. Commit using commit signoff (-s). If you get an GPG error, try setting `export GPG_TTY=$(tty)` and try again.
+9. [Make a PR with your fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork).
 
 ### During development
 
@@ -89,7 +92,8 @@ codespell................................................................Passed
 markdownlint.............................................................Passed
 ```
 
-If any of these checks fail, make sure to make a new issue and notify us via
+If any of these checks fail try to clean your local prek with `prek clean`.
+If this does not resolve the issue make sure to make a new issue and notify us via
 the contact information below.
 
 Make sure to regularly run `pytest` during your work and after your changes.
