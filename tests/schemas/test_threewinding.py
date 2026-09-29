@@ -16,7 +16,9 @@ from transformer_thermal_model.schemas import (
     UserThreeWindingTransformerSpecifications,
     WindingSpecifications,
 )
-from transformer_thermal_model.schemas.thermal_model.input_profile import ThreeWindingInputProfile
+from transformer_thermal_model.schemas.thermal_model.input_profile import (
+    ThreeWindingInputProfile,
+)
 from transformer_thermal_model.transformer.threewinding import ThreeWindingTransformer
 
 
@@ -103,13 +105,25 @@ def test_three_winding_transformer_total_loss():
         no_load_loss=10000,
         amb_temp_surcharge=0,
         lv_winding=WindingSpecifications(
-            nom_load=1600, winding_oil_gradient=23, hot_spot_fac=1.3, time_const_winding=10, nom_power=150
+            nom_load=1600,
+            winding_oil_gradient=23,
+            hot_spot_fac=1.3,
+            time_const_winding=10,
+            nom_power=150,
         ),
         mv_winding=WindingSpecifications(
-            nom_load=1600, winding_oil_gradient=23, hot_spot_fac=1.3, time_const_winding=10, nom_power=150
+            nom_load=1600,
+            winding_oil_gradient=23,
+            hot_spot_fac=1.3,
+            time_const_winding=10,
+            nom_power=150,
         ),
         hv_winding=WindingSpecifications(
-            nom_load=1600, winding_oil_gradient=23, hot_spot_fac=1.3, time_const_winding=10, nom_power=150
+            nom_load=1600,
+            winding_oil_gradient=23,
+            hot_spot_fac=1.3,
+            time_const_winding=10,
+            nom_power=150,
         ),
         load_loss_hv_lv=20000,
         load_loss_hv_mv=20000,
@@ -126,13 +140,25 @@ def test_three_winding_transformer_total_loss():
         no_load_loss=10000,
         amb_temp_surcharge=0,
         lv_winding=WindingSpecifications(
-            nom_load=1600, winding_oil_gradient=23, hot_spot_fac=1.3, time_const_winding=10, nom_power=150
+            nom_load=1600,
+            winding_oil_gradient=23,
+            hot_spot_fac=1.3,
+            time_const_winding=10,
+            nom_power=150,
         ),
         mv_winding=WindingSpecifications(
-            nom_load=1600, winding_oil_gradient=23, hot_spot_fac=1.3, time_const_winding=10, nom_power=150
+            nom_load=1600,
+            winding_oil_gradient=23,
+            hot_spot_fac=1.3,
+            time_const_winding=10,
+            nom_power=150,
         ),
         hv_winding=WindingSpecifications(
-            nom_load=1600, winding_oil_gradient=23, hot_spot_fac=1.3, time_const_winding=10, nom_power=150
+            nom_load=1600,
+            winding_oil_gradient=23,
+            hot_spot_fac=1.3,
+            time_const_winding=10,
+            nom_power=150,
         ),
         load_loss_hv_lv=20000,
         load_loss_hv_mv=20000,
@@ -153,13 +179,25 @@ def test_transformer_winding_losses():
         no_load_loss=51740,
         amb_temp_surcharge=0,
         hv_winding=WindingSpecifications(
-            nom_load=384.9, winding_oil_gradient=17.6, hot_spot_fac=1.3, time_const_winding=7, nom_power=100
+            nom_load=384.9,
+            winding_oil_gradient=17.6,
+            hot_spot_fac=1.3,
+            time_const_winding=7,
+            nom_power=100,
         ),
         mv_winding=WindingSpecifications(
-            nom_load=1099.7, winding_oil_gradient=18.6, hot_spot_fac=1.3, time_const_winding=7, nom_power=100
+            nom_load=1099.7,
+            winding_oil_gradient=18.6,
+            hot_spot_fac=1.3,
+            time_const_winding=7,
+            nom_power=100,
         ),
         lv_winding=WindingSpecifications(
-            nom_load=1649.6, winding_oil_gradient=25.4, hot_spot_fac=1.3, time_const_winding=7, nom_power=30
+            nom_load=1649.6,
+            winding_oil_gradient=25.4,
+            hot_spot_fac=1.3,
+            time_const_winding=7,
+            nom_power=30,
         ),
         load_loss_hv_lv=184439,
         load_loss_hv_mv=93661,
@@ -192,13 +230,25 @@ def test_default_hotspotfactor_is_used_three_winding():
         no_load_loss=10000,
         amb_temp_surcharge=0,
         lv_winding=WindingSpecifications(
-            nom_load=1600, winding_oil_gradient=23, hot_spot_fac=None, time_const_winding=10, nom_power=150
+            nom_load=1600,
+            winding_oil_gradient=23,
+            hot_spot_fac=None,
+            time_const_winding=10,
+            nom_power=150,
         ),
         mv_winding=WindingSpecifications(
-            nom_load=1600, winding_oil_gradient=23, hot_spot_fac=None, time_const_winding=10, nom_power=150
+            nom_load=1600,
+            winding_oil_gradient=23,
+            hot_spot_fac=None,
+            time_const_winding=10,
+            nom_power=150,
         ),
         hv_winding=WindingSpecifications(
-            nom_load=1600, winding_oil_gradient=23, hot_spot_fac=None, time_const_winding=10, nom_power=150
+            nom_load=1600,
+            winding_oil_gradient=23,
+            hot_spot_fac=None,
+            time_const_winding=10,
+            nom_power=150,
         ),
         load_loss_hv_lv=20000,
         load_loss_hv_mv=20000,
@@ -207,6 +257,21 @@ def test_default_hotspotfactor_is_used_three_winding():
     three_winding_transformer = ThreeWindingTransformer(
         user_specs=user_specs_three_winding, cooling_type=CoolerType.ONAN
     )
-    assert math.isclose(three_winding_transformer.specs.lv_winding.hot_spot_fac, 1.3, rel_tol=1e-09, abs_tol=1e-09)
-    assert math.isclose(three_winding_transformer.specs.mv_winding.hot_spot_fac, 1.3, rel_tol=1e-09, abs_tol=1e-09)
-    assert math.isclose(three_winding_transformer.specs.hv_winding.hot_spot_fac, 1.3, rel_tol=1e-09, abs_tol=1e-09)
+    assert math.isclose(
+        three_winding_transformer.specs.lv_winding.hot_spot_fac,
+        1.3,
+        rel_tol=1e-09,
+        abs_tol=1e-09,
+    )
+    assert math.isclose(
+        three_winding_transformer.specs.mv_winding.hot_spot_fac,
+        1.3,
+        rel_tol=1e-09,
+        abs_tol=1e-09,
+    )
+    assert math.isclose(
+        three_winding_transformer.specs.hv_winding.hot_spot_fac,
+        1.3,
+        rel_tol=1e-09,
+        abs_tol=1e-09,
+    )
