@@ -243,7 +243,11 @@ class InputProfile(BaseInputProfile):
             An InputProfile object.
 
         """
-        required_columns = {"datetime_index", "load_profile", "ambient_temperature_profile"}
+        required_columns = {
+            "datetime_index",
+            "load_profile",
+            "ambient_temperature_profile",
+        }
         missing_columns = required_columns - set(df.columns)
         if missing_columns:
             raise ValueError(f"The dataframe is missing the following required columns: {', '.join(missing_columns)}")
@@ -252,9 +256,9 @@ class InputProfile(BaseInputProfile):
             datetime_index=df["datetime_index"].to_numpy(),
             load_profile=df["load_profile"].to_numpy(),
             ambient_temperature_profile=df["ambient_temperature_profile"].to_numpy(),
-            top_oil_temperature_profile=df["top_oil_temperature_profile"].to_numpy()
-            if "top_oil_temperature_profile" in df.columns
-            else None,
+            top_oil_temperature_profile=(
+                df["top_oil_temperature_profile"].to_numpy() if "top_oil_temperature_profile" in df.columns else None
+            ),
         )
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
@@ -356,9 +360,9 @@ class ThreeWindingInputProfile(BaseInputProfile):
             load_profile_high_voltage_side=np.array(load_profile_high_voltage_side, dtype=float),
             load_profile_middle_voltage_side=np.array(load_profile_middle_voltage_side, dtype=float),
             load_profile_low_voltage_side=np.array(load_profile_low_voltage_side, dtype=float),
-            top_oil_temperature_profile=np.array(top_oil_temperature_profile, dtype=float)
-            if top_oil_temperature_profile is not None
-            else None,
+            top_oil_temperature_profile=(
+                np.array(top_oil_temperature_profile, dtype=float) if top_oil_temperature_profile is not None else None
+            ),
         )
 
     @model_validator(mode="after")
@@ -368,11 +372,13 @@ class ThreeWindingInputProfile(BaseInputProfile):
             len(self.datetime_index) != len(self.load_profile_high_voltage_side)
             or len(self.datetime_index) != len(self.load_profile_middle_voltage_side)
             or len(self.datetime_index) != len(self.load_profile_low_voltage_side)
+            or len(self.ambient_temperature_profile) != len(self.datetime_index)
         ):
             raise ValueError(
                 f"The length of the profiles and index should be the same. Index length: {len(self.datetime_index)}, "
                 f"high voltage load profile length: {len(self.load_profile_high_voltage_side)}, "
                 f"middle voltage load profile length: {len(self.load_profile_middle_voltage_side)}, "
                 f"low voltage load profile length: {len(self.load_profile_low_voltage_side)}, "
+                f"ambient temperature profile length: {len(self.ambient_temperature_profile)}, "
             )
         return self
