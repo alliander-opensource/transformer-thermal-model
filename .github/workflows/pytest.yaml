@@ -41,7 +41,7 @@ jobs:
         shell: bash
         run: PYTHONPATH=. uv run --no-sync --no-build pytest
       - name: Upload coverage.xml as artifact
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a #v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 #v7.0.2
         if: ${{ hashFiles('coverage.xml') != '' }}
         with:
           name: coverage.xml
@@ -52,6 +52,6 @@ jobs:
         # for more info. We need this SonarQube scan for the coverage report,
         # so we still want it here for our own pushes.
         if: github.actor != 'dependabot[bot]'
-        uses: SonarSource/sonarqube-scan-action@ba9859eae8dd6bd29e412f25ddbbef3d032000f4  #v8.2.2
+        uses: SonarSource/sonarqube-scan-action@d209202bc7d53ff1cc128f7f907dac145c9d6ae9  #v8.3.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
