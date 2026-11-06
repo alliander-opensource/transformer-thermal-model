@@ -126,9 +126,11 @@ Where type must be one of the following:
 - fix: A bug fix
 - perf: A code change that improves performance
 - refactor: A code change that neither fixes a bug nor adds a feature
+- revert: Revert a previous commit and log this in the commit tree
 - style: Changes that do not affect the meaning of the code (white-space,
   formatting, missing semi-colons, etc)
 - test: Adding missing tests or correcting existing tests
+- deps: dependency changes (mainly caused by PR's from Dependabot)
 
 If your change is `BREAKING`, add it to the `<body>` of your commit message and
 explain what exactly is changing to be `BREAKING`. Also, add an explanation
