@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Contributors to the Transformer Thermal Model project
+#
+# SPDX-License-Identifier: MPL-2.0
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+name: release-please
+
+jobs:
+  release-please:
+    runs-on:
+      group: managed-linux
+    steps:
+      - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7  # v5.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          # this is a built-in strategy in release-please, see "Action Inputs"
+          # for more options
+          config-file: .release-please-config.json
