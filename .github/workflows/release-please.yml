@@ -24,3 +24,4 @@ jobs:
           # this is a built-in strategy in release-please, see "Action Inputs"
           # for more options
           config-file: .release-please-config.json
+          manifest-file: .release-please-manifest.json
