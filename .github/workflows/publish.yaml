@@ -2,135 +2,58 @@
 #
 # SPDX-License-Identifier: MPL-2.0
 name: (CI) publish Package
+
 on:
-    workflow_dispatch:
+  workflow_run:
+    workflows: ["release-please"]
+    types: [completed]
+
+permissions:
+  contents: read
 
 jobs:
-  build-package:
-    runs-on:
-      group: managed-linux
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - name: Set up Python
-        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
-        with:
-          python-version: 3.13
-
-      - name: Install uv
-        run: |
-           pipx install --python python3.13 uv==0.11.31
-      - name: Build package
-        run: uv build
-
-      - name: Upload package artifact
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 #v7.0.2
-        with:
-          name: transformer-thermal-model-package
-          path: dist/
   publish-to-pypi:
     name: Publish to PyPI
-    needs:
-    - build-package
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' }}
     runs-on:
       group: managed-linux
     environment:
       name: pypi
       url: https://pypi.org/p/transformer-thermal-model
     permissions:
+      contents: read
       id-token: write
     steps:
-    - name: Download all the dists
-      uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
-      with:
-        name: transformer-thermal-model-package
-        path: dist/
-    - name: Publish distribution 📦 to PyPI
-      uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086 #v1.14.3
-  publish-to-github:
-    name: Publish to GitHub Releases
-    needs:
-    - build-package
-    runs-on:
-      group: managed-linux
-    permissions:
-      contents: write
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      
-    - name: Download all the dists
-      uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
-      with:
-        name: transformer-thermal-model-package
-        path: dist/
-        
-    - name: Get package version
-      id: get_version
-      run: |
-        # Extract version from pyproject.toml
-        VERSION=$(grep '^version = ' pyproject.toml | sed 's/version = "\(.*\)"/\1/')
-        echo "version=v$VERSION" >> $GITHUB_OUTPUT
-        echo "Package version: v$VERSION"
-        
-    - name: Generate changelog
-      id: generate_changelog
-      run: |
-        # Get the previous release tag
-        PREVIOUS_TAG=$(gh release list --limit 1 --json tagName --jq '.[0].tagName' || echo "")
-        
-        if [ -z "$PREVIOUS_TAG" ]; then
-          echo "changelog=First release of the transformer-thermal-model package." >> $GITHUB_OUTPUT
-        else
-          echo "Generating changelog from $PREVIOUS_TAG to HEAD"
-          
-          # Get merged PRs since last release
-          CHANGELOG=$(gh pr list \
-            --state merged \
-            --base main \
-            --search "merged:>$(gh release view $PREVIOUS_TAG --json publishedAt --jq .publishedAt)" \
-            --json number,title,author \
-            --jq '.[] | "- #\(.number): \(.title) (@\(.author.login))"' \
-            | head -20)
-          
-          if [ -z "$CHANGELOG" ]; then
-            echo "changelog=No notable changes since the previous release." >> $GITHUB_OUTPUT
+      - name: Checkout release commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0
+
+      - name: Check for release tag
+        id: release_check
+        run: |
+          if git tag --points-at HEAD | grep -q '^v'; then
+            echo "release=true" >> "$GITHUB_OUTPUT"
           else
-            echo "changelog<<EOF" >> $GITHUB_OUTPUT
-            echo "### Changes" >> $GITHUB_OUTPUT
-            echo "$CHANGELOG" >> $GITHUB_OUTPUT
-            echo "EOF" >> $GITHUB_OUTPUT
+            echo "No release tag on HEAD, skipping publish."
+            echo "release=false" >> "$GITHUB_OUTPUT"
           fi
-        fi
-      env:
-        GH_TOKEN: ${{ github.token }}
-        
-    - name: Create GitHub Release
-      uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 #v3.0.3
-      with:
-        tag_name: ${{ steps.get_version.outputs.version }}
-        name: Release ${{ steps.get_version.outputs.version }}
-        files: |
-          dist/*.tar.gz
-          dist/*.whl
-        body: |
-          ## Release ${{ steps.get_version.outputs.version }}
-          
-          ### Installation
-          ```bash
-          pip install transformer-thermal-model==${{ steps.get_version.outputs.version }}
-          ```
-          
-          ### Package Files
-          - Source distribution (`.tar.gz`)
-          - Wheel distribution (`.whl`)
-          
-          ---
-          
-          ${{ steps.generate_changelog.outputs.changelog }}
-        draft: false
-        prerelease: false
-        generate_release_notes: true
+
+      - name: Set up Python
+        if: ${{ steps.release_check.outputs.release == 'true' }}
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: 3.13
+
+      - name: Install uv
+        if: ${{ steps.release_check.outputs.release == 'true' }}
+        run: pipx install --python python3.13 uv==0.11.31
+
+      - name: Build package
+        if: ${{ steps.release_check.outputs.release == 'true' }}
+        run: uv build
+
+      - name: Publish distribution to PyPI
+        if: ${{ steps.release_check.outputs.release == 'true' }}
+        uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086 #v1.14.3
