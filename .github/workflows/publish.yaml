@@ -7,8 +7,7 @@ on:
 
 jobs:
   build-package:
-    runs-on:
-      group: managed-linux
+    runs-on: mgd-ubuntu24-x64-4c16g
     permissions:
       contents: read
     steps:
@@ -35,8 +34,7 @@ jobs:
     name: Publish to PyPI
     needs:
     - build-package
-    runs-on:
-      group: managed-linux
+    runs-on: mgd-ubuntu24-x64-4c16g
     environment:
       name: pypi
       url: https://pypi.org/p/transformer-thermal-model
@@ -54,8 +52,7 @@ jobs:
     name: Publish to GitHub Releases
     needs:
     - build-package
-    runs-on:
-      group: managed-linux
+    runs-on: mgd-ubuntu24-x64-4c16g
     permissions:
       contents: write
     steps:
