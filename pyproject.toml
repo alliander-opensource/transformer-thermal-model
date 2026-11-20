@@ -36,7 +36,6 @@ docs = [
     "mkdocs>=1.6.1,<2",
     "mkdocstrings-python>=2.0.4,<3",
     "mkdocs-exclude==1.0.0",
-    "mkdocs-llmstxt>=0.5.0,<0.6",
     "mkdocs-material>=9.7.6,<10",
     "mkdocs-mermaid2-plugin>=1.2.1,<2",
     "mkdocs-jupyter>=0.26.3,<0.27",

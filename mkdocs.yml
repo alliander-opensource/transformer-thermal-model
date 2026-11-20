@@ -76,17 +76,6 @@ nav:
     - ONAN ONAF switch modelling: theoretical_documentation/ONAN_ONAF_modelling.md
 
 plugins:
-- llmstxt:
-    enabled: !ENV [CI, false]
-    full_output: llms-full.txt
-    markdown_description: |-
-      Transformer Thermal Model is a Python package for simulating the thermal 
-      behavior of power and distribution transformers. Since 2004, Alliander
-      has been researching and developing this model to predict the thermal
-      behavior of transformers, and uses it to solve net congestion problems.
-    sections:
-      API documentation:
-        - api_reference/*.md
 - search
 - mermaid2
 - exclude:
